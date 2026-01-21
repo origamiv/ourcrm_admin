@@ -15,7 +15,7 @@
 
             auth: {
                 type: 'bearer',
-                token: '1|GObXOn2UN2My5d5o4NaqXONWH2y7QfzdM06ZaTzwb00c099e'
+                token: '{{ env('TOKEN') }}'
             },
 
             primaryKey: 'id',
