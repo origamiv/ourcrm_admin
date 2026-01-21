@@ -23,20 +23,14 @@
                           hover:bg-gray-500/10 dark:hover:bg-dark-light/10
                           dark:text-white-light transition duration-300 rtl:rotate-180"
                    @click="$store.app.toggleSidebar()">
-
-                    <svg class="w-5 h-5 m-auto" viewBox="0 0 24 24" fill="none"
-                         xmlns="http://www.w3.org/2000/svg">
+                    <svg class="w-5 h-5 m-auto" viewBox="0 0 24 24" fill="none">
                         <path d="M13 19L7 12L13 5"
-                              stroke="currentColor"
-                              stroke-width="1.5"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"/>
+                              stroke="currentColor" stroke-width="1.5"
+                              stroke-linecap="round" stroke-linejoin="round"/>
                         <path opacity="0.5"
                               d="M17 19L11 12L17 5"
-                              stroke="currentColor"
-                              stroke-width="1.5"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"/>
+                              stroke="currentColor" stroke-width="1.5"
+                              stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </a>
             </div>
@@ -47,30 +41,75 @@
                        overflow-y-auto overflow-x-hidden
                        p-4 py-0">
 
-                <template x-for="item in menus" :key="item.id">
+                <template x-for="item in rootMenus" :key="item.id">
                     <li class="menu nav-item">
-                        <a
-                            :href="menuUrl(item)"
-                            class="nav-link group"
-                            :class="{ 'active': isActive(item) }">
 
-                            <div class="flex items-center">
+                        {{-- ROOT ITEM --}}
+                        <button
+                            type="button"
+                            class="nav-link group w-full"
+                            :class="{ 'active': isActive(item) }"
+                            @click="toggle(item)">
 
-                                <i
-                                    class="group-hover:!text-primary shrink-0
-           w-5 h-5 text-[20px] leading-none
-           text-black dark:text-[#506690]"
-                                    :class="item.icon || 'uil uil-circle'">
-                                </i>
+                            <div class="flex items-center justify-between w-full">
+                                <div class="flex items-center">
+                                    <i
+                                        class="group-hover:!text-primary shrink-0
+                                               w-5 h-5 text-[20px] leading-none
+                                               text-black dark:text-[#506690]"
+                                        :class="item.icon || 'uil uil-circle'">
+                                    </i>
 
-                                <span
-                                    class="ltr:pl-3 rtl:pr-3 text-black
-                                           dark:text-[#506690]
-                                           dark:group-hover:text-white-dark"
-                                    x-text="item.name">
-                                </span>
+                                    <span
+                                        class="ltr:pl-3 rtl:pr-3 text-black
+                                               dark:text-[#506690]
+                                               dark:group-hover:text-white-dark"
+                                        x-text="item.name">
+                                    </span>
+                                </div>
+
+                                {{-- ARROW --}}
+                                <template x-if="hasChildren(item)">
+                                    <svg class="w-4 h-4 transition-transform"
+                                         :class="{ '!rotate-90': open[item.id] }"
+                                         viewBox="0 0 24 24" fill="none">
+                                        <path d="M9 5L15 12L9 19"
+                                              stroke="currentColor"
+                                              stroke-width="1.5"
+                                              stroke-linecap="round"
+                                              stroke-linejoin="round"/>
+                                    </svg>
+                                </template>
                             </div>
-                        </a>
+                        </button>
+
+                        {{-- CHILDREN --}}
+                        <ul x-show="open[item.id]"
+                            x-collapse
+                            class="sub-menu text-gray-500 pl-8">
+
+                            <template x-for="child in children(item.id)" :key="child.id">
+                                <li>
+                                    <a
+                                        :href="menuUrl(child)"
+                                        class="nav-link block"
+                                        :class="{ 'active': isActive(child) }">
+
+                                        <div class="flex items-center">
+                                            <i
+                                                class="shrink-0 w-4 h-4 text-[16px]
+                                                       text-black dark:text-[#506690]"
+                                                :class="child.icon || 'uil uil-angle-right'">
+                                            </i>
+
+                                            <span class="ltr:pl-3 rtl:pr-3"
+                                                  x-text="child.name"></span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </template>
+                        </ul>
+
                     </li>
                 </template>
 
@@ -84,10 +123,11 @@
         Alpine.data("sidebar", () => ({
 
             menus: [],
+            open: {},
 
             async init() {
                 await this.loadMenus();
-                this.highlightActive();
+                this.openActiveParents();
             },
 
             async loadMenus() {
@@ -98,8 +138,7 @@
                         headers: {
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
-                            'Authorization':
-                                'Bearer {{ env('TOKEN') }}'
+                            'Authorization': 'Bearer {{ env('TOKEN') }}'
                         },
                         body: JSON.stringify({
                             page: 1,
@@ -111,28 +150,46 @@
                 const json = await response.json();
 
                 this.menus = (json.data || [])
-                    .filter(item => item.status === 1)
+                    .filter(item => item.status) // status = true
                     .sort((a, b) => (a.nom ?? 0) - (b.nom ?? 0));
             },
 
-            menuUrl(item) {
-                // URL строится из shortname
-                // пример: git.branch → /git/branch
-                if (!item.shortname) return '#';
+            get rootMenus() {
+                return this.menus.filter(m => m.parent_id === 0);
+            },
 
-                return '/' + item.shortname.replace(/\./g, '/');
+            children(parentId) {
+                return this.menus.filter(m => m.parent_id === parentId);
+            },
+
+            hasChildren(item) {
+                return this.children(item.id).length > 0;
+            },
+
+            toggle(item) {
+                if (!this.hasChildren(item)) {
+                    window.location.href = this.menuUrl(item);
+                    return;
+                }
+                this.open[item.id] = !this.open[item.id];
+            },
+
+            menuUrl(item) {
+                return item.page ?? '/';
             },
 
             isActive(item) {
                 return window.location.pathname === this.menuUrl(item);
             },
 
-            highlightActive() {
+            openActiveParents() {
                 this.$nextTick(() => {
-                    const el = document.querySelector(
-                        '.sidebar a[href="' + window.location.pathname + '"]'
+                    const current = this.menus.find(
+                        m => this.menuUrl(m) === window.location.pathname
                     );
-                    if (el) el.classList.add('active');
+                    if (current && current.parent_id) {
+                        this.open[current.parent_id] = true;
+                    }
                 });
             }
 
