@@ -56,8 +56,12 @@
 
                             <div class="flex items-center">
 
-                                <i class="group-hover:!text-primary shrink-0"
-                                   :class="item.icon || 'uil uil-circle'"></i>
+                                <i
+                                    class="group-hover:!text-primary shrink-0
+           w-5 h-5 text-[20px] leading-none
+           text-black dark:text-[#506690]"
+                                    :class="item.icon || 'uil uil-circle'">
+                                </i>
 
                                 <span
                                     class="ltr:pl-3 rtl:pr-3 text-black
@@ -95,7 +99,7 @@
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
                             'Authorization':
-                                'Bearer 1|GObXOn2UN2My5d5o4NaqXONWH2y7QfzdM06ZaTzwb00c099e'
+                                'Bearer {{ env('TOKEN') }}'
                         },
                         body: JSON.stringify({
                             page: 1,
