@@ -1,9 +1,13 @@
 <x-layout.default>
 
     {{-- =====================================================
-        1. КОНФИГУРАЦИЯ ТАБЛИЦЫ
+        1. CONFIG И TABLE CONFIG
         ===================================================== --}}
     <script>
+        // PHP → JS (конфиг сущности)
+        window.CONFIG = @json($config);
+
+        // Общий конфиг таблицы
         window.TABLE_CONFIG = {
             api: {
                 list: 'https://ozgang.ourtest.net/api/v1/advertisers/list'
@@ -18,40 +22,10 @@
 
             perPage: 20,
 
-            columns: [
-                { key: 'id', title: 'ID' },
-                { key: 'name', title: 'Name' },
-                {
-                    key: 'state',
-                    title: 'State',
-                    formatter: 'badge',
-                    options: {
-                        active: 'badge-outline-success',
-                        inactive: 'badge-outline-danger'
-                    }
-                },
-                {
-                    key: 'offers',
-                    title: 'Offers',
-                    formatter: 'number'
-                },
-                {
-                    key: 'postback_url',
-                    title: 'Postback',
-                    formatter: 'truncate',
-                    options: { length: 40 }
-                },
-                { key: 'template_name', title: 'Template' },
-                { key: 'ext_id', title: 'Ext ID' },
-                {
-                    key: 'created_at',
-                    title: 'Created',
-                    formatter: 'date'
-                }
-            ],
+            columns: [],
 
             actions: [
-                { type: 'view', url: '/advertisers/view' },
+                { type: 'view', url: '/advertisers/show' },
                 { type: 'edit', url: '/advertisers/edit' },
                 { type: 'delete' }
             ]
@@ -72,22 +46,48 @@
     </div>
 
     {{-- =====================================================
-        3. ЛОГИКА
+        3. LOGIC
         ===================================================== --}}
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('dataTable', () => ({
+
                 config: window.TABLE_CONFIG,
 
                 items: [],
                 datatable: null,
                 dataArr: [],
 
+                /* =============================
+                   INIT
+                ============================= */
                 async init() {
+                    this.buildColumnsFromConfig();
                     await this.loadData();
                     this.buildTable();
                 },
 
+                /* =============================
+                   BUILD COLUMNS FROM CONFIG
+                ============================= */
+                buildColumnsFromConfig() {
+                    const fields = window.CONFIG.fields;
+
+                    this.config.columns = Object.entries(fields)
+                        .filter(([_, field]) =>
+                            field.field_mode?.includes('index')
+                        )
+                        .map(([key, field]) => ({
+                            key: key,
+                            title: field.name,
+                            formatter: field.formatter ?? null,
+                            options: field.formatter_options ?? null
+                        }));
+                },
+
+                /* =============================
+                   LOAD DATA
+                ============================= */
                 async loadData() {
                     const response = await fetch(this.config.api.list, {
                         method: 'POST',
@@ -109,6 +109,9 @@
                     this.setTableData();
                 },
 
+                /* =============================
+                   PREPARE DATA
+                ============================= */
                 setTableData() {
                     this.dataArr = this.items.map(item =>
                         this.config.columns
@@ -117,6 +120,9 @@
                     );
                 },
 
+                /* =============================
+                   TABLE
+                ============================= */
                 buildTable() {
                     if (this.datatable) this.datatable.destroy();
 
@@ -156,11 +162,16 @@
                     return cols;
                 },
 
+                /* =============================
+                   FORMATTERS
+                ============================= */
                 format(col, value) {
                     switch (col.formatter) {
 
                         case 'badge':
-                            return `<span class="badge ${col.options[value] ?? 'badge-secondary'}">${value}</span>`;
+                            return `<span class="badge ${col.options?.[value] ?? 'badge-secondary'}">
+                                ${value}
+                            </span>`;
 
                         case 'date':
                             return value ? new Date(value).toLocaleString() : '—';
@@ -168,17 +179,21 @@
                         case 'truncate':
                             if (!value) return '—';
                             const len = col.options?.length ?? 40;
-                            const short = value.length > len ? value.slice(0, len) + '…' : value;
-                            return `<span title="${value}">${short}</span>`;
+                            return `<span title="${value}">
+                                ${value.length > len ? value.slice(0, len) + '…' : value}
+                            </span>`;
 
                         case 'number':
                             return `<span class="font-semibold">${value}</span>`;
 
                         default:
-                            return value;
+                            return value ?? '—';
                     }
                 },
 
+                /* =============================
+                   ACTION ICONS
+                ============================= */
                 actionIcons() {
                     return {
                         view: `
@@ -251,40 +266,42 @@
                     };
                 },
 
+                /* =============================
+                   ACTIONS
+                ============================= */
                 renderActions(id) {
                     const icons = this.actionIcons();
 
                     return `
-        <div class="flex items-center gap-3">
-            ${this.config.actions.map(action => {
+                        <div class="flex items-center gap-3">
+                            ${this.config.actions.map(action => {
                         if (action.type === 'delete') {
                             return `
-                        <button
-                            class="hover:text-danger"
-                            @click.prevent="deleteRow(${id})"
-                            title="Delete">
-                            ${icons.delete}
-                        </button>`;
+                                        <button class="hover:text-danger"
+                                                @click.prevent="deleteRow(${id})"
+                                                title="Delete">
+                                            ${icons.delete}
+                                        </button>`;
                         }
 
                         return `
-                    <a
-                        href="${action.url}?id=${id}"
-                        class="hover:text-primary"
-                        title="${action.type}">
-                        ${icons[action.type]}
-                    </a>`;
+                                    <a href="${action.url}/${id}"
+                                       class="hover:text-primary"
+                                       title="${action.type}">
+                                        ${icons[action.type]}
+                                    </a>`;
                     }).join('')}
-        </div>
-    `;
+                        </div>
+                    `;
                 },
 
                 deleteRow(id) {
-                    if (!confirm('Delete advertiser #' + id + '?')) return;
+                    if (!confirm('Delete item #' + id + '?')) return;
                     this.items = this.items.filter(i => i.id !== id);
                     this.setTableData();
                     this.buildTable();
                 }
+
             }));
         });
     </script>

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/advertisers', [AdvertiserController::class, 'index']);
+Route::get('/advertisers/show/{id}', [AdvertiserController::class, 'show']);
 
 
 Route::view('/', 'index');

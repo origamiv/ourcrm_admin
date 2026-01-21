@@ -12,6 +12,9 @@ class AdvertiserController extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     public function index() {
-        return view('apps.invoice.list');
+        return view('apps.invoice.list',['config'=>config('entities.advertisers')]);
+    }
+    public function show($id) {
+        return view('apps.invoice.preview');
     }
 }
