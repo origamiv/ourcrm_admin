@@ -11,15 +11,15 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 4001,
+        'id' => 4005,
 
         // Название в меню
-        'name' => 'Рекламодатели',
+        'name' => 'Домены',
 
         // Уникальный ключ модуля
-        'shortname' => 'advertisers',
+        'shortname' => 'domains',
 
-        // Родительский раздел (например "Маркетинг")
+        // Родительский раздел
         'parent_id' => 0,
 
         // Корневая сущность
@@ -32,25 +32,25 @@ return [
         'level' => 1,
 
         // Web-страница
-        'page' => '/advertisers',
+        'page' => '/domains',
 
         // API endpoint
-        'api' => '/api/v1/advertisers',
+        'api' => '/api/v1/domains',
 
-        // Eloquent / Domain модель
-        'model' => 'App\\Models\\Advertiser',
+        // Eloquent модель
+        'model' => 'App\\Models\\Domain',
 
         // Иконка меню
-        'icon' => 'uil uil-megaphone',
+        'icon' => 'uil uil-globe',
 
         // ACL / permissions resource
-        'resource' => 'advertisers',
+        'resource' => 'domains',
 
         // Активен
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 10,
+        'nom' => 14,
 
         // Не справочник
         'is_list' => 2,
@@ -67,7 +67,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Fields — бизнес-поля сущности Advertiser
+    | Fields — бизнес-поля сущности Domain
     |--------------------------------------------------------------------------
     */
     'fields' => [
@@ -83,11 +83,25 @@ return [
         ],
 
         'name' => [
-            'name' => 'Название',
+            'name' => 'Домен',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
             'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'is_ssl' => [
+            'name' => 'SSL',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'text',
+//            'formatter' => 'badge',
+//            'formatter_options' => [
+//                false  => 'badge-outline-warning',
+//                true => 'badge-outline-success',
+//            ],
             'db_type' => 'string',
             'is_lookup' => false,
         ],
@@ -103,59 +117,6 @@ return [
                 'inactive' => 'badge-outline-danger',
             ],
             'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'offers' => [
-            'name' => 'Офферы',
-            'field_mode' => 'index,show',
-            'is_filter_need' => false,
-            'control' => 'number',
-            'formatter' => 'number',
-            'db_type' => 'integer',
-            'is_lookup' => false,
-        ],
-
-        'postback_url' => [
-            'name' => 'Postback URL',
-            'field_mode' => 'index,show',
-            'is_filter_need' => false,
-            'control' => 'textarea',
-            'formatter' => 'truncate',
-            'formatter_options' => [
-                'length' => 60,
-            ],
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'offer_param' => [
-            'name' => 'Параметр оффера',
-            'field_mode' => 'create,edit,show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'template_name' => [
-            'name' => 'Шаблон',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'ext_id' => [
-            'name' => 'Ext ID',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'number',
-            'formatter' => 'number',
-            'db_type' => 'integer',
             'is_lookup' => false,
         ],
 

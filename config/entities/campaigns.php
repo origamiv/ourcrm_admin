@@ -11,15 +11,15 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 4001,
+        'id' => 4002,
 
         // Название в меню
-        'name' => 'Рекламодатели',
+        'name' => 'Кампании',
 
         // Уникальный ключ модуля
-        'shortname' => 'advertisers',
+        'shortname' => 'campaigns',
 
-        // Родительский раздел (например "Маркетинг")
+        // Родительский раздел
         'parent_id' => 0,
 
         // Корневая сущность
@@ -32,25 +32,25 @@ return [
         'level' => 1,
 
         // Web-страница
-        'page' => '/advertisers',
+        'page' => '/campaigns',
 
         // API endpoint
-        'api' => '/api/v1/advertisers',
+        'api' => '/api/v1/campaigns',
 
-        // Eloquent / Domain модель
-        'model' => 'App\\Models\\Advertiser',
+        // Eloquent модель
+        'model' => 'App\\Models\\Campaign',
 
         // Иконка меню
-        'icon' => 'uil uil-megaphone',
+        'icon' => 'uil uil-bullhorn',
 
         // ACL / permissions resource
-        'resource' => 'advertisers',
+        'resource' => 'campaigns',
 
         // Активен
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 10,
+        'nom' => 11,
 
         // Не справочник
         'is_list' => 2,
@@ -67,7 +67,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Fields — бизнес-поля сущности Advertiser
+    | Fields — бизнес-поля сущности Campaign
     |--------------------------------------------------------------------------
     */
     'fields' => [
@@ -92,6 +92,16 @@ return [
             'is_lookup' => false,
         ],
 
+        'alias' => [
+            'name' => 'Алиас',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
         'state' => [
             'name' => 'Статус',
             'field_mode' => 'index,create,edit,show',
@@ -100,59 +110,57 @@ return [
             'formatter' => 'badge',
             'formatter_options' => [
                 'active'   => 'badge-outline-success',
-                'inactive' => 'badge-outline-danger',
+                'paused'   => 'badge-outline-warning',
+                'disabled' => 'badge-outline-danger',
             ],
             'db_type' => 'string',
             'is_lookup' => false,
         ],
 
-        'offers' => [
-            'name' => 'Офферы',
-            'field_mode' => 'index,show',
-            'is_filter_need' => false,
+        'type' => [
+            'name' => 'Тип',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'group_id' => [
+            'name' => 'Группа',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'lookup',
+            'formatter' => null,
+            'db_type' => 'integer',
+            'is_lookup' => true,
+        ],
+
+        'domain_id' => [
+            'name' => 'Домен',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'lookup',
+            'formatter' => null,
+            'db_type' => 'integer',
+            'is_lookup' => true,
+        ],
+
+        'traffic_source_id' => [
+            'name' => 'Источник трафика',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
             'control' => 'number',
             'formatter' => 'number',
             'db_type' => 'integer',
             'is_lookup' => false,
         ],
 
-        'postback_url' => [
-            'name' => 'Postback URL',
-            'field_mode' => 'index,show',
+        'position' => [
+            'name' => 'Позиция',
+            'field_mode' => 'index,edit,show',
             'is_filter_need' => false,
-            'control' => 'textarea',
-            'formatter' => 'truncate',
-            'formatter_options' => [
-                'length' => 60,
-            ],
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'offer_param' => [
-            'name' => 'Параметр оффера',
-            'field_mode' => 'create,edit,show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'template_name' => [
-            'name' => 'Шаблон',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'ext_id' => [
-            'name' => 'Ext ID',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
             'control' => 'number',
             'formatter' => 'number',
             'db_type' => 'integer',
@@ -161,7 +169,7 @@ return [
 
         'notes' => [
             'name' => 'Заметки',
-            'field_mode' => 'create,edit,show',
+            'field_mode' => 'edit,show',
             'is_filter_need' => false,
             'control' => 'textarea',
             'formatter' => null,
@@ -170,7 +178,7 @@ return [
         ],
 
         'created_at' => [
-            'name' => 'Создан',
+            'name' => 'Создана',
             'field_mode' => 'index,show',
             'is_filter_need' => true,
             'control' => 'datetime',
@@ -180,7 +188,7 @@ return [
         ],
 
         'updated_at' => [
-            'name' => 'Обновлён',
+            'name' => 'Обновлена',
             'field_mode' => 'show',
             'is_filter_need' => false,
             'control' => 'datetime',
@@ -196,7 +204,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'order' => [
-        'id' => 'asc',
+        'id' => 'desc',
     ],
 
 ];

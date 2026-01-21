@@ -1,12 +1,12 @@
 <?php
 
-use App\Http\Controllers\AdvertiserController;
+use App\Http\Controllers\CrudController;
 use Illuminate\Support\Facades\Route;
 
-
-Route::get('/advertisers', [AdvertiserController::class, 'index']);
-Route::get('/advertisers/show/{id}', [AdvertiserController::class, 'show']);
-
+foreach (config('entities') as $entity => $items) {
+    Route::get('/' . $entity, [CrudController::class, 'index']);
+    Route::get('/' . $entity . '/show/{id}', [CrudController::class, 'show']);
+};
 
 Route::view('/', 'index');
 Route::view('/analytics', 'analytics');

@@ -11,15 +11,15 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 4001,
+        'id' => 4012,
 
         // Название в меню
-        'name' => 'Рекламодатели',
+        'name' => 'Клики',
 
         // Уникальный ключ модуля
-        'shortname' => 'advertisers',
+        'shortname' => 'clicks',
 
-        // Родительский раздел (например "Маркетинг")
+        // Родительский раздел
         'parent_id' => 0,
 
         // Корневая сущность
@@ -32,27 +32,27 @@ return [
         'level' => 1,
 
         // Web-страница
-        'page' => '/advertisers',
+        'page' => '/clicks',
 
         // API endpoint
-        'api' => '/api/v1/advertisers',
+        'api' => '/api/v1/clicks',
 
-        // Eloquent / Domain модель
-        'model' => 'App\\Models\\Advertiser',
+        // Eloquent модель
+        'model' => 'App\\Models\\Click',
 
         // Иконка меню
-        'icon' => 'uil uil-megaphone',
+        'icon' => 'uil uil-mouse-alt',
 
         // ACL / permissions resource
-        'resource' => 'advertisers',
+        'resource' => 'clicks',
 
         // Активен
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 10,
+        'nom' => 40,
 
-        // Не справочник
+        // Не справочник (лог событий)
         'is_list' => 2,
     ],
 
@@ -62,12 +62,12 @@ return [
     |--------------------------------------------------------------------------
     */
     'layout' => [
-        'filter_view' => 'title',
+        'filter_view' => 'advanced',
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | Fields — бизнес-поля сущности Advertiser
+    | Fields — бизнес-поля сущности Click
     |--------------------------------------------------------------------------
     */
     'fields' => [
@@ -82,9 +82,79 @@ return [
             'is_lookup' => false,
         ],
 
-        'name' => [
-            'name' => 'Название',
-            'field_mode' => 'index,create,edit,show',
+        'click_id' => [
+            'name' => 'Click ID (ext)',
+            'field_mode' => 'index,show',
+            'is_filter_need' => true,
+            'control' => 'text',
+//            'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'campaign_id' => [
+            'name' => 'Кампания',
+            'field_mode' => 'index,show',
+            'is_filter_need' => true,
+            'control' => 'lookup',
+            'formatter' => 'lookup',
+            'db_type' => 'integer',
+            'is_lookup' => true,
+            'lookup' => [
+                'entity' => 'campaigns',
+                'value'  => 'id',
+                'label'  => 'name',
+            ],
+        ],
+
+        'stream_id' => [
+            'name' => 'Стрим',
+            'field_mode' => 'index,show',
+            'is_filter_need' => true,
+            'control' => 'lookup',
+            'formatter' => 'lookup',
+            'db_type' => 'integer',
+            'is_lookup' => true,
+            'lookup' => [
+                'entity' => 'streams',
+                'value'  => 'id',
+                'label'  => 'name',
+            ],
+        ],
+
+        'offer_id' => [
+            'name' => 'Оффер',
+            'field_mode' => 'index,show',
+            'is_filter_need' => true,
+            'control' => 'lookup',
+            'formatter' => 'lookup',
+            'db_type' => 'integer',
+            'is_lookup' => true,
+            'lookup' => [
+                'entity' => 'offers',
+                'value'  => 'id',
+                'label'  => 'name',
+            ],
+        ],
+
+        'geo_id' => [
+            'name' => 'GEO',
+            'field_mode' => 'index,show',
+            'is_filter_need' => true,
+            'control' => 'lookup',
+            'formatter' => 'lookup',
+            'db_type' => 'integer',
+            'is_lookup' => true,
+            'lookup' => [
+                'entity' => 'geo',
+                'value'  => 'id',
+                'label'  => 'code',
+            ],
+        ],
+
+        'ip' => [
+            'name' => 'IP',
+            'field_mode' => 'index,show',
             'is_filter_need' => true,
             'control' => 'text',
             'formatter' => null,
@@ -92,85 +162,31 @@ return [
             'is_lookup' => false,
         ],
 
-        'state' => [
-            'name' => 'Статус',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'status',
-            'formatter' => 'badge',
-            'formatter_options' => [
-                'active'   => 'badge-outline-success',
-                'inactive' => 'badge-outline-danger',
-            ],
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'offers' => [
-            'name' => 'Офферы',
-            'field_mode' => 'index,show',
-            'is_filter_need' => false,
-            'control' => 'number',
-            'formatter' => 'number',
-            'db_type' => 'integer',
-            'is_lookup' => false,
-        ],
-
-        'postback_url' => [
-            'name' => 'Postback URL',
-            'field_mode' => 'index,show',
+        'user_agent' => [
+            'name' => 'User Agent',
+            'field_mode' => 'show',
             'is_filter_need' => false,
             'control' => 'textarea',
             'formatter' => 'truncate',
             'formatter_options' => [
-                'length' => 60,
+                'length' => 120,
             ],
             'db_type' => 'string',
             'is_lookup' => false,
         ],
 
-        'offer_param' => [
-            'name' => 'Параметр оффера',
-            'field_mode' => 'create,edit,show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'template_name' => [
-            'name' => 'Шаблон',
-            'field_mode' => 'index,create,edit,show',
+        'params' => [
+            'name' => 'Параметры',
+            'field_mode' => 'show',
             'is_filter_need' => true,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
+            'control' => 'json',
+            'formatter' => 'json',
+            'db_type' => 'json',
             'is_lookup' => false,
         ],
 
-        'ext_id' => [
-            'name' => 'Ext ID',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'number',
-            'formatter' => 'number',
-            'db_type' => 'integer',
-            'is_lookup' => false,
-        ],
-
-        'notes' => [
-            'name' => 'Заметки',
-            'field_mode' => 'create,edit,show',
-            'is_filter_need' => false,
-            'control' => 'textarea',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'created_at' => [
-            'name' => 'Создан',
+        'clicked_at' => [
+            'name' => 'Дата клика',
             'field_mode' => 'index,show',
             'is_filter_need' => true,
             'control' => 'datetime',
@@ -179,8 +195,8 @@ return [
             'is_lookup' => false,
         ],
 
-        'updated_at' => [
-            'name' => 'Обновлён',
+        'created_at' => [
+            'name' => 'Создано',
             'field_mode' => 'show',
             'is_filter_need' => false,
             'control' => 'datetime',
@@ -196,7 +212,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'order' => [
-        'id' => 'asc',
+        'clicked_at' => 'desc',
     ],
 
 ];

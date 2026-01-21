@@ -6,13 +6,16 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use Symfony\Component\HttpFoundation\Request;
 
-class AdvertiserController extends BaseController
+class CrudController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function index() {
-        return view('apps.invoice.list',['config'=>config('entities.advertisers')]);
+    public function index(Request $request) {
+        $paths=explode('/',$request->getRequestUri());
+        $entity=$paths[1];
+        return view('apps.invoice.list',['config'=>config('entities.'.$entity)]);
     }
     public function show($id) {
         return view('apps.invoice.preview');

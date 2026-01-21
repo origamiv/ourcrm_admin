@@ -11,15 +11,15 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 4001,
+        'id' => 4004,
 
         // Название в меню
-        'name' => 'Рекламодатели',
+        'name' => 'Партнёры',
 
         // Уникальный ключ модуля
-        'shortname' => 'advertisers',
+        'shortname' => 'partners',
 
-        // Родительский раздел (например "Маркетинг")
+        // Родительский раздел
         'parent_id' => 0,
 
         // Корневая сущность
@@ -32,25 +32,25 @@ return [
         'level' => 1,
 
         // Web-страница
-        'page' => '/advertisers',
+        'page' => '/partners',
 
         // API endpoint
-        'api' => '/api/v1/advertisers',
+        'api' => '/api/v1/partners',
 
-        // Eloquent / Domain модель
-        'model' => 'App\\Models\\Advertiser',
+        // Eloquent модель
+        'model' => 'App\\Models\\Partner',
 
         // Иконка меню
-        'icon' => 'uil uil-megaphone',
+        'icon' => 'uil uil-users-alt',
 
         // ACL / permissions resource
-        'resource' => 'advertisers',
+        'resource' => 'partners',
 
         // Активен
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 10,
+        'nom' => 13,
 
         // Не справочник
         'is_list' => 2,
@@ -67,7 +67,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Fields — бизнес-поля сущности Advertiser
+    | Fields — бизнес-поля сущности Partner
     |--------------------------------------------------------------------------
     */
     'fields' => [
@@ -92,6 +92,16 @@ return [
             'is_lookup' => false,
         ],
 
+        'shortname' => [
+            'name' => 'Код',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
         'state' => [
             'name' => 'Статус',
             'field_mode' => 'index,create,edit,show',
@@ -103,59 +113,6 @@ return [
                 'inactive' => 'badge-outline-danger',
             ],
             'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'offers' => [
-            'name' => 'Офферы',
-            'field_mode' => 'index,show',
-            'is_filter_need' => false,
-            'control' => 'number',
-            'formatter' => 'number',
-            'db_type' => 'integer',
-            'is_lookup' => false,
-        ],
-
-        'postback_url' => [
-            'name' => 'Postback URL',
-            'field_mode' => 'index,show',
-            'is_filter_need' => false,
-            'control' => 'textarea',
-            'formatter' => 'truncate',
-            'formatter_options' => [
-                'length' => 60,
-            ],
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'offer_param' => [
-            'name' => 'Параметр оффера',
-            'field_mode' => 'create,edit,show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'template_name' => [
-            'name' => 'Шаблон',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'ext_id' => [
-            'name' => 'Ext ID',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'number',
-            'formatter' => 'number',
-            'db_type' => 'integer',
             'is_lookup' => false,
         ],
 

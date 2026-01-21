@@ -11,15 +11,15 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 4001,
+        'id' => 4006,
 
         // Название в меню
-        'name' => 'Рекламодатели',
+        'name' => 'Группы',
 
         // Уникальный ключ модуля
-        'shortname' => 'advertisers',
+        'shortname' => 'groups',
 
-        // Родительский раздел (например "Маркетинг")
+        // Родительский раздел
         'parent_id' => 0,
 
         // Корневая сущность
@@ -32,28 +32,28 @@ return [
         'level' => 1,
 
         // Web-страница
-        'page' => '/advertisers',
+        'page' => '/groups',
 
         // API endpoint
-        'api' => '/api/v1/advertisers',
+        'api' => '/api/v1/groups',
 
-        // Eloquent / Domain модель
-        'model' => 'App\\Models\\Advertiser',
+        // Eloquent модель
+        'model' => 'App\\Models\\Group',
 
         // Иконка меню
-        'icon' => 'uil uil-megaphone',
+        'icon' => 'uil uil-layer-group',
 
         // ACL / permissions resource
-        'resource' => 'advertisers',
+        'resource' => 'groups',
 
         // Активен
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 10,
+        'nom' => 15,
 
-        // Не справочник
-        'is_list' => 2,
+        // Справочник
+        'is_list' => 1,
     ],
 
     /*
@@ -67,7 +67,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Fields — бизнес-поля сущности Advertiser
+    | Fields — бизнес-поля сущности Group
     |--------------------------------------------------------------------------
     */
     'fields' => [
@@ -92,85 +92,27 @@ return [
             'is_lookup' => false,
         ],
 
-        'state' => [
-            'name' => 'Статус',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'status',
-            'formatter' => 'badge',
-            'formatter_options' => [
-                'active'   => 'badge-outline-success',
-                'inactive' => 'badge-outline-danger',
-            ],
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'offers' => [
-            'name' => 'Офферы',
-            'field_mode' => 'index,show',
-            'is_filter_need' => false,
-            'control' => 'number',
-            'formatter' => 'number',
-            'db_type' => 'integer',
-            'is_lookup' => false,
-        ],
-
-        'postback_url' => [
-            'name' => 'Postback URL',
-            'field_mode' => 'index,show',
-            'is_filter_need' => false,
-            'control' => 'textarea',
-            'formatter' => 'truncate',
-            'formatter_options' => [
-                'length' => 60,
-            ],
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'offer_param' => [
-            'name' => 'Параметр оффера',
-            'field_mode' => 'create,edit,show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'template_name' => [
-            'name' => 'Шаблон',
+        'type' => [
+            'name' => 'Тип группы',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
-            'formatter' => null,
             'db_type' => 'string',
             'is_lookup' => false,
         ],
 
-        'ext_id' => [
-            'name' => 'Ext ID',
+        'position' => [
+            'name' => 'Позиция',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'number',
             'formatter' => 'number',
             'db_type' => 'integer',
-            'is_lookup' => false,
-        ],
-
-        'notes' => [
-            'name' => 'Заметки',
-            'field_mode' => 'create,edit,show',
-            'is_filter_need' => false,
-            'control' => 'textarea',
-            'formatter' => null,
-            'db_type' => 'string',
             'is_lookup' => false,
         ],
 
         'created_at' => [
-            'name' => 'Создан',
+            'name' => 'Создано',
             'field_mode' => 'index,show',
             'is_filter_need' => true,
             'control' => 'datetime',
@@ -180,7 +122,7 @@ return [
         ],
 
         'updated_at' => [
-            'name' => 'Обновлён',
+            'name' => 'Обновлено',
             'field_mode' => 'show',
             'is_filter_need' => false,
             'control' => 'datetime',
@@ -196,7 +138,8 @@ return [
     |--------------------------------------------------------------------------
     */
     'order' => [
-        'id' => 'asc',
+        'type' => 'asc',
+        'position' => 'asc',
     ],
 
 ];

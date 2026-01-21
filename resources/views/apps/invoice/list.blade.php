@@ -10,7 +10,7 @@
         // Общий конфиг таблицы
         window.TABLE_CONFIG = {
             api: {
-                list: 'https://ozgang.ourtest.net/api/v1/advertisers/list'
+                list: 'https://ozgang.ourtest.net'+window.CONFIG.common.api+'/list'
             },
 
             auth: {
