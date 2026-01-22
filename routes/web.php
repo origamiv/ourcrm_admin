@@ -8,6 +8,12 @@ foreach (config('entities') as $entity => $items) {
     Route::get('/' . $entity . '/show/{id}', [CrudController::class, 'show']);
 };
 
+
+Route::view('/auth/boxed-lockscreen', 'auth.boxed-lockscreen');
+Route::view('/login', 'auth.boxed-signin')->name('login');
+Route::view('/auth/boxed-signup', 'auth.boxed-signup');
+Route::view('/auth/boxed-password-reset', 'auth.boxed-password-reset');
+
 Route::view('/', 'index');
 Route::view('/analytics', 'analytics');
 Route::view('/finance', 'finance');
@@ -111,10 +117,8 @@ Route::view('/pages/error500', 'pages.error500');
 Route::view('/pages/error503', 'pages.error503');
 Route::view('/pages/maintenence', 'pages.maintenence');
 
-Route::view('/auth/boxed-lockscreen', 'auth.boxed-lockscreen');
-Route::view('/auth/boxed-signin', 'auth.boxed-signin');
-Route::view('/auth/boxed-signup', 'auth.boxed-signup');
-Route::view('/auth/boxed-password-reset', 'auth.boxed-password-reset');
+
+
 Route::view('/auth/cover-login', 'auth.cover-login');
 Route::view('/auth/cover-register', 'auth.cover-register');
 Route::view('/auth/cover-lockscreen', 'auth.cover-lockscreen');

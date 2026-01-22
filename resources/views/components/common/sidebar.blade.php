@@ -95,7 +95,8 @@
                                     <a
                                         :href="menuUrl(child)"
                                         class="nav-link"
-                                        :class="{ 'active': isActive(child) }">
+                                        :class="{ 'active': isActive(child) }"
+                                    style="display: table; margin-left: 40px;padding:0px;">
 
                                         <div class="flex items-center">
                                             <i
@@ -134,6 +135,13 @@
             },
 
             async loadMenus() {
+                const token = localStorage.getItem('access_token');
+
+                if (!token) {
+                    console.warn('No access token found');
+                    return;
+                }
+
                 const response = await fetch(
                     'https://ozgang.ourtest.net/api/v1/menus/list',
                     {
@@ -141,7 +149,7 @@
                         headers: {
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
-                            'Authorization': 'Bearer {{ env('TOKEN') }}'
+                            'Authorization': `Bearer ${token}`,
                         },
                         body: JSON.stringify({ page: 1, perpage: 0 })
                     }
@@ -194,3 +202,4 @@
         }));
     });
 </script>
+

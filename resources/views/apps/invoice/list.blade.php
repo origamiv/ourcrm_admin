@@ -10,12 +10,11 @@
         // Общий конфиг таблицы
         window.TABLE_CONFIG = {
             api: {
-                list: 'https://ozgang.ourtest.net'+window.CONFIG.common.api+'/list'
+                list: 'https://ozgang.ourtest.net' + window.CONFIG.common.api + '/list'
             },
 
             auth: {
-                type: 'bearer',
-                token: '{{ env('TOKEN') }}'
+                type: 'bearer'
             },
 
             primaryKey: 'id',
@@ -89,12 +88,19 @@
                    LOAD DATA
                 ============================= */
                 async loadData() {
+                    const token = localStorage.getItem('access_token');
+
+                    if (!token) {
+                        console.warn('No access token found');
+                        return;
+                    }
+
                     const response = await fetch(this.config.api.list, {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
-                            'Authorization': 'Bearer ' + this.config.auth.token
+                            'Authorization': `Bearer ${token}`
                         },
                         body: JSON.stringify({
                             page: 1,
