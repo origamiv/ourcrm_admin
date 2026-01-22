@@ -1,3 +1,13 @@
+<style>
+    .sub-menu li::before,
+    .sub-menu li::after,
+    .sub-menu .nav-link::before,
+    .sub-menu .nav-link::after {
+        content: none !important;
+        display: none !important;
+        background: none !important;
+    }
+    </style>
 <div
     class="sidebar-wrapper"
     :class="{
@@ -94,21 +104,18 @@
                                 <li>
                                     <a
                                         :href="menuUrl(child)"
-                                        class="nav-link"
+                                        class="nav-link flex items-center"
                                         :class="{ 'active': isActive(child) }"
-                                    style="display: table; margin-left: 40px;padding:0px;">
+                                        style="margin-left: 5px; "
+                                    >
+                                        <i
+                                            class="shrink-0 uil"
+                                            :class="child.icon ? child.icon.replace('uil ', '') : 'uil-angle-right'">
+                                        </i>
 
-                                        <div class="flex items-center">
-                                            <i
-                                                class="shrink-0"
-                                                :class="child.icon || 'uil uil-angle-right'">
-                                            </i>
-
-                                            <span
-                                                class="ltr:pl-3 rtl:pr-3 menu-title"
-                                                x-text="child.name">
-                                            </span>
-                                        </div>
+                                        <span class="ltr:pl-3 rtl:pr-3 menu-title"
+                                              x-text="child.name">
+        </span>
                                     </a>
                                 </li>
                             </template>
