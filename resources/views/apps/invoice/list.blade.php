@@ -8,7 +8,8 @@
 
         window.TABLE_CONFIG = {
             api: {
-                list: 'https://ozgang.ourtest.net' + window.CONFIG.common.api + '/list'
+                list:   'https://ozgang.ourtest.net' + window.CONFIG.common.api + '/list',
+                delete: 'https://ozgang.ourtest.net' + window.CONFIG.common.api
             },
             primaryKey: 'id',
             perPage: 20,
@@ -19,7 +20,7 @@
     {{-- =====================================================
         2. UI
     ===================================================== --}}
-    <div x-data="dataTable">
+    <div x-data="dataTable" x-init="init()">
         <script src="/assets/js/simple-datatables.js"></script>
 
         <div class="panel px-0 border-[#e0e6ed] dark:border-[#1b2e4b]">
@@ -27,6 +28,60 @@
                 <table id="myTable" class="whitespace-nowrap w-full"></table>
             </div>
         </div>
+
+        {{-- =============================
+            DELETE CONFIRM MODAL
+        ============================= --}}
+        <!-- DELETE CONFIRM MODAL -->
+        <template x-teleport="body">
+            <div
+                x-show="deleteModal"
+                x-cloak
+                class="fixed inset-0 z-[99999]
+               flex items-center justify-center
+               bg-black/50"
+            >
+                <div
+                    @click.away="closeDeleteModal"
+                    class="bg-white dark:bg-[#0e1726]
+                   rounded-xl shadow-xl
+                   w-full max-w-md
+                   mx-4 p-6"
+                    style="width:auto"
+                >
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="uil uil-exclamation-triangle text-danger text-2xl"></i>
+                        <div class="text-lg font-semibold">
+                            Подтверждение удаления
+                        </div>
+                    </div>
+
+                    <div class="text-white-dark mb-6">
+                        Вы действительно хотите удалить эту запись?
+                    </div>
+
+                    <div class="flex justify-end gap-3">
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            @click="closeDeleteModal"
+                        >
+                            Нет
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn btn-danger"
+                            @click="confirmDelete"
+                        >
+                            Да
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+
     </div>
 
     {{-- =====================================================
@@ -42,6 +97,9 @@
                 datatable: null,
                 dataArr: [],
 
+                deleteModal: false,
+                deleteId: null,
+
                 /* =============================
                    INIT
                 ============================= */
@@ -50,10 +108,14 @@
                     await this.loadData();
                     this.buildTable();
                     this.injectCreateButton();
+
+                    window.addEventListener('datatable-delete', (e) => {
+                        this.openDeleteModal(e.detail);
+                    });
                 },
 
                 /* =============================
-                   COLUMNS FROM CONFIG
+                   COLUMNS
                 ============================= */
                 buildColumnsFromConfig() {
                     const fields = window.CONFIG.fields;
@@ -82,10 +144,7 @@
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${token}`
                         },
-                        body: JSON.stringify({
-                            page: 1,
-                            perpage: 0
-                        })
+                        body: JSON.stringify({ page: 1, perpage: 0 })
                     });
 
                     const json = await response.json();
@@ -94,7 +153,7 @@
                 },
 
                 /* =============================
-                   PREPARE DATA
+                   DATA PREP
                 ============================= */
                 setTableData() {
                     this.dataArr = this.items.map(item =>
@@ -167,47 +226,81 @@
                 },
 
                 /* =============================
-                   ACTIONS (ICONLY / VRISTO)
+                   ACTIONS
                 ============================= */
                 renderActions(id) {
                     const entity = window.CONFIG.common.shortname;
 
                     return `
-        <div class="flex items-center gap-3 text-xl">
+                        <div class="flex items-center gap-3 text-xl">
 
-            <a href="/${entity}/${id}/show"
-               class="text-info hover:text-info-dark"
-               title="Просмотр">
-                <i class="uil uil-eye"></i>
-            </a>
+                            <a href="/${entity}/${id}/show"
+                               class="text-info"
+                               title="Просмотр">
+                                <i class="uil uil-eye"></i>
+                            </a>
 
-            <a href="/${entity}/${id}/edit"
-               class="text-warning hover:text-warning-dark"
-               title="Редактировать">
-                <i class="uil uil-edit"></i>
-            </a>
+                            <a href="/${entity}/${id}/edit"
+                               class="text-warning"
+                               title="Редактировать">
+                                <i class="uil uil-edit"></i>
+                            </a>
 
-            <button class="text-danger hover:text-danger-dark"
-                title="Удалить"
-                onclick="document.querySelector('[x-data]').__x.$data.deleteRow(${id})">
-                <i class="uil uil-trash-alt"></i>
-            </button>
+                            <button class="text-danger"
+                                title="Удалить"
+                                onclick="window.dispatchEvent(
+                                    new CustomEvent('datatable-delete', { detail: ${id} })
+                                )">
+                                <i class="uil uil-trash-alt"></i>
+                            </button>
 
-        </div>
-    `;
-                },
-
-                deleteRow(id) {
-                    if (!confirm('Удалить запись #' + id + '?')) return;
-
-                    this.items = this.items.filter(i => i.id !== id);
-                    this.setTableData();
-                    this.buildTable();
-                    this.injectCreateButton();
+                        </div>
+                    `;
                 },
 
                 /* =============================
-                   CREATE BUTTON NEAR SEARCH
+                   DELETE FLOW
+                ============================= */
+                openDeleteModal(id) {
+                    this.deleteId = id;
+                    this.deleteModal = true;
+                },
+
+                closeDeleteModal() {
+                    this.deleteId = null;
+                    this.deleteModal = false;
+                },
+
+                async confirmDelete() {
+                    if (!this.deleteId) return;
+
+                    const token = localStorage.getItem('access_token');
+                    if (!token) return;
+
+                    await fetch(
+                        `${this.config.api.delete}/${this.deleteId}/destroy`,
+                        {
+                            method: 'DELETE',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            }
+                        }
+                    );
+
+                    this.items = this.items.filter(
+                        item => item.id !== this.deleteId
+                    );
+
+                    this.setTableData();
+                    this.buildTable();
+                    this.injectCreateButton();
+
+                    this.closeDeleteModal();
+                },
+
+                /* =============================
+                   CREATE BUTTON
                 ============================= */
                 injectCreateButton() {
                     const top = document.querySelector('.dataTable-top');
@@ -218,7 +311,7 @@
                     const btn = document.createElement('a');
                     btn.href = `/${entity}/create`;
                     btn.className = 'btn btn-primary btn-create ml-3';
-                    btn.innerHTML = '<i class="iconly-Light-Plus mr-1"></i> Добавить запись';
+                    btn.innerHTML = '<i class="uil uil-plus mr-1"></i> Добавить запись';
 
                     top.appendChild(btn);
                 }
