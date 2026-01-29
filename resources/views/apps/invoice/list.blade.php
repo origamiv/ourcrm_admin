@@ -21,12 +21,6 @@
         STYLES
     ===================================================== --}}
     <style>
-        /* ===============================
-           Sticky колонка "Действия"
-           (simple-datatables compatible)
-        =============================== */
-
-        /* header */
         .dataTable-table thead th:last-child {
             position: sticky;
             right: 0;
@@ -34,7 +28,6 @@
             background: #ffffff;
         }
 
-        /* body cells */
         .dataTable-table tbody td:last-child {
             position: sticky;
             right: 0;
@@ -43,7 +36,6 @@
             box-shadow: -8px 0 12px -8px rgba(0,0,0,0.15);
         }
 
-        /* dark mode */
         .dark .dataTable-table thead th:last-child,
         .dark .dataTable-table tbody td:last-child {
             background: #0e1726;
@@ -62,24 +54,15 @@
             </div>
         </div>
 
-        {{-- =================================================
-            DELETE CONFIRM MODAL (teleport)
-        ================================================= --}}
+        {{-- DELETE MODAL --}}
         <template x-teleport="body">
-            <div
-                x-show="deleteModal"
-                x-cloak
-                class="fixed inset-0 z-[99999] flex items-center justify-center bg-black/50"
-            >
-                <div
-                    @click.away="closeDeleteModal"
-                    class="bg-white dark:bg-[#0e1726] rounded-xl shadow-xl w-full max-w-md mx-4 p-6"
-                >
+            <div x-show="deleteModal" x-cloak
+                 class="fixed inset-0 z-[99999] flex items-center justify-center bg-black/50">
+                <div @click.away="closeDeleteModal"
+                     class="bg-white dark:bg-[#0e1726] rounded-xl shadow-xl max-w-md p-6">
                     <div class="flex items-center gap-3 mb-4">
                         <i class="uil uil-exclamation-triangle text-danger text-2xl"></i>
-                        <div class="text-lg font-semibold">
-                            Подтверждение удаления
-                        </div>
+                        <div class="text-lg font-semibold">Подтверждение удаления</div>
                     </div>
 
                     <div class="text-white-dark mb-6">
@@ -87,13 +70,8 @@
                     </div>
 
                     <div class="flex justify-end gap-3">
-                        <button class="btn btn-outline-secondary" @click="closeDeleteModal">
-                            Нет
-                        </button>
-
-                        <button class="btn btn-danger" @click="confirmDelete">
-                            Да
-                        </button>
+                        <button class="btn btn-outline-secondary" @click="closeDeleteModal">Нет</button>
+                        <button class="btn btn-danger" @click="confirmDelete">Да</button>
                     </div>
                 </div>
             </div>
@@ -103,6 +81,8 @@
     {{-- =====================================================
         3. LOGIC
     ===================================================== --}}
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('dataTable', () => ({
@@ -113,6 +93,9 @@
                 datatable: null,
                 dataArr: [],
 
+                lookups: {},       // raw lookup arrays
+                lookupMaps: {},    // id => name maps
+
                 deleteModal: false,
                 deleteId: null,
 
@@ -121,11 +104,12 @@
                 ============================= */
                 async init() {
                     this.buildColumnsFromConfig();
+                    await this.loadLookups();
                     await this.loadData();
                     this.buildTable();
                     this.injectCreateButton();
 
-                    window.addEventListener('datatable-delete', (e) => {
+                    window.addEventListener('datatable-delete', e => {
                         this.openDeleteModal(e.detail);
                     });
                 },
@@ -142,8 +126,45 @@
                             key,
                             title: field.name,
                             formatter: field.formatter ?? null,
-                            options: field.formatter_options ?? null
+                            options: field.formatter_options ?? null,
+                            is_lookup: field.is_lookup ?? false,
+                            lookup_id: field.lookup_id,
+                            lookup_name: field.lookup_name
                         }));
+                },
+
+                /* =============================
+                   LOOKUPS
+                ============================= */
+                async loadLookups() {
+                    const token = localStorage.getItem('access_token');
+                    if (!token) return;
+
+                    const lookupFields = Object.entries(window.CONFIG.fields)
+                        .filter(([_, f]) => f.is_lookup);
+
+                    for (const [key, field] of lookupFields) {
+                        const res = await axios.post(
+                            `https://ozgang.ourtest.net${field.lookup_api}/list`,
+                            { page: 1, perpage: 100 },
+                            {
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Authorization': `Bearer ${token}`
+                                }
+                            }
+                        );
+
+                        const list = res.data?.data ?? [];
+                        this.lookups[key] = list;
+
+                        // строим map: id => name
+                        this.lookupMaps[key] = {};
+                        list.forEach(item => {
+                            this.lookupMaps[key][item[field.lookup_id]] =
+                                item[field.lookup_name];
+                        });
+                    }
                 },
 
                 /* =============================
@@ -174,7 +195,7 @@
                 setTableData() {
                     this.dataArr = this.items.map(item =>
                         this.config.columns
-                            .map(col => item[col.key] ?? '—')
+                            .map(col => item[col.key] ?? null)
                             .concat(item[this.config.primaryKey])
                     );
                 },
@@ -187,10 +208,7 @@
 
                     this.datatable = new simpleDatatables.DataTable('#myTable', {
                         data: {
-                            headings: [
-                                ...this.config.columns.map(c => c.title),
-                                'Действия'
-                            ],
+                            headings: [...this.config.columns.map(c => c.title), 'Действия'],
                             data: this.dataArr
                         },
                         perPage: this.config.perPage,
@@ -212,7 +230,6 @@
                         });
                     });
 
-                    // последняя колонка — "Действия"
                     cols.push({
                         select: this.config.columns.length,
                         sortable: false,
@@ -223,9 +240,13 @@
                 },
 
                 /* =============================
-                   FORMATTERS
+                   FORMAT
                 ============================= */
                 format(col, value) {
+                    if (col.is_lookup) {
+                        return this.lookupMaps[col.key]?.[value] ?? '—';
+                    }
+
                     switch (col.formatter) {
                         case 'badge':
                             return `<span class="badge ${col.options?.[value] ?? 'badge-secondary'}">${value}</span>`;
@@ -250,33 +271,18 @@
 
                     return `
                         <div class="flex items-center gap-3 text-xl">
-
-                            <a href="/${entity}/${id}/show"
-                               class="text-info"
-                               title="Просмотр">
-                                <i class="uil uil-eye"></i>
-                            </a>
-
-                            <a href="/${entity}/${id}/edit"
-                               class="text-warning"
-                               title="Редактировать">
-                                <i class="uil uil-edit"></i>
-                            </a>
-
+                            <a href="/${entity}/${id}/show" class="text-info"><i class="uil uil-eye"></i></a>
+                            <a href="/${entity}/${id}/edit" class="text-warning"><i class="uil uil-edit"></i></a>
                             <button class="text-danger"
-                                title="Удалить"
-                                onclick="window.dispatchEvent(
-                                    new CustomEvent('datatable-delete', { detail: ${id} })
-                                )">
+                                onclick="window.dispatchEvent(new CustomEvent('datatable-delete',{detail:${id}}))">
                                 <i class="uil uil-trash-alt"></i>
                             </button>
-
                         </div>
                     `;
                 },
 
                 /* =============================
-                   DELETE FLOW
+                   DELETE
                 ============================= */
                 openDeleteModal(id) {
                     this.deleteId = id;
@@ -289,28 +295,21 @@
                 },
 
                 async confirmDelete() {
-                    if (!this.deleteId) return;
-
                     const token = localStorage.getItem('access_token');
                     if (!token) return;
 
-                    await fetch(
-                        `${this.config.api.delete}/${this.deleteId}/destroy`,
-                        {
-                            method: 'DELETE',
-                            headers: {
-                                'Accept': 'application/json',
-                                'Authorization': `Bearer ${token}`
-                            }
+                    await fetch(`${this.config.api.delete}/${this.deleteId}/destroy`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Authorization': `Bearer ${token}`
                         }
-                    );
+                    });
 
-                    this.items = this.items.filter(item => item.id !== this.deleteId);
-
+                    this.items = this.items.filter(i => i.id !== this.deleteId);
                     this.setTableData();
                     this.buildTable();
                     this.injectCreateButton();
-
                     this.closeDeleteModal();
                 },
 
