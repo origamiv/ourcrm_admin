@@ -2,7 +2,7 @@
 
     {{-- =====================================================
         1. CONFIG И TABLE CONFIG
-        ===================================================== --}}
+    ===================================================== --}}
     <script>
         // PHP → JS (конфиг сущности)
         window.CONFIG = @json($config);
@@ -21,19 +21,13 @@
 
             perPage: 20,
 
-            columns: [],
-
-            actions: [
-                { type: 'view', url: '/advertisers/show' },
-                { type: 'edit', url: '/advertisers/edit' },
-                { type: 'delete' }
-            ]
+            columns: []
         };
     </script>
 
     {{-- =====================================================
         2. UI
-        ===================================================== --}}
+    ===================================================== --}}
     <div x-data="dataTable">
         <script src="/assets/js/simple-datatables.js"></script>
 
@@ -46,7 +40,7 @@
 
     {{-- =====================================================
         3. LOGIC
-        ===================================================== --}}
+    ===================================================== --}}
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('dataTable', () => ({
@@ -109,7 +103,6 @@
                     });
 
                     const json = await response.json();
-                    console.log('API response:', json);
 
                     this.items = Array.isArray(json.data) ? json.data : [];
                     this.setTableData();
@@ -130,7 +123,9 @@
                    TABLE
                 ============================= */
                 buildTable() {
-                    if (this.datatable) this.datatable.destroy();
+                    if (this.datatable) {
+                        this.datatable.destroy();
+                    }
 
                     this.datatable = new simpleDatatables.DataTable('#myTable', {
                         data: {
@@ -202,7 +197,7 @@
                 ============================= */
                 actionIcons() {
                     return {
-                        view: `
+                        show: `
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
                                  xmlns="http://www.w3.org/2000/svg">
                                 <path opacity="0.5"
@@ -276,33 +271,37 @@
                    ACTIONS
                 ============================= */
                 renderActions(id) {
-                    const icons = this.actionIcons();
+                    const icons  = this.actionIcons();
+                    const entity = window.CONFIG.common.shortname;
 
                     return `
                         <div class="flex items-center gap-3">
-                            ${this.config.actions.map(action => {
-                        if (action.type === 'delete') {
-                            return `
-                                        <button class="hover:text-danger"
-                                                @click.prevent="deleteRow(${id})"
-                                                title="Delete">
-                                            ${icons.delete}
-                                        </button>`;
-                        }
 
-                        return `
-                                    <a href="${action.url}/${id}"
-                                       class="hover:text-primary"
-                                       title="${action.type}">
-                                        ${icons[action.type]}
-                                    </a>`;
-                    }).join('')}
+                            <a href="/${entity}/${id}/show"
+                               class="hover:text-primary"
+                               title="show">
+                                ${icons.show}
+                            </a>
+
+                            <a href="/${entity}/${id}/edit"
+                               class="hover:text-primary"
+                               title="edit">
+                                ${icons.edit}
+                            </a>
+
+                            <button class="hover:text-danger"
+                                    title="delete"
+                                    onclick="document.querySelector('[x-data]').__x.$data.deleteRow(${id})">
+                                ${icons.delete}
+                            </button>
+
                         </div>
                     `;
                 },
 
                 deleteRow(id) {
                     if (!confirm('Delete item #' + id + '?')) return;
+
                     this.items = this.items.filter(i => i.id !== id);
                     this.setTableData();
                     this.buildTable();
