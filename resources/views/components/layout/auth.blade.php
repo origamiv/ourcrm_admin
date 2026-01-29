@@ -92,7 +92,7 @@
     // API instance
     // =====================
     window.api = axios.create({
-        baseURL: 'https://ozgang.ourtest.net/api',
+        baseURL: '{{ config('app.api_url') }}/api',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',

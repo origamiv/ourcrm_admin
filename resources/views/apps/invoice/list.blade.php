@@ -9,8 +9,8 @@
         console.log(window.CONFIG.common.api);
         window.TABLE_CONFIG = {
             api: {
-                list:   'https://ozgang.ourtest.net' + window.CONFIG.common.api + '/list',
-                delete: 'https://ozgang.ourtest.net' + window.CONFIG.common.api
+                list:   '{{ config('app.api_url') }}' + window.CONFIG.common.api + '/list',
+                delete: '{{ config('app.api_url') }}' + window.CONFIG.common.api
             },
             primaryKey: 'id',
             perPage: 20,
@@ -147,7 +147,7 @@
 
                     for (const [key, field] of lookupFields) {
                         const res = await axios.post(
-                            `https://ozgang.ourtest.net${field.lookup_api}/list`,
+                            `{{ config('app.api_url') }}${field.lookup_api}/list`,
                             { page: 1, perpage: 100 },
                             {
                                 headers: {

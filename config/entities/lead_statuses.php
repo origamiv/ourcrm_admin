@@ -32,10 +32,10 @@ return [
         'level' => 1,
 
         // Web-страница
-        'page' => '/lead-statuses',
+        'page' => '/lead_statuses',
 
         // API endpoint
-        'api' => '/api/v1/lead-statuses',
+        'api' => '/api/v1/lead_statuses',
 
         // Eloquent модель
         'model' => 'App\\Models\\LeadStatus',

@@ -150,7 +150,7 @@
                 }
 
                 const response = await fetch(
-                    'https://ozgang.ourtest.net/api/v1/menus/list',
+                    '{{ config('app.api_url') }}/api/v1/menus/list',
                     {
                         method: 'POST',
                         headers: {

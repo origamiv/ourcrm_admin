@@ -110,11 +110,9 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup' => [
-                'entity' => 'products',
-                'value'  => 'id',
-                'label'  => 'name',
-            ],
+            'lookup_api' => '/api/v1/products',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'geo_id' => [
@@ -125,11 +123,9 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup' => [
-                'entity' => 'geo',
-                'value'  => 'id',
-                'label'  => 'name',
-            ],
+            'lookup_api' => '/api/v1/geo',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'user_id' => [
@@ -140,11 +136,9 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup' => [
-                'entity' => 'users',
-                'value'  => 'id',
-                'label'  => 'name',
-            ],
+            'lookup_api' => '/api/v1/users',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'interval_id' => [
@@ -155,11 +149,9 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup' => [
-                'entity' => 'intervals',
-                'value'  => 'id',
-                'label'  => 'name',
-            ],
+            'lookup_api' => '/api/v1/intervals',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'val' => [

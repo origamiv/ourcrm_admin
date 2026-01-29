@@ -55,6 +55,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
+    'api_url' => env('API_URL', 'https://ozgang.ourtest.net'),
 
     'asset_url' => env('ASSET_URL'),
 

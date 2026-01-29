@@ -125,7 +125,7 @@
                     this.error = null;
 
                     try {
-                        const res = await fetch('https://ozgang.ourtest.net/api/login', {
+                        const res = await fetch('{{ config('app.api_url') }}/api/login', {
                             method: 'POST',
                             headers: {
                                 'Accept': 'application/json',

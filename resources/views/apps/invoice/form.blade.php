@@ -187,7 +187,7 @@
 
                     for (const field of this.formFields.filter(f => f.is_lookup && f.lookup_api)) {
                         const res = await axios.post(
-                            `https://ozgang.ourtest.net${field.lookup_api}/list`,
+                            `{{ config('app.api_url') }}${field.lookup_api}/list`,
                             { page: 1, perpage: 100 },
                             {
                                 headers: {
@@ -209,7 +209,7 @@
 
                     try {
                         const res = await axios.get(
-                            `https://ozgang.ourtest.net${this.CONFIG.common.api}/${this.entityId}`,
+                            `{{ config('app.api_url') }}${this.CONFIG.common.api}/${this.entityId}`,
                             {
                                 headers: {
                                     'Accept': 'application/json',
@@ -239,7 +239,7 @@
                     let url;
                     let method;
 
-                    const base = `https://ozgang.ourtest.net${this.CONFIG.common.api}`;
+                    const base = `{{ config('app.api_url') }}${this.CONFIG.common.api}`;
 
                     if (this.mode === 'create') {
                         url = `${base}/create`;
