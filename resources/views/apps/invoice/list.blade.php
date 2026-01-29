@@ -18,36 +18,62 @@
     </script>
 
     {{-- =====================================================
+        STYLES
+    ===================================================== --}}
+    <style>
+        /* ===============================
+           Sticky колонка "Действия"
+           (simple-datatables compatible)
+        =============================== */
+
+        /* header */
+        .dataTable-table thead th:last-child {
+            position: sticky;
+            right: 0;
+            z-index: 7;
+            background: #ffffff;
+        }
+
+        /* body cells */
+        .dataTable-table tbody td:last-child {
+            position: sticky;
+            right: 0;
+            z-index: 6;
+            background: #ffffff;
+            box-shadow: -8px 0 12px -8px rgba(0,0,0,0.15);
+        }
+
+        /* dark mode */
+        .dark .dataTable-table thead th:last-child,
+        .dark .dataTable-table tbody td:last-child {
+            background: #0e1726;
+        }
+    </style>
+
+    {{-- =====================================================
         2. UI
     ===================================================== --}}
     <div x-data="dataTable" x-init="init()">
         <script src="/assets/js/simple-datatables.js"></script>
 
         <div class="panel px-0 border-[#e0e6ed] dark:border-[#1b2e4b]">
-            <div class="invoice-table">
+            <div class="invoice-table overflow-x-auto">
                 <table id="myTable" class="whitespace-nowrap w-full"></table>
             </div>
         </div>
 
-        {{-- =============================
-            DELETE CONFIRM MODAL
-        ============================= --}}
-        <!-- DELETE CONFIRM MODAL -->
+        {{-- =================================================
+            DELETE CONFIRM MODAL (teleport)
+        ================================================= --}}
         <template x-teleport="body">
             <div
                 x-show="deleteModal"
                 x-cloak
-                class="fixed inset-0 z-[99999]
-               flex items-center justify-center
-               bg-black/50"
+                class="fixed inset-0 z-[99999] flex items-center justify-center bg-black/50"
             >
                 <div
                     @click.away="closeDeleteModal"
-                    class="bg-white dark:bg-[#0e1726]
-                   rounded-xl shadow-xl
-                   w-full max-w-md
-                   mx-4 p-6"
-                    style="width:auto"
+                    class="bg-white dark:bg-[#0e1726] rounded-xl shadow-xl w-full max-w-md mx-4 p-6"
                 >
                     <div class="flex items-center gap-3 mb-4">
                         <i class="uil uil-exclamation-triangle text-danger text-2xl"></i>
@@ -61,27 +87,17 @@
                     </div>
 
                     <div class="flex justify-end gap-3">
-                        <button
-                            type="button"
-                            class="btn btn-outline-secondary"
-                            @click="closeDeleteModal"
-                        >
+                        <button class="btn btn-outline-secondary" @click="closeDeleteModal">
                             Нет
                         </button>
 
-                        <button
-                            type="button"
-                            class="btn btn-danger"
-                            @click="confirmDelete"
-                        >
+                        <button class="btn btn-danger" @click="confirmDelete">
                             Да
                         </button>
                     </div>
                 </div>
             </div>
         </template>
-
-
     </div>
 
     {{-- =====================================================
@@ -196,6 +212,7 @@
                         });
                     });
 
+                    // последняя колонка — "Действия"
                     cols.push({
                         select: this.config.columns.length,
                         sortable: false,
@@ -288,9 +305,7 @@
                         }
                     );
 
-                    this.items = this.items.filter(
-                        item => item.id !== this.deleteId
-                    );
+                    this.items = this.items.filter(item => item.id !== this.deleteId);
 
                     this.setTableData();
                     this.buildTable();
