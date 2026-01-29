@@ -27,6 +27,10 @@
             background-color: #1f2937 !important;
             color: #9ca3af;
         }
+
+        .form-error {
+            border-color: #ef4444 !important;
+        }
     </style>
 
     <div
@@ -58,25 +62,24 @@
 
                             {{-- LOOKUP --}}
                             <template x-if="field.is_lookup">
-                                <template x-if="lookups[field.key]">
-                                    <select
-                                        class="form-select w-full"
-                                        x-model.number="form[field.key]"
-                                        :disabled="isShow"
-                                    >
-                                        <option value="">—</option>
+                                <select
+                                    class="form-select w-full"
+                                    :class="{ 'form-error': errors[field.key] }"
+                                    x-model.number="form[field.key]"
+                                    :disabled="isShow"
+                                >
+                                    <option value="">—</option>
 
-                                        <template
-                                            x-for="item in lookups[field.key]"
-                                            :key="item[field.lookup_id]"
-                                        >
-                                            <option
-                                                :value="item[field.lookup_id]"
-                                                x-text="item[field.lookup_name]"
-                                            ></option>
-                                        </template>
-                                    </select>
-                                </template>
+                                    <template
+                                        x-for="item in lookups[field.key] ?? []"
+                                        :key="item[field.lookup_id]"
+                                    >
+                                        <option
+                                            :value="item[field.lookup_id]"
+                                            x-text="item[field.lookup_name]"
+                                        ></option>
+                                    </template>
+                                </select>
                             </template>
 
                             {{-- TEXT / NUMBER --}}
@@ -84,6 +87,7 @@
                                 <input
                                     :type="field.control"
                                     class="form-input w-full"
+                                    :class="{ 'form-error': errors[field.key] }"
                                     x-model="form[field.key]"
                                     :disabled="isShow"
                                 />
@@ -94,6 +98,7 @@
                                 <textarea
                                     class="form-textarea w-full"
                                     rows="3"
+                                    :class="{ 'form-error': errors[field.key] }"
                                     x-model="form[field.key]"
                                     :disabled="isShow">
                                 </textarea>
@@ -104,6 +109,7 @@
                                 <input
                                     type="datetime-local"
                                     class="form-input w-full"
+                                    :class="{ 'form-error': errors[field.key] }"
                                     x-model="form[field.key]"
                                     :disabled="isShow"
                                 />
@@ -113,11 +119,19 @@
                             <template x-if="!field.is_lookup && field.control === 'status'">
                                 <select
                                     class="form-select w-full"
+                                    :class="{ 'form-error': errors[field.key] }"
                                     x-model="form[field.key]"
                                     :disabled="isShow">
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
                                 </select>
+                            </template>
+
+                            {{-- ERROR MESSAGE --}}
+                            <template x-if="errors[field.key]">
+                                <div class="text-danger text-sm mt-1"
+                                     x-text="errors[field.key][0]">
+                                </div>
                             </template>
 
                         </div>
@@ -162,6 +176,7 @@
 
                 form: {},
                 lookups: {},
+                errors: {},
                 loading: false,
 
                 /* =============================
@@ -219,10 +234,7 @@
                     for (const field of lookupFields) {
                         const res = await axios.post(
                             `https://ozgang.ourtest.net${field.lookup_api}/list`,
-                            {
-                                page: 1,
-                                perpage: 100
-                            },
+                            { page: 1, perpage: 100 },
                             {
                                 headers: {
                                     'Accept': 'application/json',
@@ -273,6 +285,9 @@
                 async submit() {
                     if (this.isShow) return;
 
+                    // 🔥 СБРОС ОШИБОК
+                    this.errors = {};
+
                     const token = localStorage.getItem('access_token');
                     if (!token) return;
 
@@ -283,18 +298,26 @@
 
                     const method = this.mode === 'edit' ? 'put' : 'post';
 
-                    await axios({
-                        method,
-                        url,
-                        data: this.form,
-                        headers: {
-                            'Accept': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
+                    try {
+                        await axios({
+                            method,
+                            url,
+                            data: this.form,
+                            headers: {
+                                'Accept': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
 
-                    // 👉 редирект на список
-                    window.location.href = this.CONFIG.common.page;
+                        window.location.href = this.CONFIG.common.page;
+
+                    } catch (e) {
+                        if (e.response?.status === 422) {
+                            this.errors = e.response.data.errors ?? {};
+                        } else {
+                            console.error(e);
+                        }
+                    }
                 },
 
                 cancel() {

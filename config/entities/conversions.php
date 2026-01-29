@@ -74,7 +74,7 @@ return [
 
         'id' => [
             'name' => 'ID',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'number',
             'formatter' => 'number',
@@ -84,7 +84,7 @@ return [
 
         'conversion_ext_uuid' => [
             'name' => 'Conversion UUID',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
             'formatter' => null,
@@ -107,7 +107,7 @@ return [
 
         'lead_id' => [
             'name' => 'Лид',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'lookup',
             'formatter' => 'lookup',
@@ -120,7 +120,7 @@ return [
 
         'campaign_id' => [
             'name' => 'Кампания',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'lookup',
             'formatter' => 'lookup',
@@ -133,7 +133,7 @@ return [
 
         'advertiser_id' => [
             'name' => 'Рекламодатель',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'lookup',
             'formatter' => 'lookup',
@@ -146,7 +146,7 @@ return [
 
         'offer_id' => [
             'name' => 'Оффер',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'lookup',
             'formatter' => 'lookup',
@@ -159,7 +159,7 @@ return [
 
         'partner_id' => [
             'name' => 'Партнёр',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'lookup',
             'formatter' => 'lookup',
@@ -172,7 +172,7 @@ return [
 
         'product_id' => [
             'name' => 'Продукт',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'lookup',
             'formatter' => 'lookup',
@@ -185,7 +185,7 @@ return [
 
         'geo_id' => [
             'name' => 'GEO',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'lookup',
             'formatter' => 'lookup',
@@ -198,7 +198,7 @@ return [
 
         'status' => [
             'name' => 'Статус',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,edit,show',
             'is_filter_need' => true,
             'control' => 'status',
             'formatter' => 'badge',

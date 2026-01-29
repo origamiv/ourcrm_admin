@@ -94,7 +94,7 @@ return [
 
         'campaign_id' => [
             'name' => 'Кампания',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'lookup',
             'formatter' => 'lookup',
@@ -107,7 +107,7 @@ return [
 
         'stream_id' => [
             'name' => 'Стрим',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'lookup',
             'formatter' => 'lookup',
@@ -120,7 +120,7 @@ return [
 
         'offer_id' => [
             'name' => 'Оффер',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'lookup',
             'formatter' => 'lookup',
@@ -133,7 +133,7 @@ return [
 
         'geo_id' => [
             'name' => 'GEO',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'lookup',
             'formatter' => 'lookup',
