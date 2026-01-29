@@ -94,7 +94,7 @@ return [
 
         'state' => [
             'name' => 'Статус',
-            'field_mode' => 'index,create,edit,show',
+            'field_mode' => 'index,edit,show',
             'is_filter_need' => true,
             'control' => 'status',
             'formatter' => 'badge',
@@ -107,18 +107,21 @@ return [
         ],
 
         'offers' => [
-            'name' => 'Офферы',
-            'field_mode' => 'index,show',
+            'name' => 'Оффер',
+            'field_mode' => 'index,create,edit,show',
             'is_filter_need' => false,
             'control' => 'number',
             'formatter' => 'number',
             'db_type' => 'integer',
-            'is_lookup' => false,
+            "is_lookup"=> true,
+            "lookup_api"=> "/api/v1/offers",
+            "lookup_id"=> "id",
+            "lookup_name"=>"name"
         ],
 
         'postback_url' => [
             'name' => 'Postback URL',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,create,edit,show',
             'is_filter_need' => false,
             'control' => 'textarea',
             'formatter' => 'truncate',
@@ -151,7 +154,7 @@ return [
 
         'ext_id' => [
             'name' => 'Ext ID',
-            'field_mode' => 'index,create,edit,show',
+            'field_mode' => 'index,edit,show',
             'is_filter_need' => true,
             'control' => 'number',
             'formatter' => 'number',
@@ -173,7 +176,7 @@ return [
             'name' => 'Создан',
             'field_mode' => 'index,show',
             'is_filter_need' => true,
-            'control' => 'datetime',
+            'control' => 'text',
             'formatter' => 'date',
             'db_type' => 'datetime',
             'is_lookup' => false,
@@ -183,7 +186,7 @@ return [
             'name' => 'Обновлён',
             'field_mode' => 'show',
             'is_filter_need' => false,
-            'control' => 'datetime',
+            'control' => 'text',
             'formatter' => 'date',
             'db_type' => 'datetime',
             'is_lookup' => false,

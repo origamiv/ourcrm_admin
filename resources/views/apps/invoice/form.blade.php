@@ -9,18 +9,30 @@
         window.ENTITY_ID  = @json($id ?? null);
     </script>
 
-    <div x-data="dynamicForm">
+    {{-- =====================================================
+        SHOW MODE STYLES
+    ===================================================== --}}
+    <style>
+        .form-show input,
+        .form-show textarea,
+        .form-show select {
+            background-color: #f3f4f6 !important;
+            color: #374151;
+            cursor: not-allowed;
+        }
 
-        {{-- =====================================================
-            TOP ACTION BUTTONS (НЕ ТРОГАЕМ)
-        ===================================================== --}}
-        <div class="flex items-center lg:justify-end justify-center flex-wrap gap-4 mb-6">
-            <button type="button" class="btn btn-info">Send</button>
-            <button type="button" class="btn btn-primary" @click="print()">Print</button>
-            <button type="button" class="btn btn-success">Download</button>
-            <a href="#" class="btn btn-secondary">Create</a>
-            <a href="#" class="btn btn-warning">Edit</a>
-        </div>
+        .dark .form-show input,
+        .dark .form-show textarea,
+        .dark .form-show select {
+            background-color: #1f2937 !important;
+            color: #9ca3af;
+        }
+    </style>
+
+    <div
+        x-data="dynamicForm"
+        :class="{ 'form-show': isShow }"
+    >
 
         {{-- =====================================================
             FORM
@@ -44,8 +56,29 @@
                         {{-- CONTROL --}}
                         <div class="w-full">
 
+                            {{-- LOOKUP --}}
+                            <template x-if="field.is_lookup">
+                                <select
+                                    class="form-select w-full"
+                                    x-model="form[field.key]"
+                                    :disabled="isShow"
+                                >
+                                    <option value="">—</option>
+
+                                    <template
+                                        x-for="item in lookups[field.key] ?? []"
+                                        :key="item[field.lookup_id]"
+                                    >
+                                        <option
+                                            :value="item[field.lookup_id]"
+                                            x-text="item[field.lookup_name]"
+                                        ></option>
+                                    </template>
+                                </select>
+                            </template>
+
                             {{-- TEXT / NUMBER --}}
-                            <template x-if="['text','number'].includes(field.control)">
+                            <template x-if="!field.is_lookup && ['text','number'].includes(field.control)">
                                 <input
                                     :type="field.control"
                                     class="form-input w-full"
@@ -55,7 +88,7 @@
                             </template>
 
                             {{-- TEXTAREA --}}
-                            <template x-if="field.control === 'textarea'">
+                            <template x-if="!field.is_lookup && field.control === 'textarea'">
                                 <textarea
                                     class="form-textarea w-full"
                                     rows="3"
@@ -65,7 +98,7 @@
                             </template>
 
                             {{-- DATETIME --}}
-                            <template x-if="field.control === 'datetime'">
+                            <template x-if="!field.is_lookup && field.control === 'datetime'">
                                 <input
                                     type="datetime-local"
                                     class="form-input w-full"
@@ -75,7 +108,7 @@
                             </template>
 
                             {{-- STATUS --}}
-                            <template x-if="field.control === 'status'">
+                            <template x-if="!field.is_lookup && field.control === 'status'">
                                 <select
                                     class="form-select w-full"
                                     x-model="form[field.key]"
@@ -126,6 +159,7 @@
                 entityId: window.ENTITY_ID,
 
                 form: {},
+                lookups: {},
                 loading: false,
 
                 /* =============================
@@ -144,6 +178,7 @@
                 ============================= */
                 async init() {
                     this.initForm();
+                    await this.loadLookups();
 
                     if (this.needsLoad) {
                         await this.loadItem();
@@ -151,14 +186,12 @@
                 },
 
                 /* =============================
-                   FIELDS BY MODE
+                   FIELDS
                 ============================= */
                 get formFields() {
                     return Object.entries(this.CONFIG.fields)
                         .filter(([_, field]) =>
-                            field.field_mode
-                                ?.split(',')
-                                .includes(this.mode)
+                            field.field_mode?.split(',').includes(this.mode)
                         )
                         .map(([key, field]) => ({
                             key,
@@ -173,7 +206,41 @@
                 },
 
                 /* =============================
-                   LOAD ENTITY (edit / show)
+                   LOOKUPS
+                ============================= */
+                async loadLookups() {
+                    const token = localStorage.getItem('access_token');
+                    if (!token) return;
+
+                    const lookupFields = this.formFields.filter(f => f.is_lookup);
+
+                    for (const field of lookupFields) {
+                        try {
+                            const res = await axios.post(
+                                `https://ozgang.ourtest.net${field.lookup_api}/list`,
+                                {
+                                    page: 1,
+                                    perpage: 100
+                                },
+                                {
+                                    headers: {
+                                        'Accept': 'application/json',
+                                        'Authorization': `Bearer ${token}`
+                                    }
+                                }
+                            );
+
+                            this.lookups[field.key] = res.data?.data ?? [];
+
+                        } catch (e) {
+                            console.error('Lookup load error', field.key, e);
+                            this.lookups[field.key] = [];
+                        }
+                    }
+                },
+
+                /* =============================
+                   LOAD ENTITY
                 ============================= */
                 async loadItem() {
                     const token = localStorage.getItem('access_token');
@@ -199,15 +266,13 @@
                             }
                         });
 
-                    } catch (e) {
-                        console.error('Load error', e);
                     } finally {
                         this.loading = false;
                     }
                 },
 
                 /* =============================
-                   SUBMIT (create / edit)
+                   SUBMIT
                 ============================= */
                 async submit() {
                     if (this.isShow) return;
@@ -216,37 +281,27 @@
                     if (!token) return;
 
                     const baseUrl = `https://ozgang.ourtest.net${this.CONFIG.common.api}`;
-
                     const url = this.mode === 'edit'
                         ? `${baseUrl}/${this.entityId}`
                         : baseUrl;
 
                     const method = this.mode === 'edit' ? 'put' : 'post';
 
-                    try {
-                        await axios({
-                            method,
-                            url,
-                            data: this.form,
-                            headers: {
-                                'Accept': 'application/json',
-                                'Authorization': `Bearer ${token}`
-                            }
-                        });
+                    await axios({
+                        method,
+                        url,
+                        data: this.form,
+                        headers: {
+                            'Accept': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
 
-                        alert('Saved');
-
-                    } catch (e) {
-                        console.error('Save error', e);
-                    }
+                    alert('Saved');
                 },
 
                 cancel() {
                     history.back();
-                },
-
-                print() {
-                    window.print();
                 }
 
             }));
