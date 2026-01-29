@@ -1,26 +1,17 @@
 <x-layout.default>
 
     {{-- =====================================================
-        1. CONFIG И TABLE CONFIG
+        1. CONFIG
     ===================================================== --}}
     <script>
-        // PHP → JS (конфиг сущности)
         window.CONFIG = @json($config);
 
-        // Общий конфиг таблицы
         window.TABLE_CONFIG = {
             api: {
                 list: 'https://ozgang.ourtest.net' + window.CONFIG.common.api + '/list'
             },
-
-            auth: {
-                type: 'bearer'
-            },
-
             primaryKey: 'id',
-
             perPage: 20,
-
             columns: []
         };
     </script>
@@ -58,20 +49,19 @@
                     this.buildColumnsFromConfig();
                     await this.loadData();
                     this.buildTable();
+                    this.injectCreateButton();
                 },
 
                 /* =============================
-                   BUILD COLUMNS FROM CONFIG
+                   COLUMNS FROM CONFIG
                 ============================= */
                 buildColumnsFromConfig() {
                     const fields = window.CONFIG.fields;
 
                     this.config.columns = Object.entries(fields)
-                        .filter(([_, field]) =>
-                            field.field_mode?.includes('index')
-                        )
+                        .filter(([_, field]) => field.field_mode?.includes('index'))
                         .map(([key, field]) => ({
-                            key: key,
+                            key,
                             title: field.name,
                             formatter: field.formatter ?? null,
                             options: field.formatter_options ?? null
@@ -83,11 +73,7 @@
                 ============================= */
                 async loadData() {
                     const token = localStorage.getItem('access_token');
-
-                    if (!token) {
-                        console.warn('No access token found');
-                        return;
-                    }
+                    if (!token) return;
 
                     const response = await fetch(this.config.api.list, {
                         method: 'POST',
@@ -103,7 +89,6 @@
                     });
 
                     const json = await response.json();
-
                     this.items = Array.isArray(json.data) ? json.data : [];
                     this.setTableData();
                 },
@@ -123,15 +108,13 @@
                    TABLE
                 ============================= */
                 buildTable() {
-                    if (this.datatable) {
-                        this.datatable.destroy();
-                    }
+                    if (this.datatable) this.datatable.destroy();
 
                     this.datatable = new simpleDatatables.DataTable('#myTable', {
                         data: {
                             headings: [
                                 ...this.config.columns.map(c => c.title),
-                                'Actions'
+                                'Действия'
                             ],
                             data: this.dataArr
                         },
@@ -168,143 +151,76 @@
                 ============================= */
                 format(col, value) {
                     switch (col.formatter) {
-
                         case 'badge':
-                            return `<span class="badge ${col.options?.[value] ?? 'badge-secondary'}">
-                                ${value}
-                            </span>`;
-
+                            return `<span class="badge ${col.options?.[value] ?? 'badge-secondary'}">${value}</span>`;
                         case 'date':
                             return value ? new Date(value).toLocaleString() : '—';
-
                         case 'truncate':
                             if (!value) return '—';
                             const len = col.options?.length ?? 40;
-                            return `<span title="${value}">
-                                ${value.length > len ? value.slice(0, len) + '…' : value}
-                            </span>`;
-
+                            return `<span title="${value}">${value.length > len ? value.slice(0, len) + '…' : value}</span>`;
                         case 'number':
                             return `<span class="font-semibold">${value}</span>`;
-
                         default:
                             return value ?? '—';
                     }
                 },
 
                 /* =============================
-                   ACTION ICONS
-                ============================= */
-                actionIcons() {
-                    return {
-                        show: `
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path opacity="0.5"
-                                      d="M3.27 15.29C2.42 14.19 2 13.64 2 12
-                                         C2 10.36 2.42 9.81 3.27 8.70
-                                         C4.97 6.50 7.82 4 12 4
-                                         C16.18 4 19.03 6.50 20.73 8.70
-                                         C21.58 9.81 22 10.36 22 12
-                                         C22 13.64 21.58 14.19 20.73 15.29
-                                         C19.03 17.50 16.18 20 12 20
-                                         C7.82 20 4.97 17.50 3.27 15.29Z"
-                                      stroke="currentColor" stroke-width="1.5"/>
-                                <path d="M15 12C15 13.66 13.66 15 12 15
-                                         C10.34 15 9 13.66 9 12
-                                         C9 10.34 10.34 9 12 9
-                                         C13.66 9 15 10.34 15 12Z"
-                                      stroke="currentColor" stroke-width="1.5"/>
-                            </svg>`,
-                        edit: `
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path opacity="0.5"
-                                      d="M22 10.5V12C22 16.71 22 19.07
-                                         20.53 20.53C19.07 22 16.71 22
-                                         12 22C7.29 22 4.93 22
-                                         3.46 20.53C2 19.07 2 16.71
-                                         2 12C2 7.29 2 4.93
-                                         3.46 3.46C4.93 2 7.29 2
-                                         12 2H13.5"
-                                      stroke="currentColor" stroke-width="1.5"/>
-                                <path d="M17.3 2.8L10.7 9.42
-                                         C10.28 9.82 10.08 10.03
-                                         9.91 10.25C9.70 10.51
-                                         9.53 10.80 9.38 11.10
-                                         C9.26 11.35 9.17 11.62
-                                         8.99 12.16L8.04 15.02
-                                         C7.95 15.29 8.02 15.58
-                                         8.22 15.78C8.42 15.98
-                                         8.71 16.05 8.98 15.96
-                                         L11.84 15.01C12.38 14.83
-                                         12.65 14.74 12.90 14.62
-                                         C13.20 14.47 13.49 14.30
-                                         13.75 14.09C13.97 13.92
-                                         14.18 13.72 14.58 13.31
-                                         L21.19 6.70C22.27 5.62
-                                         22.27 3.88 21.19 2.81
-                                         C20.12 1.73 18.38 1.73
-                                         17.30 2.81Z"
-                                      stroke="currentColor" stroke-width="1.5"/>
-                            </svg>`,
-                        delete: `
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path d="M20.5 6H3.5"
-                                      stroke="currentColor" stroke-width="1.5"
-                                      stroke-linecap="round"/>
-                                <path d="M18.83 8.5L18.37 15.40
-                                         C18.20 18.05 18.11 19.38
-                                         17.24 20.19C16.38 21
-                                         15.05 21 12.39 21H11.61
-                                         C8.95 21 7.62 21 6.76
-                                         20.19C5.89 19.38 5.80
-                                         18.05 5.63 15.40L5.17 8.5"
-                                      stroke="currentColor" stroke-width="1.5"
-                                      stroke-linecap="round"/>
-                            </svg>`
-                    };
-                },
-
-                /* =============================
-                   ACTIONS
+                   ACTIONS (ICONLY / VRISTO)
                 ============================= */
                 renderActions(id) {
-                    const icons  = this.actionIcons();
                     const entity = window.CONFIG.common.shortname;
 
                     return `
-                        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 text-xl">
 
-                            <a href="/${entity}/${id}/show"
-                               class="hover:text-primary"
-                               title="show">
-                                ${icons.show}
-                            </a>
+            <a href="/${entity}/${id}/show"
+               class="text-info hover:text-info-dark"
+               title="Просмотр">
+                <i class="uil uil-eye"></i>
+            </a>
 
-                            <a href="/${entity}/${id}/edit"
-                               class="hover:text-primary"
-                               title="edit">
-                                ${icons.edit}
-                            </a>
+            <a href="/${entity}/${id}/edit"
+               class="text-warning hover:text-warning-dark"
+               title="Редактировать">
+                <i class="uil uil-edit"></i>
+            </a>
 
-                            <button class="hover:text-danger"
-                                    title="delete"
-                                    onclick="document.querySelector('[x-data]').__x.$data.deleteRow(${id})">
-                                ${icons.delete}
-                            </button>
+            <button class="text-danger hover:text-danger-dark"
+                title="Удалить"
+                onclick="document.querySelector('[x-data]').__x.$data.deleteRow(${id})">
+                <i class="uil uil-trash-alt"></i>
+            </button>
 
-                        </div>
-                    `;
+        </div>
+    `;
                 },
 
                 deleteRow(id) {
-                    if (!confirm('Delete item #' + id + '?')) return;
+                    if (!confirm('Удалить запись #' + id + '?')) return;
 
                     this.items = this.items.filter(i => i.id !== id);
                     this.setTableData();
                     this.buildTable();
+                    this.injectCreateButton();
+                },
+
+                /* =============================
+                   CREATE BUTTON NEAR SEARCH
+                ============================= */
+                injectCreateButton() {
+                    const top = document.querySelector('.dataTable-top');
+                    if (!top || top.querySelector('.btn-create')) return;
+
+                    const entity = window.CONFIG.common.shortname;
+
+                    const btn = document.createElement('a');
+                    btn.href = `/${entity}/create`;
+                    btn.className = 'btn btn-primary btn-create ml-3';
+                    btn.innerHTML = '<i class="iconly-Light-Plus mr-1"></i> Добавить запись';
+
+                    top.appendChild(btn);
                 }
 
             }));
