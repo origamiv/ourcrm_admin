@@ -116,7 +116,7 @@ return [
             'name' => 'Пароль',
             'field_mode' => 'create,edit',
             'is_filter_need' => false,
-            'control' => 'password',
+            'control' => 'text',
             'formatter' => null,
             'db_type' => 'string',
             'is_lookup' => false,
