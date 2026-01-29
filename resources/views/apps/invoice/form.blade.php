@@ -60,7 +60,7 @@
                             <template x-if="field.is_lookup">
                                 <select
                                     class="form-select w-full"
-                                    x-model="form[field.key]"
+                                    x-model.number="form[field.key]"
                                     :disabled="isShow"
                                 >
                                     <option value="">—</option>
@@ -125,7 +125,7 @@
                 {{-- ACTIONS --}}
                 <div class="flex justify-end gap-3 pt-6">
                     <button type="button"
-                            class="btn btn-outline-danger"
+                            class="btn btn-outline-secondary"
                             @click="cancel">
                         Back
                     </button>
@@ -215,27 +215,21 @@
                     const lookupFields = this.formFields.filter(f => f.is_lookup);
 
                     for (const field of lookupFields) {
-                        try {
-                            const res = await axios.post(
-                                `https://ozgang.ourtest.net${field.lookup_api}/list`,
-                                {
-                                    page: 1,
-                                    perpage: 100
-                                },
-                                {
-                                    headers: {
-                                        'Accept': 'application/json',
-                                        'Authorization': `Bearer ${token}`
-                                    }
+                        const res = await axios.post(
+                            `https://ozgang.ourtest.net${field.lookup_api}/list`,
+                            {
+                                page: 1,
+                                perpage: 100
+                            },
+                            {
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Authorization': `Bearer ${token}`
                                 }
-                            );
+                            }
+                        );
 
-                            this.lookups[field.key] = res.data?.data ?? [];
-
-                        } catch (e) {
-                            console.error('Lookup load error', field.key, e);
-                            this.lookups[field.key] = [];
-                        }
+                        this.lookups[field.key] = res.data?.data ?? [];
                     }
                 },
 
@@ -260,6 +254,10 @@
 
                         const item = res.data?.data ?? {};
 
+                        console.log('FORM OFFERS VALUE:', this.form.offers, typeof this.form.offers);
+
+
+                        // 🔑 ВАЖНО: entity API уже возвращает ID (offers = 6)
                         Object.keys(this.form).forEach(key => {
                             if (item[key] !== undefined) {
                                 this.form[key] = item[key];
