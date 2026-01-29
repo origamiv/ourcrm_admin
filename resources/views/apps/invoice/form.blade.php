@@ -58,23 +58,25 @@
 
                             {{-- LOOKUP --}}
                             <template x-if="field.is_lookup">
-                                <select
-                                    class="form-select w-full"
-                                    x-model.number="form[field.key]"
-                                    :disabled="isShow"
-                                >
-                                    <option value="">—</option>
-
-                                    <template
-                                        x-for="item in lookups[field.key] ?? []"
-                                        :key="item[field.lookup_id]"
+                                <template x-if="lookups[field.key]">
+                                    <select
+                                        class="form-select w-full"
+                                        x-model.number="form[field.key]"
+                                        :disabled="isShow"
                                     >
-                                        <option
-                                            :value="item[field.lookup_id]"
-                                            x-text="item[field.lookup_name]"
-                                        ></option>
-                                    </template>
-                                </select>
+                                        <option value="">—</option>
+
+                                        <template
+                                            x-for="item in lookups[field.key]"
+                                            :key="item[field.lookup_id]"
+                                        >
+                                            <option
+                                                :value="item[field.lookup_id]"
+                                                x-text="item[field.lookup_name]"
+                                            ></option>
+                                        </template>
+                                    </select>
+                                </template>
                             </template>
 
                             {{-- TEXT / NUMBER --}}
@@ -254,10 +256,6 @@
 
                         const item = res.data?.data ?? {};
 
-                        console.log('FORM OFFERS VALUE:', this.form.offers, typeof this.form.offers);
-
-
-                        // 🔑 ВАЖНО: entity API уже возвращает ID (offers = 6)
                         Object.keys(this.form).forEach(key => {
                             if (item[key] !== undefined) {
                                 this.form[key] = item[key];
@@ -295,7 +293,8 @@
                         }
                     });
 
-                    alert('Saved');
+                    // 👉 редирект на список
+                    window.location.href = this.CONFIG.common.page;
                 },
 
                 cancel() {
