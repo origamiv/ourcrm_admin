@@ -100,11 +100,9 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup' => [
-                'entity' => 'clicks',
-                'value'  => 'id',
-                'label'  => 'click_ext_id',
-            ],
+            'lookup_api' => '/api/v1/clicks',
+            'lookup_id' => 'id',
+            'lookup_name' => 'click_id',
         ],
 
         'lead_id' => [
@@ -115,11 +113,9 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup' => [
-                'entity' => 'leads',
-                'value'  => 'id',
-                'label'  => 'id',
-            ],
+            'lookup_api' => '/api/v1/leads',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'campaign_id' => [
@@ -130,11 +126,9 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup' => [
-                'entity' => 'campaigns',
-                'value'  => 'id',
-                'label'  => 'name',
-            ],
+            'lookup_api' => '/api/v1/campaigns',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'advertiser_id' => [
@@ -145,11 +139,9 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup' => [
-                'entity' => 'advertisers',
-                'value'  => 'id',
-                'label'  => 'name',
-            ],
+            'lookup_api' => '/api/v1/advertisers',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'offer_id' => [
@@ -160,11 +152,9 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup' => [
-                'entity' => 'offers',
-                'value'  => 'id',
-                'label'  => 'name',
-            ],
+            'lookup_api' => '/api/v1/offers',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'partner_id' => [
@@ -175,11 +165,9 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup' => [
-                'entity' => 'partners',
-                'value'  => 'id',
-                'label'  => 'name',
-            ],
+            'lookup_api' => '/api/v1/partners',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'product_id' => [
@@ -190,11 +178,9 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup' => [
-                'entity' => 'products',
-                'value'  => 'id',
-                'label'  => 'name',
-            ],
+            'lookup_api' => '/api/v1/products',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'geo_id' => [
@@ -205,11 +191,9 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup' => [
-                'entity' => 'geo',
-                'value'  => 'id',
-                'label'  => 'code',
-            ],
+            'lookup_api' => '/api/v1/geo',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'status' => [

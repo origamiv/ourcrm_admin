@@ -6,6 +6,7 @@
     <script>
         window.CONFIG = @json($config);
 
+        console.log(window.CONFIG.common.api);
         window.TABLE_CONFIG = {
             api: {
                 list:   'https://ozgang.ourtest.net' + window.CONFIG.common.api + '/list',
@@ -15,6 +16,7 @@
             perPage: 20,
             columns: []
         };
+        console.log(window.TABLE_CONFIG);
     </script>
 
     {{-- =====================================================
@@ -173,6 +175,8 @@
                 async loadData() {
                     const token = localStorage.getItem('access_token');
                     if (!token) return;
+
+                    console.log('api2',this.config.api.list);
 
                     const response = await fetch(this.config.api.list, {
                         method: 'POST',

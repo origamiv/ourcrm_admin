@@ -124,11 +124,9 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup' => [
-                'entity' => 'campaigns',
-                'value'  => 'id',
-                'label'  => 'name',
-            ],
+            'lookup_api' => '/api/v1/campaigns',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'state' => [

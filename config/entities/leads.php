@@ -33,6 +33,9 @@ return [
             'control' => 'number',
             'db_type' => 'integer',
             'is_lookup' => true,
+            'lookup_api' => '/api/v1/clicks',
+            'lookup_id' => 'id',
+            'lookup_name' => 'click_id',
         ],
         'status_id' => [
             'name' => 'Статус',
@@ -40,6 +43,9 @@ return [
             'control' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
+            'lookup_api' => '/api/v1/lead-statuses',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
         'created_at' => [
             'name' => 'Создан',

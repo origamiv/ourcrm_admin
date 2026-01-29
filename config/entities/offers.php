@@ -110,6 +110,9 @@ return [
             'formatter' => null,
             'db_type' => 'integer',
             'is_lookup' => true,
+            'lookup_api' => '/api/v1/advertisers',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'partner_id' => [
@@ -120,6 +123,9 @@ return [
             'formatter' => null,
             'db_type' => 'integer',
             'is_lookup' => true,
+            'lookup_api' => '/api/v1/partners',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'product_id' => [
@@ -130,6 +136,9 @@ return [
             'formatter' => null,
             'db_type' => 'integer',
             'is_lookup' => true,
+            'lookup_api' => '/api/v1/products',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'geo_id' => [
@@ -140,6 +149,9 @@ return [
             'formatter' => null,
             'db_type' => 'integer',
             'is_lookup' => true,
+            'lookup_api' => '/api/v1/geo',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'state' => [

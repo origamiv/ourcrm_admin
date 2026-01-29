@@ -100,11 +100,9 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup' => [
-                'entity' => 'campaigns',
-                'value'  => 'id',
-                'label'  => 'name',
-            ],
+            'lookup_api' => '/api/v1/campaigns',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'stream_id' => [
@@ -115,11 +113,9 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup' => [
-                'entity' => 'streams',
-                'value'  => 'id',
-                'label'  => 'name',
-            ],
+            'lookup_api' => '/api/v1/streams',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'offer_id' => [
@@ -130,11 +126,9 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup' => [
-                'entity' => 'offers',
-                'value'  => 'id',
-                'label'  => 'name',
-            ],
+            'lookup_api' => '/api/v1/offers',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'geo_id' => [
@@ -145,11 +139,9 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup' => [
-                'entity' => 'geo',
-                'value'  => 'id',
-                'label'  => 'code',
-            ],
+            'lookup_api' => '/api/v1/geo',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'ip' => [

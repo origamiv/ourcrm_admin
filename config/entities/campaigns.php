@@ -6,53 +6,23 @@ return [
     |--------------------------------------------------------------------------
     | Common — описание сущности / модуля / пункта меню
     |--------------------------------------------------------------------------
-    | Это отражение записи из таблицы menus
     */
     'common' => [
 
-        // ID записи в menus
         'id' => 4002,
-
-        // Название в меню
         'name' => 'Кампании',
-
-        // Уникальный ключ модуля
         'shortname' => 'campaigns',
-
-        // Родительский раздел
         'parent_id' => 0,
-
-        // Корневая сущность
         'is_root' => 1,
-
-        // Создавать API
         'is_api' => 2,
-
-        // Уровень вложенности
         'level' => 1,
-
-        // Web-страница
         'page' => '/campaigns',
-
-        // API endpoint
         'api' => '/api/v1/campaigns',
-
-        // Eloquent модель
         'model' => 'App\\Models\\Campaign',
-
-        // Иконка меню
         'icon' => 'uil uil-bullhorn',
-
-        // ACL / permissions resource
         'resource' => 'campaigns',
-
-        // Активен
         'status' => 1,
-
-        // Порядок в меню
         'nom' => 11,
-
-        // Не справочник
         'is_list' => 2,
     ],
 
@@ -135,6 +105,9 @@ return [
             'formatter' => null,
             'db_type' => 'integer',
             'is_lookup' => true,
+            'lookup_api' => '/api/v1/groups',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'domain_id' => [
@@ -145,6 +118,9 @@ return [
             'formatter' => null,
             'db_type' => 'integer',
             'is_lookup' => true,
+            'lookup_api' => '/api/v1/domains',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'traffic_source_id' => [
