@@ -30,8 +30,36 @@ class CrudController extends BaseController
 
         $config = config('entities.' . $entity);
 
-        return view('apps.invoice.show', [
+        return view('apps.invoice.form', [
             'config' => $config,
+            'id' => $id,
+            'mode' => 'show'
+        ]);
+    }
+
+    public function edit($id, Request $request)
+    {
+        $paths  = explode('/', $request->getRequestUri());
+        $entity = $paths[1];
+
+        $config = config('entities.' . $entity);
+
+        return view('apps.invoice.form', [
+            'config' => $config,
+            'id' => $id,
+            'mode' => 'edit'
+        ]);
+    }
+    public function create(Request $request)
+    {
+        $paths  = explode('/', $request->getRequestUri());
+        $entity = $paths[1];
+
+        $config = config('entities.' . $entity);
+
+        return view('apps.invoice.form', [
+            'config' => $config,
+            'mode' => 'create'
         ]);
     }
 

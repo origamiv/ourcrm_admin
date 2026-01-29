@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Route;
 
 foreach (config('entities') as $entity => $items) {
     Route::get('/' . $entity, [CrudController::class, 'index']);
-    Route::get('/' . $entity . '/show/{id}', [CrudController::class, 'show']);
+    Route::get('/' . $entity . '/{id}/show', [CrudController::class, 'show']);
+    Route::get('/' . $entity . '/{id}/edit', [CrudController::class, 'edit']);
+    Route::get('/' . $entity . '/create', [CrudController::class, 'create']);
 };
 
 
