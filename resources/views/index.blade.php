@@ -1,5 +1,5 @@
 <x-layout.default>
-    <script defer src="/assets/js/apexcharts.js"></script>
+    <script src="/assets/js/apexcharts.js"></script>
     <div x-data="sales">
         <ul class="flex space-x-2 rtl:space-x-reverse">
             <li>
@@ -12,7 +12,57 @@
 
         <div class="pt-5">
             <div class="grid xl:grid-cols-3 gap-6 mb-6">
-                @include('components.graph.graphic', ['xx'=>23456])
+                @include('components.graph.graphic', [
+  'title' => 'Clicks',
+  'label' => 'Total clicks',
+  'xx' => 2299,
+
+  'periods' => ['Hourly', 'Daily', 'Weekly'],
+  'defaultPeriod' => 'Daily',
+
+  'chartId' => 'clicks_mix',
+
+  // наборы данных по периодам
+  'datasets' => [
+    'Hourly' => [
+      'categories' => [
+        '2026-02-01T15:00:00+02:00','2026-02-01T16:00:00+02:00','2026-02-01T17:00:00+02:00',
+        '2026-02-01T18:00:00+02:00','2026-02-01T19:00:00+02:00','2026-02-01T20:00:00+02:00',
+        '2026-02-01T21:00:00+02:00','2026-02-01T22:00:00+02:00','2026-02-01T23:00:00+02:00',
+        '2026-02-02T00:00:00+02:00','2026-02-02T01:00:00+02:00','2026-02-02T02:00:00+02:00',
+      ],
+      'series' => [
+        ['name' => 'Clicks', 'data' => [12,18,9,21,16,14,17,15,18,19,20,15]],
+      ],
+    ],
+
+    'Daily' => [
+      'categories' => [
+        '2026-01-20T00:00:00+02:00','2026-01-21T00:00:00+02:00','2026-01-22T00:00:00+02:00',
+        '2026-01-23T00:00:00+02:00','2026-01-24T00:00:00+02:00','2026-01-25T00:00:00+02:00',
+        '2026-01-26T00:00:00+02:00','2026-01-27T00:00:00+02:00','2026-01-28T00:00:00+02:00',
+        '2026-01-29T00:00:00+02:00','2026-01-30T00:00:00+02:00','2026-01-31T00:00:00+02:00',
+        '2026-02-01T00:00:00+02:00','2026-02-02T00:00:00+02:00',
+      ],
+      'series' => [
+        ['name' => 'Clicks', 'data' => [120,134,98,160,155,142,170,165,180,175,190,210,205,195]],
+      ],
+    ],
+
+    'Weekly' => [
+      'categories' => [
+        '2025-12-15T00:00:00+02:00','2025-12-22T00:00:00+02:00','2025-12-29T00:00:00+02:00',
+        '2026-01-05T00:00:00+02:00','2026-01-12T00:00:00+02:00','2026-01-19T00:00:00+02:00',
+        '2026-01-26T00:00:00+02:00','2026-02-02T00:00:00+02:00',
+      ],
+      'series' => [
+        ['name' => 'Clicks', 'data' => [620, 710, 680, 740, 800, 760, 820, 790]],
+      ],
+    ],
+  ],
+])
+
+
                 @include('components.graph.pie')
 
 
@@ -22,431 +72,107 @@
     </div>
     <script>
         document.addEventListener("alpine:init", () => {
-            Alpine.data("sales", () => ({
-                init() {
-                    isDark = this.$store.app.theme === "dark" || this.$store.app.isDarkMode ? true :
-                        false;
-                    isRtl = this.$store.app.rtlClass === "rtl" ? true : false;
+            Alpine.data("sales", () => {
+                // чтобы options видели актуальные значения
+                let isDark = false;
+                let isRtl = false;
 
-                    const revenueChart = null;
-                    const salesByCategory = null;
-                    const dailySales = null;
-                    const totalOrders = null;
+                return {
+                    salesByCategory: null,
 
-                    // revenue
-                    setTimeout(() => {
-                        this.revenueChart = new ApexCharts(this.$refs.revenueChart, this
-                            .revenueChartOptions)
-                        this.$refs.revenueChart.innerHTML = "";
-                        this.revenueChart.render()
-
-                        // sales by category
-                        this.salesByCategory = new ApexCharts(this.$refs.salesByCategory, this
-                            .salesByCategoryOptions)
-                        this.$refs.salesByCategory.innerHTML = "";
-                        this.salesByCategory.render()
-
-                        // daily sales
-                        this.dailySales = new ApexCharts(this.$refs.dailySales, this
-                            .dailySalesOptions)
-                        this.$refs.dailySales.innerHTML = "";
-                        this.dailySales.render()
-
-                        // total orders
-                        this.totalOrders = new ApexCharts(this.$refs.totalOrders, this
-                            .totalOrdersOptions)
-                        this.$refs.totalOrders.innerHTML = "";
-                        this.totalOrders.render()
-                    }, 300);
-
-                    this.$watch('$store.app.theme', () => {
-                        isDark = this.$store.app.theme === "dark" || this.$store.app
-                            .isDarkMode ? true : false;
-
-                        this.revenueChart.updateOptions(this.revenueChartOptions);
-                        this.salesByCategory.updateOptions(this.salesByCategoryOptions);
-                        this.dailySales.updateOptions(this.dailySalesOptions);
-                        this.totalOrders.updateOptions(this.totalOrdersOptions);
-                    });
-
-                    this.$watch('$store.app.rtlClass', () => {
+                    init() {
+                        isDark = this.$store.app.theme === "dark" || this.$store.app.isDarkMode ? true : false;
                         isRtl = this.$store.app.rtlClass === "rtl" ? true : false;
-                        this.revenueChart.updateOptions(this.revenueChartOptions);
-                    });
 
-                },
+                        // Инициализируем ТОЛЬКО pie, потому что на странице реально есть только x-ref="salesByCategory"
+                        setTimeout(() => {
+                            if (!window.ApexCharts) return;                 // apex не загрузился
+                            if (!this.$refs.salesByCategory) return;        // ref отсутствует
 
-                // revenue
-                get revenueChartOptions() {
-                    return {
-                        series: [{
-                                name: 'Income',
-                                data: [16800, 16800, 15500, 17800, 15500, 17000, 19000, 16000,
-                                    15000, 17000, 14000, 17000
-                                ]
-                            },
-                            {
-                                name: 'Expenses',
-                                data: [16500, 17500, 16200, 17300, 16000, 19500, 16000, 17000,
-                                    16000, 19000, 18000, 19000
-                                ]
-                            }
-                        ],
-                        chart: {
-                            height: 325,
-                            type: "area",
-                            fontFamily: 'Nunito, sans-serif',
-                            zoom: {
-                                enabled: false
-                            },
-                            toolbar: {
-                                show: false
-                            },
-                        },
-                        dataLabels: {
-                            enabled: false
-                        },
-                        stroke: {
-                            show: true,
-                            curve: 'smooth',
-                            width: 2,
-                            lineCap: 'square'
-                        },
-                        dropShadow: {
-                            enabled: true,
-                            opacity: 0.2,
-                            blur: 10,
-                            left: -7,
-                            top: 22
-                        },
-                        colors: isDark ? ['#2196f3', '#e7515a'] : ['#1b55e2', '#e7515a'],
-                        markers: {
-                            discrete: [{
-                                    seriesIndex: 0,
-                                    dataPointIndex: 6,
-                                    fillColor: '#1b55e2',
-                                    strokeColor: 'transparent',
-                                    size: 7
-                                },
-                                {
-                                    seriesIndex: 1,
-                                    dataPointIndex: 5,
-                                    fillColor: '#e7515a',
-                                    strokeColor: 'transparent',
-                                    size: 7
-                                },
-                            ],
-                        },
-                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
-                            'Oct', 'Nov', 'Dec'
-                        ],
-                        xaxis: {
-                            axisBorder: {
-                                show: false
-                            },
-                            axisTicks: {
-                                show: false
-                            },
-                            crosshairs: {
-                                show: true
-                            },
-                            labels: {
-                                offsetX: isRtl ? 2 : 0,
-                                offsetY: 5,
-                                style: {
-                                    fontSize: '12px',
-                                    cssClass: 'apexcharts-xaxis-title'
-                                }
-                            },
-                        },
-                        yaxis: {
-                            tickAmount: 7,
-                            labels: {
-                                formatter: (value) => {
-                                    return value / 1000 + 'K';
-                                },
-                                offsetX: isRtl ? -30 : -10,
-                                offsetY: 0,
-                                style: {
-                                    fontSize: '12px',
-                                    cssClass: 'apexcharts-yaxis-title'
-                                },
-                            },
-                            opposite: isRtl ? true : false,
-                        },
-                        grid: {
-                            borderColor: isDark ? '#191e3a' : '#e0e6ed',
-                            strokeDashArray: 5,
-                            xaxis: {
-                                lines: {
-                                    show: true
-                                }
-                            },
-                            yaxis: {
-                                lines: {
-                                    show: false
-                                }
-                            },
-                            padding: {
-                                top: 0,
-                                right: 0,
-                                bottom: 0,
-                                left: 0
-                            }
-                        },
-                        legend: {
-                            position: 'top',
-                            horizontalAlign: 'right',
-                            fontSize: '16px',
-                            markers: {
-                                width: 10,
-                                height: 10,
-                                offsetX: -2,
-                            },
-                            itemMargin: {
-                                horizontal: 10,
-                                vertical: 5
-                            },
-                        },
-                        tooltip: {
-                            marker: {
-                                show: true
-                            },
-                            x: {
-                                show: false
-                            }
-                        },
-                        fill: {
-                            type: 'gradient',
-                            gradient: {
-                                shadeIntensity: 1,
-                                inverseColors: !1,
-                                opacityFrom: isDark ? 0.19 : 0.28,
-                                opacityTo: 0.05,
-                                stops: isDark ? [100, 100] : [45, 100],
-                            },
-                        },
-                    }
-                },
+                            // очистим loader
+                            this.$refs.salesByCategory.innerHTML = "";
 
-                // sales by category
-                get salesByCategoryOptions() {
-                    return {
-                        series: [985, 737, 270],
-                        chart: {
-                            type: 'donut',
-                            height: 460,
-                            fontFamily: 'Nunito, sans-serif',
-                        },
-                        dataLabels: {
-                            enabled: false
-                        },
-                        stroke: {
-                            show: true,
-                            width: 25,
-                            colors: isDark ? '#0e1726' : '#fff'
-                        },
-                        colors: isDark ? ['#5c1ac3', '#e2a03f', '#e7515a', '#e2a03f'] : ['#e2a03f',
-                            '#5c1ac3', '#e7515a'
-                        ],
-                        legend: {
-                            position: 'bottom',
-                            horizontalAlign: 'center',
-                            fontSize: '14px',
-                            markers: {
-                                width: 10,
-                                height: 10,
-                                offsetX: -2,
+                            // options гарантированно объект
+                            const opts = this.salesByCategoryOptions;
+                            this.salesByCategory = new ApexCharts(this.$refs.salesByCategory, opts);
+                            this.salesByCategory.render();
+                        }, 300);
+
+                        this.$watch('$store.app.theme', () => {
+                            isDark = this.$store.app.theme === "dark" || this.$store.app.isDarkMode ? true : false;
+                            if (this.salesByCategory) this.salesByCategory.updateOptions(this.salesByCategoryOptions);
+                        });
+
+                        this.$watch('$store.app.rtlClass', () => {
+                            isRtl = this.$store.app.rtlClass === "rtl" ? true : false;
+                            // donut обычно не зависит от rtl, но оставим на всякий
+                            if (this.salesByCategory) this.salesByCategory.updateOptions(this.salesByCategoryOptions);
+                        });
+                    },
+
+                    // pie options — у тебя почти готово, просто возвращаем объект
+                    get salesByCategoryOptions() {
+                        return {
+                            series: [985, 737, 270],
+                            chart: {
+                                type: 'donut',
+                                height: 353, // под твой min-h
+                                fontFamily: 'Nunito, sans-serif',
                             },
-                            height: 50,
-                            offsetY: 20,
-                        },
-                        plotOptions: {
-                            pie: {
-                                donut: {
-                                    size: '65%',
-                                    background: 'transparent',
-                                    labels: {
-                                        show: true,
-                                        name: {
+                            dataLabels: { enabled: false },
+                            stroke: {
+                                show: true,
+                                width: 25,
+                                colors: isDark ? '#0e1726' : '#fff'
+                            },
+                            colors: isDark
+                                ? ['#5c1ac3', '#e2a03f', '#e7515a', '#e2a03f']
+                                : ['#e2a03f', '#5c1ac3', '#e7515a'],
+                            legend: {
+                                position: 'bottom',
+                                horizontalAlign: 'center',
+                                fontSize: '14px',
+                                markers: { width: 10, height: 10, offsetX: -2 },
+                                height: 50,
+                                offsetY: 20,
+                            },
+                            plotOptions: {
+                                pie: {
+                                    donut: {
+                                        size: '65%',
+                                        background: 'transparent',
+                                        labels: {
                                             show: true,
-                                            fontSize: '29px',
-                                            offsetY: -10
-                                        },
-                                        value: {
-                                            show: true,
-                                            fontSize: '26px',
-                                            color: isDark ? '#bfc9d4' : undefined,
-                                            offsetY: 16,
-                                            formatter: (val) => {
-                                                return val;
+                                            name: { show: true, fontSize: '20px', offsetY: -10 },
+                                            value: {
+                                                show: true,
+                                                fontSize: '18px',
+                                                color: isDark ? '#bfc9d4' : undefined,
+                                                offsetY: 10,
+                                                formatter: (val) => val,
                                             },
-                                        },
-                                        total: {
-                                            show: true,
-                                            label: 'Total',
-                                            color: '#888ea8',
-                                            fontSize: '29px',
-                                            formatter: (w) => {
-                                                return w.globals.seriesTotals.reduce(function(a,
-                                                    b) {
-                                                    return a + b;
-                                                }, 0);
+                                            total: {
+                                                show: true,
+                                                label: 'Total',
+                                                color: '#888ea8',
+                                                fontSize: '18px',
+                                                formatter: (w) => w.globals.seriesTotals.reduce((a, b) => a + b, 0),
                                             },
                                         },
                                     },
                                 },
                             },
-                        },
-                        labels: ['Apparel', 'Sports', 'Others'],
-                        states: {
-                            hover: {
-                                filter: {
-                                    type: 'none',
-                                    value: 0.15,
-                                }
+                            labels: ['Apparel', 'Sports', 'Others'],
+                            states: {
+                                hover: { filter: { type: 'none', value: 0.15 } },
+                                active: { filter: { type: 'none', value: 0.15 } },
                             },
-                            active: {
-                                filter: {
-                                    type: 'none',
-                                    value: 0.15,
-                                }
-                            },
-                        }
-                    }
-                },
-
-                // daily sales
-                get dailySalesOptions() {
-                    return {
-                        series: [{
-                                name: 'Sales',
-                                data: [44, 55, 41, 67, 22, 43, 21]
-                            },
-                            {
-                                name: 'Last Week',
-                                data: [13, 23, 20, 8, 13, 27, 33]
-                            },
-                        ],
-                        chart: {
-                            height: 160,
-                            type: 'bar',
-                            fontFamily: 'Nunito, sans-serif',
-                            toolbar: {
-                                show: false
-                            },
-                            stacked: true,
-                            stackType: '100%'
-                        },
-                        dataLabels: {
-                            enabled: false
-                        },
-                        stroke: {
-                            show: true,
-                            width: 1
-                        },
-                        colors: ['#e2a03f', '#e0e6ed'],
-                        responsive: [{
-                            breakpoint: 480,
-                            options: {
-                                legend: {
-                                    position: 'bottom',
-                                    offsetX: -10,
-                                    offsetY: 0
-                                }
-                            }
-                        }],
-                        xaxis: {
-                            labels: {
-                                show: false
-                            },
-                            categories: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat']
-                        },
-                        yaxis: {
-                            show: false
-                        },
-                        fill: {
-                            opacity: 1
-                        },
-                        plotOptions: {
-                            bar: {
-                                horizontal: false,
-                                columnWidth: '25%'
-                            }
-                        },
-                        legend: {
-                            show: false
-                        },
-                        grid: {
-                            show: false,
-                            xaxis: {
-                                lines: {
-                                    show: false
-                                }
-                            },
-                            padding: {
-                                top: 10,
-                                right: -20,
-                                bottom: -20,
-                                left: -20
-                            },
-                        },
-                    }
-                },
-
-                // total orders
-                get totalOrdersOptions() {
-                    return {
-                        series: [{
-                            name: 'Sales',
-                            data: [28, 40, 36, 52, 38, 60, 38, 52, 36, 40]
-                        }],
-                        chart: {
-                            height: 290,
-                            type: "area",
-                            fontFamily: 'Nunito, sans-serif',
-                            sparkline: {
-                                enabled: true
-                            }
-                        },
-                        stroke: {
-                            curve: 'smooth',
-                            width: 2
-                        },
-                        colors: isDark ? ['#00ab55'] : ['#00ab55'],
-                        labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
-                        yaxis: {
-                            min: 0,
-                            show: false
-                        },
-                        grid: {
-                            padding: {
-                                top: 125,
-                                right: 0,
-                                bottom: 0,
-                                left: 0
-                            }
-                        },
-                        fill: {
-                            opacity: 1,
-                            type: 'gradient',
-                            gradient: {
-                                type: 'vertical',
-                                shadeIntensity: 1,
-                                inverseColors: !1,
-                                opacityFrom: 0.3,
-                                opacityTo: 0.05,
-                                stops: [100, 100],
-                            },
-                        },
-                        tooltip: {
-                            x: {
-                                show: false
-                            },
-                        },
-                    }
-                }
-            }));
+                        };
+                    },
+                };
+            });
         });
     </script>
+
+
 </x-layout.default>
