@@ -5,35 +5,34 @@
     $label      = $label ?? 'Total Profit';
     $xx         = $xx ?? 0;
 
-    $periods    = $periods ?? ['Weekly', 'Monthly', 'Yearly'];
     $chartId    = $chartId ?? ('chart_' . uniqid());
 
+    // API
     $apiUrl     = $apiUrl ?? null;
     $apiPayload = $apiPayload ?? null;
 
-    $series     = $series ?? [];
-    $categories = $categories ?? [];
+    // localStorage token key
+    $tokenKey   = $tokenKey ?? 'access_token';
 
-    // имя ключа токена в localStorage (по умолчанию как часто делают)
-    // если у тебя другой ключ — передай его при include: 'tokenKey' => '...'
-    $tokenKey   = $tokenKey ?? 'token';
+    // UI
+    $periodLabels  = $periodLabels ?? null;     // ['hourly'=>'Hourly','daily'=>'Daily','weekly'=>'Weekly']
+    $defaultPeriod = $defaultPeriod ?? null;    // 'daily'
 @endphp
 
 <div
     class="panel h-full xl:col-span-1"
     x-data="graphWidget({
         chartId: @js($chartId),
-        periods: @js($periods),
 
         apiUrl: @js($apiUrl),
         apiPayload: @js($apiPayload),
-
         tokenKey: @js($tokenKey),
 
-        series: @js($series),
-        categories: @js($categories),
+        periodLabels: @js($periodLabels),
+        defaultPeriod: @js($defaultPeriod),
     })"
     x-init="init()"
+    @graph-period.window="setPeriod($event.detail.period)"
 >
     <div class="flex items-center dark:text-white-light mb-5">
         <h5 class="font-semibold text-lg">{{ $title }}</h5>
@@ -49,11 +48,14 @@
             </a>
 
             <ul x-cloak x-show="open" x-transition x-transition.duration.300ms class="ltr:right-0 rtl:left-0">
-                @foreach($periods as $p)
+                <template x-for="p in periods" :key="p">
                     <li>
-                        <a href="javascript:;" @click="toggle; $root.reload(@js($p))">{{ $p }}</a>
+                        <a href="javascript:;"
+                           @click="toggle; $dispatch('graph-period', { period: p })">
+                            <span x-text="labelForPeriod(p)"></span>
+                        </a>
                     </li>
-                @endforeach
+                </template>
             </ul>
         </div>
     </div>
@@ -75,7 +77,7 @@
 
 <script>
     document.addEventListener('alpine:init', () => {
-        // dropdown: один раз
+        // dropdown — один раз
         if (!Alpine._x_graph_dropdown_defined) {
             Alpine._x_graph_dropdown_defined = true;
             Alpine.data('dropdown', () => ({
@@ -84,22 +86,33 @@
             }));
         }
 
-        // graphWidget: один раз
+        // graphWidget — один раз
         if (!window.graphWidget) {
-            window.graphWidget = ({ chartId, periods, apiUrl, apiPayload, tokenKey, series, categories }) => ({
+            window.graphWidget = ({ chartId, apiUrl, apiPayload, tokenKey, periodLabels, defaultPeriod }) => ({
                 chartId,
-                periods,
                 apiUrl,
                 apiPayload,
                 tokenKey,
+                periodLabels,
+                defaultPeriod,
 
-                series: series || [],
-                categories: categories || [],
+                // from API
+                periods: [],
+                datasets: {},
 
-                period: (periods && periods.length) ? periods[0] : 'Monthly',
+                // current dataset
+                period: null,
+                categories: [],
+                series: [],
 
                 chart: null,
                 errorText: '',
+
+                labelForPeriod(p) {
+                    if (this.periodLabels && this.periodLabels[p]) return this.periodLabels[p];
+                    const s = (p || '').toString();
+                    return s ? (s.charAt(0).toUpperCase() + s.slice(1)) : '';
+                },
 
                 ensureApexLoaded(tries = 0) {
                     if (window.ApexCharts) return true;
@@ -110,10 +123,8 @@
 
                 getBearerToken() {
                     try {
-                        const raw = localStorage.getItem(this.tokenKey || 'token');
+                        const raw = localStorage.getItem(this.tokenKey || 'access_token');
                         if (!raw) return null;
-
-                        // поддержка формата: "Bearer xxx" или просто "xxx"
                         return raw.startsWith('Bearer ') ? raw.slice(7) : raw;
                     } catch (e) {
                         return null;
@@ -130,20 +141,17 @@
                 async requestJson(url, payload) {
                     const headers = this.buildHeaders();
 
-                    // 1) если есть axios — используем его
                     if (window.axios) {
                         const resp = await window.axios.post(url, payload || {}, { headers });
                         return resp.data;
                     }
 
-                    // 2) иначе — fetch (полностью рабочая замена axios)
                     const resp = await fetch(url, {
                         method: 'POST',
                         headers,
                         body: JSON.stringify(payload || {}),
                     });
 
-                    // если сервер вернул не-2xx
                     if (!resp.ok) {
                         let text = '';
                         try { text = await resp.text(); } catch(e) {}
@@ -151,6 +159,51 @@
                     }
 
                     return await resp.json();
+                },
+
+                // тип оси X в зависимости от периода
+                xAxisTypeForPeriod(periodKey) {
+                    // weekly приходит "12.01-18.01" => это НЕ datetime
+                    if (periodKey === 'weekly') return 'category';
+                    return 'datetime'; // hourly, daily
+                },
+
+                tooltipFormatForPeriod(periodKey) {
+                    if (periodKey === 'hourly') return 'dd MMM HH:mm';
+                    if (periodKey === 'daily') return 'dd MMM yyyy';
+                    // weekly как категория — tooltip format для x не нужен
+                    return undefined;
+                },
+
+                normalizeCategories(periodKey, cats) {
+                    // weekly: оставляем как есть
+                    if (periodKey === 'weekly') return (cats || []).map(v => String(v));
+
+                    // hourly: "YYYY-MM-DD HH:mm" -> "YYYY-MM-DDTHH:mm:00"
+                    // daily:  "YYYY-MM-DD" -> "YYYY-MM-DDT00:00:00"
+                    return (cats || []).map(v => {
+                        const s = String(v);
+
+                        if (periodKey === 'hourly') {
+                            return s.includes(' ') ? (s.replace(' ', 'T') + ':00') : s;
+                        }
+
+                        if (periodKey === 'daily' && s.length === 10) {
+                            return s + 'T00:00:00';
+                        }
+
+                        return s;
+                    });
+                },
+
+                applyDataset(periodKey) {
+                    const ds = (this.datasets && this.datasets[periodKey]) ? this.datasets[periodKey] : null;
+                    if (!ds) return false;
+
+                    this.period = periodKey;
+                    this.categories = ds.categories || [];
+                    this.series = ds.series || [];
+                    return true;
                 },
 
                 async fetchData() {
@@ -167,8 +220,16 @@
                         }
 
                         const data = payload.data || {};
-                        this.categories = data.categories || [];
-                        this.series = data.series || [];
+
+                        this.periods = Array.isArray(data.periods) ? data.periods : [];
+                        this.datasets = (data.datasets && typeof data.datasets === 'object') ? data.datasets : {};
+
+                        const first = this.periods[0] || null;
+                        const wanted = this.defaultPeriod && this.periods.includes(this.defaultPeriod)
+                            ? this.defaultPeriod
+                            : first;
+
+                        if (wanted) this.applyDataset(wanted);
 
                     } catch (e) {
                         this.errorText = e?.message || 'Request failed';
@@ -199,17 +260,21 @@
                         return;
                     }
 
-                    const xCats = (this.categories || []).map(d =>
-                        (typeof d === 'string' && d.length === 10) ? `${d}T00:00:00` : d
-                    );
+                    const xType = this.xAxisTypeForPeriod(this.period);
+                    const xCats = this.normalizeCategories(this.period, this.categories);
+
+                    const tooltipFmt = this.tooltipFormatForPeriod(this.period);
 
                     const options = {
                         chart: { type: 'line', height: 325, toolbar: { show: false } },
                         series: this.series,
-                        xaxis: { type: 'datetime', categories: xCats },
+                        xaxis: {
+                            type: xType,
+                            categories: xCats,
+                        },
                         stroke: { curve: 'smooth', width: 2 },
                         dataLabels: { enabled: false },
-                        tooltip: { x: { format: 'dd MMM yyyy' } },
+                        tooltip: tooltipFmt ? { x: { format: tooltipFmt } } : {},
                     };
 
                     if (this.chart) {
@@ -234,24 +299,11 @@
                     this.renderChart();
                 },
 
-                // reload по клику на пункт меню (пока просто перезагружает те же данные)
-                async reload(p) {
-                    this.period = p;
+                async setPeriod(p) {
+                    if (!this.applyDataset(p)) return;
 
-                    // Если API начнёт поддерживать период — добавишь, например:
-                    // this.apiPayload = { ...(this.apiPayload || {}), period: p };
-
-                    await this.fetchData();
-
-                    if (this.chart) {
-                        const xCats = (this.categories || []).map(d =>
-                            (typeof d === 'string' && d.length === 10) ? `${d}T00:00:00` : d
-                        );
-                        this.chart.updateOptions({ xaxis: { categories: xCats } });
-                        this.chart.updateSeries(this.series || []);
-                    } else {
-                        this.renderChart();
-                    }
+                    // для смены datetime<->category гарантированно пересоздаём
+                    this.renderChart();
                 },
             });
         }
