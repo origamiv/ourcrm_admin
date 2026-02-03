@@ -1,39 +1,39 @@
 {{-- resources/views/components/graph/graphic.blade.php --}}
 
 @php
-    // ===== defaults =====
     $title      = $title ?? 'Revenue';
     $label      = $label ?? 'Total Profit';
     $xx         = $xx ?? 0;
 
     $periods    = $periods ?? ['Weekly', 'Monthly', 'Yearly'];
-
-    // chart meta
     $chartId    = $chartId ?? ('chart_' . uniqid());
 
-    // chart data (fallback if datasets not used)
+    $apiUrl     = $apiUrl ?? null;
+    $apiPayload = $apiPayload ?? null;
+
     $series     = $series ?? [];
     $categories = $categories ?? [];
 
-    // datasets per period
-    $datasets = $datasets ?? [];
-
-    // default selected period
-    $defaultPeriod = $defaultPeriod ?? null;
+    // имя ключа токена в localStorage (по умолчанию как часто делают)
+    // если у тебя другой ключ — передай его при include: 'tokenKey' => '...'
+    $tokenKey   = $tokenKey ?? 'token';
 @endphp
 
 <div
     class="panel h-full xl:col-span-1"
     x-data="graphWidget({
         chartId: @js($chartId),
+        periods: @js($periods),
+
+        apiUrl: @js($apiUrl),
+        apiPayload: @js($apiPayload),
+
+        tokenKey: @js($tokenKey),
+
         series: @js($series),
         categories: @js($categories),
-        periods: @js($periods),
-        datasets: @js($datasets),
-        defaultPeriod: @js($defaultPeriod),
     })"
     x-init="init()"
-    @graph-period="setPeriod($event.detail.period)"
 >
     <div class="flex items-center dark:text-white-light mb-5">
         <h5 class="font-semibold text-lg">{{ $title }}</h5>
@@ -51,10 +51,7 @@
             <ul x-cloak x-show="open" x-transition x-transition.duration.300ms class="ltr:right-0 rtl:left-0">
                 @foreach($periods as $p)
                     <li>
-                        <a href="javascript:;"
-                           @click="toggle; $dispatch('graph-period', { period: @js($p) })">
-                            {{ $p }}
-                        </a>
+                        <a href="javascript:;" @click="toggle; $root.reload(@js($p))">{{ $p }}</a>
                     </li>
                 @endforeach
             </ul>
@@ -78,7 +75,7 @@
 
 <script>
     document.addEventListener('alpine:init', () => {
-        // dropdown: объявляем один раз
+        // dropdown: один раз
         if (!Alpine._x_graph_dropdown_defined) {
             Alpine._x_graph_dropdown_defined = true;
             Alpine.data('dropdown', () => ({
@@ -87,55 +84,112 @@
             }));
         }
 
-        // graphWidget: объявляем один раз
+        // graphWidget: один раз
         if (!window.graphWidget) {
-            window.graphWidget = ({ chartId, series, categories, periods, datasets, defaultPeriod }) => ({
+            window.graphWidget = ({ chartId, periods, apiUrl, apiPayload, tokenKey, series, categories }) => ({
                 chartId,
-                series,
-                categories,
                 periods,
-                datasets,
-                defaultPeriod,
+                apiUrl,
+                apiPayload,
+                tokenKey,
 
-                period: (defaultPeriod && (periods || []).includes(defaultPeriod))
-                    ? defaultPeriod
-                    : ((periods && periods.length) ? periods[0] : 'Monthly'),
+                series: series || [],
+                categories: categories || [],
+
+                period: (periods && periods.length) ? periods[0] : 'Monthly',
 
                 chart: null,
-
-                applyDataset(period) {
-                    const ds = (this.datasets && this.datasets[period]) ? this.datasets[period] : null;
-                    if (!ds) return false;
-
-                    this.categories = ds.categories || [];
-                    this.series = ds.series || [];
-                    return true;
-                },
+                errorText: '',
 
                 ensureApexLoaded(tries = 0) {
                     if (window.ApexCharts) return true;
-                    if (tries >= 50) return false; // ~5 сек (50 * 100ms)
+                    if (tries >= 80) return false;
                     setTimeout(() => this.init(tries + 1), 100);
                     return false;
                 },
 
-                init(tries = 0) {
+                getBearerToken() {
+                    try {
+                        const raw = localStorage.getItem(this.tokenKey || 'token');
+                        if (!raw) return null;
+
+                        // поддержка формата: "Bearer xxx" или просто "xxx"
+                        return raw.startsWith('Bearer ') ? raw.slice(7) : raw;
+                    } catch (e) {
+                        return null;
+                    }
+                },
+
+                buildHeaders() {
+                    const headers = { 'Content-Type': 'application/json' };
+                    const token = this.getBearerToken();
+                    if (token) headers['Authorization'] = `Bearer ${token}`;
+                    return headers;
+                },
+
+                async requestJson(url, payload) {
+                    const headers = this.buildHeaders();
+
+                    // 1) если есть axios — используем его
+                    if (window.axios) {
+                        const resp = await window.axios.post(url, payload || {}, { headers });
+                        return resp.data;
+                    }
+
+                    // 2) иначе — fetch (полностью рабочая замена axios)
+                    const resp = await fetch(url, {
+                        method: 'POST',
+                        headers,
+                        body: JSON.stringify(payload || {}),
+                    });
+
+                    // если сервер вернул не-2xx
+                    if (!resp.ok) {
+                        let text = '';
+                        try { text = await resp.text(); } catch(e) {}
+                        throw new Error(`HTTP ${resp.status}: ${text || resp.statusText}`);
+                    }
+
+                    return await resp.json();
+                },
+
+                async fetchData() {
+                    if (!this.apiUrl) return;
+
+                    try {
+                        this.errorText = '';
+
+                        const payload = await this.requestJson(this.apiUrl, this.apiPayload);
+
+                        if (!payload || payload.success !== true) {
+                            this.errorText = payload?.message || 'API error';
+                            return;
+                        }
+
+                        const data = payload.data || {};
+                        this.categories = data.categories || [];
+                        this.series = data.series || [];
+
+                    } catch (e) {
+                        this.errorText = e?.message || 'Request failed';
+                    }
+                },
+
+                renderChart() {
                     const el = this.$refs.chart;
                     if (!el) return;
 
-                    // если ApexCharts ещё не загрузился — ждём
-                    if (!window.ApexCharts) {
-                        this.ensureApexLoaded(tries);
+                    if (this.errorText) {
+                        el.innerHTML = `
+                        <div class="min-h-[325px] grid place-content-center text-red-500/90 px-4 text-center">
+                            ${this.errorText}
+                        </div>
+                    `;
                         return;
                     }
 
-                    // применяем датасет выбранного периода (если есть)
-                    this.applyDataset(this.period);
-
-                    // clear loader
                     el.innerHTML = '';
 
-                    // если данных нет — покажем аккуратный плейсхолдер
                     if (!this.series || this.series.length === 0) {
                         el.innerHTML = `
                         <div class="min-h-[325px] grid place-content-center text-black/60 dark:text-white/60">
@@ -145,16 +199,19 @@
                         return;
                     }
 
+                    const xCats = (this.categories || []).map(d =>
+                        (typeof d === 'string' && d.length === 10) ? `${d}T00:00:00` : d
+                    );
+
                     const options = {
                         chart: { type: 'line', height: 325, toolbar: { show: false } },
                         series: this.series,
-                        xaxis: { type: 'datetime', categories: this.categories || [] },
+                        xaxis: { type: 'datetime', categories: xCats },
                         stroke: { curve: 'smooth', width: 2 },
                         dataLabels: { enabled: false },
-                        tooltip: { x: { format: 'dd MMM HH:mm' } },
+                        tooltip: { x: { format: 'dd MMM yyyy' } },
                     };
 
-                    // если график уже был — уничтожим перед пересозданием
                     if (this.chart) {
                         try { this.chart.destroy(); } catch(e) {}
                         this.chart = null;
@@ -164,20 +221,37 @@
                     this.chart.render();
                 },
 
-                setPeriod(p) {
-                    this.period = p;
+                async init(tries = 0) {
+                    const el = this.$refs.chart;
+                    if (!el) return;
 
-                    // обновляем данные из datasets
-                    this.applyDataset(p);
-
-                    if (!this.chart) {
-                        // если вдруг график ещё не создан — создадим
-                        this.init();
+                    if (!window.ApexCharts) {
+                        this.ensureApexLoaded(tries);
                         return;
                     }
 
-                    this.chart.updateOptions({ xaxis: { categories: this.categories || [] } });
-                    this.chart.updateSeries(this.series || []);
+                    await this.fetchData();
+                    this.renderChart();
+                },
+
+                // reload по клику на пункт меню (пока просто перезагружает те же данные)
+                async reload(p) {
+                    this.period = p;
+
+                    // Если API начнёт поддерживать период — добавишь, например:
+                    // this.apiPayload = { ...(this.apiPayload || {}), period: p };
+
+                    await this.fetchData();
+
+                    if (this.chart) {
+                        const xCats = (this.categories || []).map(d =>
+                            (typeof d === 'string' && d.length === 10) ? `${d}T00:00:00` : d
+                        );
+                        this.chart.updateOptions({ xaxis: { categories: xCats } });
+                        this.chart.updateSeries(this.series || []);
+                    } else {
+                        this.renderChart();
+                    }
                 },
             });
         }
