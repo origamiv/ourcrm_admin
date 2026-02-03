@@ -15,21 +15,66 @@
         <div class="pt-5">
             <div class="grid xl:grid-cols-3 gap-6 mb-6">
                 @include('components.graph.graphic', [
-  'title' => 'Clicks',
-  'label' => 'Total clicks',
-  'xx' => 0,
-  'periods' => ['Daily'], // или ['Hourly','Daily','Weekly'] если потом расширишь API
-  'chartId' => 'click_graph',
+                'title' => 'Clicks',
+                'label' => 'Total clicks',
+                'chartId' => 'clicks_api',
 
-  'apiUrl' => config('app.api_url').'/api/v1/facts/list',
-  'apiPayload' => [
-    'perpage' => -1,
-    'filter' => [
-      ['field' => 'shortname', 'op' => '=', 'val' => 'click'],
-    ],
-  ],
-  'tokenKey' => 'access_token',
-])
+                // важно: в Blade конкатенация через "." ок, просто следи, чтобы не было двойных слэшей
+                'apiUrl' => rtrim(config('app.api_url'), '/') . '/api/v1/facts/list',
+
+                // важно: ключ называется periods (или mode — если у тебя реально так на бэке).
+                // По твоему новому ответу сервер возвращает data.periods, поэтому логично отправлять periods.
+                'apiPayload' => [
+                'mode' => ['15min','hourly', 'daily', 'weekly', 'monthly'],
+                'perpage' => -1,
+                'filter' => [
+                ['field' => 'shortname', 'op' => '=', 'val' => 'click'],
+                ],
+                ],
+
+                // токен из localStorage
+                'tokenKey' => 'access_token',
+
+                // подписи в дропдауне (необязательно, но удобно)
+                'periodLabels' => [
+                'hourly' => 'Hourly',
+                'daily'  => 'Daily',
+                ],
+
+                // стартовый период
+                'defaultPeriod' => 'daily',
+                ])
+
+                @include('components.graph.graphic', [
+                'title' => 'Leads',
+                'label' => 'Total leads',
+                'chartId' => 'leads',
+
+                // важно: в Blade конкатенация через "." ок, просто следи, чтобы не было двойных слэшей
+                'apiUrl' => rtrim(config('app.api_url'), '/') . '/api/v1/facts/list',
+
+                // важно: ключ называется periods (или mode — если у тебя реально так на бэке).
+                // По твоему новому ответу сервер возвращает data.periods, поэтому логично отправлять periods.
+                'apiPayload' => [
+                    'mode' => ['15min','hourly', 'daily', 'weekly', 'monthly'],
+                    'perpage' => -1,
+                    'filter' => [
+                        ['field' => 'shortname', 'op' => '=', 'val' => 'lead'],
+                    ],
+                ],
+
+                // токен из localStorage
+                'tokenKey' => 'access_token',
+
+                // подписи в дропдауне (необязательно, но удобно)
+                'periodLabels' => [
+                    'hourly' => 'Hourly',
+                    'daily'  => 'Daily',
+                ],
+
+                // стартовый период
+                'defaultPeriod' => 'daily',
+                ])
 
                 @include('components.graph.pie')
 

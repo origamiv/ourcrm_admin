@@ -3,7 +3,6 @@
 @php
     $title      = $title ?? 'Revenue';
     $label      = $label ?? 'Total Profit';
-    $xx         = $xx ?? 0;
 
     $chartId    = $chartId ?? ('chart_' . uniqid());
 
@@ -30,6 +29,9 @@
 
         periodLabels: @js($periodLabels),
         defaultPeriod: @js($defaultPeriod),
+
+        // fallback total до первого ответа API
+        initialTotal: 0,
     })"
     x-init="init()"
     @graph-period.window="setPeriod($event.detail.period)"
@@ -60,9 +62,10 @@
         </div>
     </div>
 
+    {{-- total берём из dataset.total, fallback = initialTotal --}}
     <p class="text-lg dark:text-white-light/90">
         {{ $label }}
-        <span class="text-primary ml-2">${{ $xx }}</span>
+        <span class="text-primary ml-2" x-text="total"></span>
     </p>
 
     <div class="relative overflow-hidden">
@@ -88,7 +91,11 @@
 
         // graphWidget — один раз
         if (!window.graphWidget) {
-            window.graphWidget = ({ chartId, apiUrl, apiPayload, tokenKey, periodLabels, defaultPeriod }) => ({
+            window.graphWidget = ({
+                                      chartId, apiUrl, apiPayload, tokenKey,
+                                      periodLabels, defaultPeriod,
+                                      initialTotal
+                                  }) => ({
                 chartId,
                 apiUrl,
                 apiPayload,
@@ -104,6 +111,7 @@
                 period: null,
                 categories: [],
                 series: [],
+                total: (initialTotal ?? 0),
 
                 chart: null,
                 errorText: '',
@@ -171,8 +179,7 @@
                 tooltipFormatForPeriod(periodKey) {
                     if (periodKey === 'hourly') return 'dd MMM HH:mm';
                     if (periodKey === 'daily') return 'dd MMM yyyy';
-                    // weekly как категория — tooltip format для x не нужен
-                    return undefined;
+                    return undefined; // weekly category
                 },
 
                 normalizeCategories(periodKey, cats) {
@@ -203,6 +210,16 @@
                     this.period = periodKey;
                     this.categories = ds.categories || [];
                     this.series = ds.series || [];
+
+                    // ===== ВАЖНО: total берём из ds.total (один уровень с categories/series) =====
+                    // если total вдруг не пришёл — fallback: сумма первой series.data
+                    if (ds.total !== undefined && ds.total !== null) {
+                        this.total = ds.total;
+                    } else {
+                        const arr = (this.series?.[0]?.data && Array.isArray(this.series[0].data)) ? this.series[0].data : [];
+                        this.total = arr.reduce((a, b) => a + (Number(b) || 0), 0);
+                    }
+
                     return true;
                 },
 
@@ -262,16 +279,12 @@
 
                     const xType = this.xAxisTypeForPeriod(this.period);
                     const xCats = this.normalizeCategories(this.period, this.categories);
-
                     const tooltipFmt = this.tooltipFormatForPeriod(this.period);
 
                     const options = {
                         chart: { type: 'line', height: 325, toolbar: { show: false } },
                         series: this.series,
-                        xaxis: {
-                            type: xType,
-                            categories: xCats,
-                        },
+                        xaxis: { type: xType, categories: xCats },
                         stroke: { curve: 'smooth', width: 2 },
                         dataLabels: { enabled: false },
                         tooltip: tooltipFmt ? { x: { format: tooltipFmt } } : {},
