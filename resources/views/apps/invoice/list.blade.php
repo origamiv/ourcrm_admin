@@ -54,6 +54,40 @@
             <div class="invoice-table overflow-x-auto">
                 <table id="myTable" class="whitespace-nowrap w-full"></table>
             </div>
+
+            {{-- SERVER PAGER --}}
+            <div class="flex items-center justify-between px-4 py-3 border-t border-[#e0e6ed] dark:border-[#1b2e4b]"
+                 x-show="usePagination">
+                <div class="text-sm text-white-dark">
+                    Страница <span class="font-semibold" x-text="page"></span>
+                    из <span class="font-semibold" x-text="totalPages"></span>
+                    • Всего: <span class="font-semibold" x-text="count"></span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button class="btn btn-outline-secondary"
+                            :disabled="page <= 1 || isLoading"
+                            @click="goToPage(page - 1)">
+                        ←
+                    </button>
+
+                    <template x-for="p in pagesToShow" :key="p">
+                        <button
+                            class="btn"
+                            :class="p === page ? 'btn-primary' : 'btn-outline-secondary'"
+                            :disabled="isLoading"
+                            @click="goToPage(p)"
+                            x-text="p">
+                        </button>
+                    </template>
+
+                    <button class="btn btn-outline-secondary"
+                            :disabled="page >= totalPages || isLoading"
+                            @click="goToPage(page + 1)">
+                        →
+                    </button>
+                </div>
+            </div>
         </div>
 
         {{-- DELETE MODAL --}}
@@ -101,13 +135,51 @@
                 deleteModal: false,
                 deleteId: null,
 
+                // ===== SERVER PAGINATION STATE =====
+                page: 1,
+                perpage: window.TABLE_CONFIG.perPage ?? 20,
+                count: 0,
+                isLoading: false,
+
+                get usePagination() {
+                    return (this.perpage ?? 0) !== -1;
+                },
+
+                get totalPages() {
+                    if (!this.usePagination) return 1;
+                    const pp = Number(this.perpage) || 1;
+                    return Math.max(1, Math.ceil((Number(this.count) || 0) / pp));
+                },
+
+                get pagesToShow() {
+                    const total = this.totalPages;
+                    const cur = this.page;
+
+                    const windowSize = 5;
+                    let start = Math.max(1, cur - Math.floor(windowSize / 2));
+                    let end = start + windowSize - 1;
+
+                    if (end > total) {
+                        end = total;
+                        start = Math.max(1, end - windowSize + 1);
+                    }
+
+                    const pages = [];
+                    for (let i = start; i <= end; i++) pages.push(i);
+                    return pages;
+                },
+
                 /* =============================
                    INIT
                 ============================= */
                 async init() {
                     this.buildColumnsFromConfig();
                     await this.loadLookups();
-                    await this.loadData();
+
+                    // initial load
+                    await this.loadData(1);
+
+                    // build table once and then refresh it via rebuild (safe)
                     this.buildTable();
                     this.injectCreateButton();
 
@@ -160,7 +232,7 @@
                         const list = res.data?.data ?? [];
                         this.lookups[key] = list;
 
-                        // строим map: id => name
+                        // build map: id => name
                         this.lookupMaps[key] = {};
                         list.forEach(item => {
                             this.lookupMaps[key][item[field.lookup_id]] =
@@ -170,27 +242,55 @@
                 },
 
                 /* =============================
-                   LOAD DATA
+                   LOAD DATA (SERVER PAGINATION)
                 ============================= */
-                async loadData() {
+                async loadData(page = 1) {
                     const token = localStorage.getItem('access_token');
                     if (!token) return;
 
-                    console.log('api2',this.config.api.list);
+                    this.isLoading = true;
 
-                    const response = await fetch(this.config.api.list, {
-                        method: 'POST',
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({ page: 1, perpage: 0 })
-                    });
+                    try {
+                        const payload = {
+                            page: Math.max(1, Number(page) || 1),
+                            perpage: Number(this.perpage)
+                        };
 
-                    const json = await response.json();
-                    this.items = Array.isArray(json.data) ? json.data : [];
-                    this.setTableData();
+                        console.log('api2', this.config.api.list, payload);
+
+                        const response = await fetch(this.config.api.list, {
+                            method: 'POST',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const json = await response.json();
+
+                        this.items = Array.isArray(json.data) ? json.data : [];
+
+                        // expected:
+                        // pagination: { perpage, currentPage, count }
+                        const p = json.pagination ?? {};
+                        this.perpage = (p.perpage !== undefined) ? p.perpage : this.perpage;
+                        this.page = (p.currentPage !== undefined) ? p.currentPage : payload.page;
+                        this.count = (p.count !== undefined) ? p.count : this.items.length;
+
+                        this.setTableData();
+                        this.refreshTable();
+
+                    } finally {
+                        this.isLoading = false;
+                    }
+                },
+
+                goToPage(p) {
+                    const target = Math.min(this.totalPages, Math.max(1, Number(p) || 1));
+                    if (target === this.page) return;
+                    this.loadData(target);
                 },
 
                 /* =============================
@@ -215,13 +315,24 @@
                             headings: [...this.config.columns.map(c => c.title), 'Действия'],
                             data: this.dataArr
                         },
-                        perPage: this.config.perPage,
+
+                        // IMPORTANT:
+                        // simple-datatables pagination is client-side only.
+                        // We "disable" it by setting huge perPage and removing {pager}.
+                        perPage: 999999,
+
                         columns: this.buildColumns(),
                         layout: {
                             top: '{search}',
-                            bottom: '{info}{select}{pager}'
+                            bottom: '{info}{select}'
                         }
                     });
+                },
+
+                refreshTable() {
+                    // safe way: rebuild table with current page data
+                    this.buildTable();
+                    this.injectCreateButton();
                 },
 
                 buildColumns() {
@@ -310,11 +421,11 @@
                         }
                     });
 
-                    this.items = this.items.filter(i => i.id !== this.deleteId);
-                    this.setTableData();
-                    this.buildTable();
-                    this.injectCreateButton();
+                    // reload current page to keep correct count/pages
+                    const nextPage = (this.page > 1 && this.items.length === 1) ? (this.page - 1) : this.page;
+
                     this.closeDeleteModal();
+                    await this.loadData(nextPage);
                 },
 
                 /* =============================

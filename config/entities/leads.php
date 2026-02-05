@@ -43,7 +43,7 @@ return [
             'control' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup_api' => '/api/v1/lead-statuses',
+            'lookup_api' => '/api/v1/lead_statuses',
             'lookup_id' => 'id',
             'lookup_name' => 'name',
         ],

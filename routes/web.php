@@ -17,6 +17,7 @@ Route::view('/auth/boxed-signup', 'auth.boxed-signup');
 Route::view('/auth/boxed-password-reset', 'auth.boxed-password-reset');
 
 Route::view('/', 'index');
+Route::view('/dashboard', 'dashboard');
 Route::view('/analytics', 'analytics');
 Route::view('/finance', 'finance');
 Route::view('/crypto', 'crypto');

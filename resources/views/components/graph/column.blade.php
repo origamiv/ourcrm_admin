@@ -3,6 +3,7 @@
 @php
     $title      = $title ?? 'Revenue';
     $label      = $label ?? 'Total Profit';
+    $xx         = $xx ?? 0;
 
     $chartId    = $chartId ?? ('chart_' . uniqid());
 
@@ -32,7 +33,7 @@
 
         // fallback total до первого ответа API
         initialTotal: 0,
-        chartType: @js($chartType ?? 'line'),  // 'line' или 'column'
+        chartType: @js($chartType ?? 'column'),
     })"
     x-init="init()"
     @graph-period.window="setPeriod($event.detail.period)"
@@ -63,7 +64,6 @@
         </div>
     </div>
 
-    {{-- total берём из dataset.total, fallback = initialTotal --}}
     <p class="text-lg dark:text-white-light/90">
         {{ $label }}
         <span class="text-primary ml-2" x-text="total"></span>
