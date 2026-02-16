@@ -6,7 +6,6 @@
     <script>
         window.CONFIG = @json($config);
 
-        console.log(window.CONFIG.common.api);
         window.TABLE_CONFIG = {
             api: {
                 list:   '{{ config('app.api_url') }}' + window.CONFIG.common.api + '/list',
@@ -16,7 +15,6 @@
             perPage: 20,
             columns: []
         };
-        console.log(window.TABLE_CONFIG);
     </script>
 
     {{-- =====================================================
@@ -42,6 +40,13 @@
         .dark .dataTable-table tbody td:last-child {
             background: #0e1726;
         }
+
+        /* Серверная сортировка по клику на заголовок */
+        .dt-server-sortable {
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+        }
     </style>
 
     {{-- =====================================================
@@ -56,36 +61,55 @@
             </div>
 
             {{-- SERVER PAGER --}}
-            <div class="flex items-center justify-between px-4 py-3 border-t border-[#e0e6ed] dark:border-[#1b2e4b]"
+            <div class="flex flex-wrap items-center justify-between gap-3 px-4 py-3 border-t border-[#e0e6ed] dark:border-[#1b2e4b]"
                  x-show="usePagination">
+
                 <div class="text-sm text-white-dark">
                     Страница <span class="font-semibold" x-text="page"></span>
                     из <span class="font-semibold" x-text="totalPages"></span>
                     • Всего: <span class="font-semibold" x-text="count"></span>
                 </div>
 
-                <div class="flex items-center gap-2">
-                    <button class="btn btn-outline-secondary"
-                            :disabled="page <= 1 || isLoading"
-                            @click="goToPage(page - 1)">
-                        ←
-                    </button>
+                <div class="flex items-center gap-3">
+                    {{-- perpage --}}
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-white-dark">На странице</span>
+                        <select class="form-select form-select-sm w-[110px]"
+                                x-model.number="perpage"
+                                :disabled="isLoading"
+                                @change="changePerPage()">
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="200">200</option>
+                            <option value="-1">Все</option>
+                        </select>
+                    </div>
 
-                    <template x-for="p in pagesToShow" :key="p">
-                        <button
-                            class="btn"
-                            :class="p === page ? 'btn-primary' : 'btn-outline-secondary'"
-                            :disabled="isLoading"
-                            @click="goToPage(p)"
-                            x-text="p">
+                    {{-- pages --}}
+                    <div class="flex items-center gap-2">
+                        <button class="btn btn-outline-secondary"
+                                :disabled="page <= 1 || isLoading"
+                                @click="goToPage(page - 1)">
+                            ←
                         </button>
-                    </template>
 
-                    <button class="btn btn-outline-secondary"
-                            :disabled="page >= totalPages || isLoading"
-                            @click="goToPage(page + 1)">
-                        →
-                    </button>
+                        <template x-for="p in pagesToShow" :key="p">
+                            <button
+                                class="btn"
+                                :class="p === page ? 'btn-primary' : 'btn-outline-secondary'"
+                                :disabled="isLoading"
+                                @click="goToPage(p)"
+                                x-text="p">
+                            </button>
+                        </template>
+
+                        <button class="btn btn-outline-secondary"
+                                :disabled="page >= totalPages || isLoading"
+                                @click="goToPage(page + 1)">
+                            →
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -141,6 +165,12 @@
                 count: 0,
                 isLoading: false,
 
+                // ===== SERVER SORT STATE =====
+                sortBy: null,
+                sortDir: 'desc',
+                _headerClickHandler: null,
+                _baseHeadings: [],
+
                 get usePagination() {
                     return (this.perpage ?? 0) !== -1;
                 },
@@ -174,18 +204,35 @@
                 ============================= */
                 async init() {
                     this.buildColumnsFromConfig();
+                    this.initSortFromConfig();
+
                     await this.loadLookups();
 
-                    // initial load
                     await this.loadData(1);
-
-                    // build table once and then refresh it via rebuild (safe)
                     this.buildTable();
-                    this.injectCreateButton();
 
                     window.addEventListener('datatable-delete', e => {
                         this.openDeleteModal(e.detail);
                     });
+                },
+
+                initSortFromConfig() {
+                    const order = window.CONFIG.order ?? null;
+
+                    // ожидаем конфиг вида: 'order' => ['clicked_at' => 'desc']
+                    if (order && typeof order === 'object' && !Array.isArray(order)) {
+                        const entries = Object.entries(order);
+                        if (entries.length > 0) {
+                            this.sortBy = entries[0][0];
+                            this.sortDir = String(entries[0][1] ?? 'desc').toLowerCase();
+                            if (this.sortDir !== 'asc' && this.sortDir !== 'desc') this.sortDir = 'desc';
+                            return;
+                        }
+                    }
+
+                    // fallback: id desc
+                    this.sortBy = 'id';
+                    this.sortDir = 'desc';
                 },
 
                 /* =============================
@@ -205,6 +252,8 @@
                             lookup_id: field.lookup_id,
                             lookup_name: field.lookup_name
                         }));
+
+                    this._baseHeadings = this.config.columns.map(c => c.title);
                 },
 
                 /* =============================
@@ -232,17 +281,15 @@
                         const list = res.data?.data ?? [];
                         this.lookups[key] = list;
 
-                        // build map: id => name
                         this.lookupMaps[key] = {};
                         list.forEach(item => {
-                            this.lookupMaps[key][item[field.lookup_id]] =
-                                item[field.lookup_name];
+                            this.lookupMaps[key][item[field.lookup_id]] = item[field.lookup_name];
                         });
                     }
                 },
 
                 /* =============================
-                   LOAD DATA (SERVER PAGINATION)
+                   LOAD DATA (SERVER PAGINATION + SERVER SORT)
                 ============================= */
                 async loadData(page = 1) {
                     const token = localStorage.getItem('access_token');
@@ -253,10 +300,16 @@
                     try {
                         const payload = {
                             page: Math.max(1, Number(page) || 1),
-                            perpage: Number(this.perpage)
-                        };
+                            perpage: Number(this.perpage),
 
-                        console.log('api2', this.config.api.list, payload);
+                            // Сортировка в нужном формате
+                            order: [
+                                {
+                                    field: this.sortBy,
+                                    direction: (this.sortDir || 'desc')
+                                }
+                            ]
+                        };
 
                         const response = await fetch(this.config.api.list, {
                             method: 'POST',
@@ -272,8 +325,7 @@
 
                         this.items = Array.isArray(json.data) ? json.data : [];
 
-                        // expected:
-                        // pagination: { perpage, currentPage, count }
+                        // expected: pagination: { perpage, currentPage, count }
                         const p = json.pagination ?? {};
                         this.perpage = (p.perpage !== undefined) ? p.perpage : this.perpage;
                         this.page = (p.currentPage !== undefined) ? p.currentPage : payload.page;
@@ -291,6 +343,10 @@
                     const target = Math.min(this.totalPages, Math.max(1, Number(p) || 1));
                     if (target === this.page) return;
                     this.loadData(target);
+                },
+
+                changePerPage() {
+                    this.loadData(1);
                 },
 
                 /* =============================
@@ -312,27 +368,24 @@
 
                     this.datatable = new simpleDatatables.DataTable('#myTable', {
                         data: {
-                            headings: [...this.config.columns.map(c => c.title), 'Действия'],
+                            headings: [...this._baseHeadings, 'Действия'],
                             data: this.dataArr
                         },
 
-                        // IMPORTANT:
-                        // simple-datatables pagination is client-side only.
-                        // We "disable" it by setting huge perPage and removing {pager}.
+                        // отключаем клиентскую пагинацию/поиск
                         perPage: 999999,
+                        searchable: false,
 
                         columns: this.buildColumns(),
-                        layout: {
-                            top: '{search}',
-                            bottom: '{info}{select}'
-                        }
+                        layout: { top: '', bottom: '' }
                     });
+
+                    this.bindServerSortHandlers();
+                    this.setSortIndicators();
                 },
 
                 refreshTable() {
-                    // safe way: rebuild table with current page data
                     this.buildTable();
-                    this.injectCreateButton();
                 },
 
                 buildColumns() {
@@ -341,6 +394,7 @@
                     this.config.columns.forEach((col, index) => {
                         cols.push({
                             select: index,
+                            sortable: false, // сортировка только серверная
                             render: value => this.format(col, value)
                         });
                     });
@@ -354,6 +408,74 @@
                     return cols;
                 },
 
+                bindServerSortHandlers() {
+                    const table = document.querySelector('#myTable');
+                    if (!table) return;
+
+                    const thead = table.querySelector('thead');
+                    if (!thead) return;
+
+                    if (this._headerClickHandler) {
+                        thead.removeEventListener('click', this._headerClickHandler, true);
+                    }
+
+                    const ths = thead.querySelectorAll('th');
+                    ths.forEach((th, idx) => {
+                        if (idx < this.config.columns.length) th.classList.add('dt-server-sortable');
+                        else th.classList.remove('dt-server-sortable');
+                    });
+
+                    this._headerClickHandler = async (e) => {
+                        const th = e.target?.closest?.('th');
+                        if (!th) return;
+
+                        const all = Array.from(thead.querySelectorAll('th'));
+                        const idx = all.indexOf(th);
+                        if (idx < 0) return;
+
+                        if (idx >= this.config.columns.length) return;
+
+                        const key = this.config.columns[idx].key;
+
+                        if (this.sortBy === key) {
+                            this.sortDir = (this.sortDir === 'asc') ? 'desc' : 'asc';
+                        } else {
+                            this.sortBy = key;
+                            this.sortDir = 'asc';
+                        }
+
+                        this.setSortIndicators();
+                        await this.loadData(1);
+                    };
+
+                    thead.addEventListener('click', this._headerClickHandler, true);
+                },
+
+                setSortIndicators() {
+                    const table = document.querySelector('#myTable');
+                    if (!table) return;
+
+                    const thead = table.querySelector('thead');
+                    if (!thead) return;
+
+                    const ths = thead.querySelectorAll('th');
+                    ths.forEach((th, idx) => {
+                        if (idx >= this.config.columns.length) {
+                            th.textContent = 'Действия';
+                            return;
+                        }
+
+                        const base = this._baseHeadings[idx] ?? th.textContent;
+                        const key = this.config.columns[idx].key;
+
+                        if (this.sortBy === key) {
+                            th.textContent = `${base} ${this.sortDir === 'asc' ? '▲' : '▼'}`;
+                        } else {
+                            th.textContent = base;
+                        }
+                    });
+                },
+
                 /* =============================
                    FORMAT
                 ============================= */
@@ -362,20 +484,8 @@
                         return this.lookupMaps[col.key]?.[value] ?? '—';
                     }
 
-                    switch (col.formatter) {
-                        case 'badge':
-                            return `<span class="badge ${col.options?.[value] ?? 'badge-secondary'}">${value}</span>`;
-                        case 'date':
-                            return value ? new Date(value).toLocaleString() : '—';
-                        case 'truncate':
-                            if (!value) return '—';
-                            const len = col.options?.length ?? 40;
-                            return `<span title="${value}">${value.length > len ? value.slice(0, len) + '…' : value}</span>`;
-                        case 'number':
-                            return `<span class="font-semibold">${value}</span>`;
-                        default:
-                            return value ?? '—';
-                    }
+                    if (value === null || value === undefined || value === '') return '—';
+                    return value;
                 },
 
                 /* =============================
@@ -421,29 +531,11 @@
                         }
                     });
 
-                    // reload current page to keep correct count/pages
                     const nextPage = (this.page > 1 && this.items.length === 1) ? (this.page - 1) : this.page;
 
                     this.closeDeleteModal();
                     await this.loadData(nextPage);
                 },
-
-                /* =============================
-                   CREATE BUTTON
-                ============================= */
-                injectCreateButton() {
-                    const top = document.querySelector('.dataTable-top');
-                    if (!top || top.querySelector('.btn-create')) return;
-
-                    const entity = window.CONFIG.common.shortname;
-
-                    const btn = document.createElement('a');
-                    btn.href = `/${entity}/create`;
-                    btn.className = 'btn btn-primary btn-create ml-3';
-                    btn.innerHTML = '<i class="uil uil-plus mr-1"></i> Добавить запись';
-
-                    top.appendChild(btn);
-                }
 
             }));
         });
