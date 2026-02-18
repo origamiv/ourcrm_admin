@@ -153,11 +153,12 @@
                 config: window.TABLE_CONFIG,
 
                 items: [],
+                itemsById: {},       // ✅ id => row object
                 datatable: null,
                 dataArr: [],
 
-                lookups: {},       // raw lookup arrays
-                lookupMaps: {},    // id => name maps
+                lookups: {},         // raw lookup arrays
+                lookupMaps: {},      // id => name maps
 
                 deleteModal: false,
                 deleteId: null,
@@ -252,6 +253,9 @@
 
                             // ✅ используем control для динамического компонента
                             control: field.control ?? 'text',
+
+                            // ✅ прокидываем конфиг поля как есть
+                            fieldConfig: field,
 
                             formatter: field.formatter ?? null,
                             options: field.formatter_options ?? null,
@@ -360,6 +364,16 @@
                    DATA PREP
                 ============================= */
                 setTableData() {
+                    // ✅ карта id => объект строки
+                    this.itemsById = {};
+                    this.items.forEach(item => {
+                        const id = item?.[this.config.primaryKey];
+                        if (id !== null && id !== undefined) {
+                            this.itemsById[id] = item;
+                        }
+                    });
+
+                    // ✅ dataArr для datatable + кладём id последним элементом
                     this.dataArr = this.items.map(item =>
                         this.config.columns
                             .map(col => item[col.key] ?? null)
@@ -402,7 +416,9 @@
                         cols.push({
                             select: index,
                             sortable: false, // сортировка только серверная
-                            render: value => this.format(col, value)
+
+                            // ✅ В simple-datatables render(value, td, rowIndex, cellIndex)
+                            render: (value, td, rowIndex, cellIndex) => this.format(col, value, rowIndex, cellIndex)
                         });
                     });
 
@@ -486,8 +502,20 @@
                 /* =============================
                    FORMAT (DYNAMIC COMPONENTS)
                 ============================= */
-                format(col, value) {
-                    // lookup (пока оставляем как есть)
+                format(col, value, rowIndex = null, cellIndex = null) {
+                    // ✅ rowIndex — индекс строки в текущем dataArr
+                    let rowId = null;
+
+                    if (rowIndex !== null && rowIndex !== undefined && this.dataArr?.[rowIndex]) {
+                        // id лежит последним элементом строки (мы его добавили в setTableData)
+                        rowId = this.dataArr[rowIndex][this.config.columns.length] ?? null;
+                    }
+
+                    const row = (rowId !== null && rowId !== undefined)
+                        ? (this.itemsById[rowId] ?? null)
+                        : null;
+
+                    // lookup (как было)
                     if (col.is_lookup) {
                         return this.lookupMaps[col.key]?.[value] ?? '—';
                     }
@@ -498,11 +526,26 @@
                         ? window.FieldComponents[control]
                         : window.FieldComponents?.text;
 
-                    if (cmp?.index) {
-                        return cmp.index({
+                    // ✅ ВАЖНО: вызываем только через render()
+                    if (cmp?.render) {
+                        return cmp.render({
                             mode: 'index',
-                            col,
-                            value
+                            name: col.key,
+                            value: value,
+
+                            // ✅ конфиг поля
+                            config: col.fieldConfig ?? null,
+
+                            // ✅ вся строка
+                            row: row,
+
+                            // доп. если нужно компоненту
+                            col: col,
+                            rowIndex: rowIndex,
+                            cellIndex: cellIndex,
+
+                            disabled: true,
+                            required: false,
                         });
                     }
 
