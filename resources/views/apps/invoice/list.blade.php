@@ -55,6 +55,9 @@
     <div x-data="dataTable" x-init="init()">
         <script src="/assets/js/simple-datatables.js"></script>
 
+        {{-- ✅ Field component: text --}}
+        <script src="/assets/js/components/text.js"></script>
+
         <div class="panel px-0 border-[#e0e6ed] dark:border-[#1b2e4b]">
             <div class="invoice-table overflow-x-auto">
                 <table id="myTable" class="whitespace-nowrap w-full"></table>
@@ -246,6 +249,10 @@
                         .map(([key, field]) => ({
                             key,
                             title: field.name,
+
+                            // ✅ используем control для динамического компонента
+                            control: field.control ?? 'text',
+
                             formatter: field.formatter ?? null,
                             options: field.formatter_options ?? null,
                             is_lookup: field.is_lookup ?? false,
@@ -477,15 +484,31 @@
                 },
 
                 /* =============================
-                   FORMAT
+                   FORMAT (DYNAMIC COMPONENTS)
                 ============================= */
                 format(col, value) {
+                    // lookup (пока оставляем как есть)
                     if (col.is_lookup) {
                         return this.lookupMaps[col.key]?.[value] ?? '—';
                     }
 
+                    const control = col.control ?? 'text';
+
+                    const cmp = (window.FieldComponents && window.FieldComponents[control])
+                        ? window.FieldComponents[control]
+                        : window.FieldComponents?.text;
+
+                    if (cmp?.index) {
+                        return cmp.index({
+                            mode: 'index',
+                            col,
+                            value
+                        });
+                    }
+
+                    // fallback
                     if (value === null || value === undefined || value === '') return '—';
-                    return value;
+                    return String(value);
                 },
 
                 /* =============================
