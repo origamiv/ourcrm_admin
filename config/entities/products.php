@@ -44,7 +44,7 @@ return [
         'status' => [
             'name' => 'Статус',
             'field_mode' => 'index,edit,show',
-            'control' => 'status',
+            'control' => 'text',
             'formatter' => 'badge',
             'db_type' => 'integer',
             'is_lookup' => false,

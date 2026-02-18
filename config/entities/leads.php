@@ -50,7 +50,7 @@ return [
         'created_at' => [
             'name' => 'Создан',
             'field_mode' => 'index,show',
-            'control' => 'datetime',
+            'control' => 'text',
             'formatter' => 'date',
             'db_type' => 'datetime',
             'is_lookup' => false,

@@ -91,6 +91,16 @@ return [
             'db_type' => 'string',
             'is_lookup' => false,
         ],
+
+        'clicked_at' => [
+            'name' => 'Дата клика',
+            'field_mode' => 'index,show',
+            'is_filter_need' => true,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'datetime',
+            'is_lookup' => false,
+        ],
         /*
         |--------------------------------------------------------------------------
         | Остальные поля
@@ -547,7 +557,7 @@ return [
             'name' => 'landing_clicked_at',
             'field_mode' => 'show',
             'is_filter_need' => false,
-            'control' => 'datetime',
+            'control' => 'text',
             'formatter' => null,
             'db_type' => 'datetime',
             'is_lookup' => false,
@@ -659,7 +669,7 @@ return [
             'name' => 'Параметры',
             'field_mode' => 'show',
             'is_filter_need' => true,
-            'control' => 'json',
+            'control' => 'text',
             'formatter' => null,
             'db_type' => 'json',
             'is_lookup' => false,
@@ -735,15 +745,7 @@ return [
             'is_lookup' => false,
         ],
 
-        'clicked_at' => [
-            'name' => 'Дата клика',
-            'field_mode' => 'index,show',
-            'is_filter_need' => true,
-            'control' => 'datetime',
-            'formatter' => null,
-            'db_type' => 'datetime',
-            'is_lookup' => false,
-        ],
+
 
         /*
   |--------------------------------------------------------------------------
@@ -876,7 +878,7 @@ return [
             'name' => 'sub_ids_extra',
             'field_mode' => 'show',
             'is_filter_need' => false,
-            'control' => 'json',
+            'control' => 'text',
             'formatter' => null,
             'db_type' => 'json',
             'is_lookup' => false,
@@ -887,7 +889,7 @@ return [
             'name' => 'Создано',
             'field_mode' => 'show',
             'is_filter_need' => false,
-            'control' => 'datetime',
+            'control' => 'text',
             'formatter' => null,
             'db_type' => 'datetime',
             'is_lookup' => false,
@@ -897,7 +899,7 @@ return [
             'name' => 'Обновлено',
             'field_mode' => 'show',
             'is_filter_need' => false,
-            'control' => 'datetime',
+            'control' => 'text',
             'formatter' => null,
             'db_type' => 'datetime',
             'is_lookup' => false,

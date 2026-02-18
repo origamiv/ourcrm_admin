@@ -96,7 +96,7 @@ return [
             'name' => 'Статус',
             'field_mode' => 'index,edit,show',
             'is_filter_need' => true,
-            'control' => 'status',
+            'control' => 'text',
             'formatter' => 'badge',
             'formatter_options' => [
                 'active'   => 'badge-outline-success',
@@ -106,22 +106,22 @@ return [
             'is_lookup' => false,
         ],
 
-        'offers' => [
-            'name' => 'Оффер',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => false,
-            'control' => 'number',
-            'formatter' => 'number',
-            'db_type' => 'integer',
-            "is_lookup"=> true,
-            "lookup_api"=> "/api/v1/offers",
-            "lookup_id"=> "id",
-            "lookup_name"=>"name"
-        ],
+//        'offers' => [
+//            'name' => 'Оффер',
+//            'field_mode' => 'index,create,edit,show',
+//            'is_filter_need' => false,
+//            'control' => 'lookup',
+//            'formatter' => null,
+//            'db_type' => 'integer',
+//            'is_lookup' => true,
+//            'lookup_api' => '/api/v1/offers',
+//            'lookup_id' => 'id',
+//            'lookup_name' => 'name',
+//        ],
 
         'postback_url' => [
             'name' => 'Postback URL',
-            'field_mode' => 'index,create,edit,show',
+            'field_mode' => 'create,edit,show',
             'is_filter_need' => false,
             'control' => 'textarea',
             'formatter' => 'truncate',
@@ -169,6 +169,26 @@ return [
             'control' => 'textarea',
             'formatter' => null,
             'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'pull_api_options' => [
+            'name' => 'Pull API options',
+            'field_mode' => 'show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'json',
+            'is_lookup' => false,
+        ],
+
+        'account_id' => [
+            'name' => 'Account ID',
+            'field_mode' => 'show',
+            'is_filter_need' => false,
+            'control' => 'number',
+            'formatter' => 'number',
+            'db_type' => 'integer',
             'is_lookup' => false,
         ],
 
