@@ -35,6 +35,9 @@
 
         // ===== SHOW (mode=show) =====
         show({ value, config ={} }) {
+            if ((config.modifier != null) && (config.modifier == 'flag')) {
+                return '<img src=\'assets/images/flags/'+value+'.svg\' >';
+            }
             if (value === null || value === undefined || value === '') return '—';
             return escapeHtml(value);
         },
@@ -63,7 +66,7 @@
         },
         // опционально: универсальный рендер, если где-то удобно вызывать одним методом
         render({ mode, ...props }) {
-            console.log('props',props);
+            //console.log('props',props);
             const m = normalizeMode(mode);
             if (m === 'show') return this.show(props);
             if (isEditableMode(m)) return (m === 'create') ? this.create(props) : this.edit(props);

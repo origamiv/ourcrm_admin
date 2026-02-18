@@ -1,32 +1,5 @@
 <x-layout.default>
-    <style>
-        /* ...твои стили выше... */
 
-        /* ✅ убрать полосатость (зебру) */
-        #mainTabulator .tabulator-row,
-        #mainTabulator .tabulator-row.tabulator-row-even,
-        #mainTabulator .tabulator-row.tabulator-row-odd {
-            background-color: transparent !important;
-        }
-
-        /* на всякий случай — фон ячеек тоже */
-        #mainTabulator .tabulator-cell {
-            background-color: transparent !important;
-        }
-
-        /* если хочешь единый фон (не прозрачный), задай так:
-        #mainTabulator .tabulator-row,
-        #mainTabulator .tabulator-row.tabulator-row-even,
-        #mainTabulator .tabulator-row.tabulator-row-odd {
-            background-color: #fff !important;
-        }
-        .dark #mainTabulator .tabulator-row,
-        .dark #mainTabulator .tabulator-row.tabulator-row-even,
-        .dark #mainTabulator .tabulator-row.tabulator-row-odd {
-            background-color: #0e1726 !important;
-        }
-        */
-    </style>
     {{-- =====================================================
         1. CONFIG
     ===================================================== --}}
@@ -52,17 +25,34 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/css/tabulator_bootstrap5.min.css">
 
     <style>
-        .dark .tabulator {
-            background: transparent;
+        .dark .tabulator { background: transparent; }
+        .tabulator .tabulator-header .tabulator-col { user-select: none; }
+        .tabulator .tabulator-cell { vertical-align: middle; }
+
+        /* ✅ убрать полосатость (зебру) */
+        #mainTabulator .tabulator-row,
+        #mainTabulator .tabulator-row.tabulator-row-even,
+        #mainTabulator .tabulator-row.tabulator-row-odd {
+            background-color: transparent !important;
+        }
+        #mainTabulator .tabulator-cell { background-color: transparent !important; }
+
+        /* ✅ непрозрачный фон для фиксированной колонки "Действия" (чтобы не было "каши") */
+        #mainTabulator .tabulator-frozen,
+        #mainTabulator .tabulator-frozen .tabulator-cell {
+            background: #ffffff !important;
+        }
+        .dark #mainTabulator .tabulator-frozen,
+        .dark #mainTabulator .tabulator-frozen .tabulator-cell {
+            background: #0e1726 !important;
         }
 
-        /* лёгкая совместимость с твоей темой */
-        .tabulator .tabulator-header .tabulator-col {
-            user-select: none;
+        /* небольшой разделитель слева от фиксированной колонки */
+        #mainTabulator .tabulator-frozen {
+            box-shadow: -10px 0 14px -12px rgba(0,0,0,0.35);
         }
-
-        .tabulator .tabulator-cell {
-            vertical-align: middle;
+        .dark #mainTabulator .tabulator-frozen {
+            box-shadow: -10px 0 14px -12px rgba(0,0,0,0.6);
         }
     </style>
 
@@ -76,7 +66,6 @@
 
         <div class="panel px-0 border-[#e0e6ed] dark:border-[#1b2e4b]">
             <div class="invoice-table overflow-x-auto px-4 pt-4">
-                {{-- ✅ Tabulator mount point --}}
                 <div id="mainTabulator"></div>
             </div>
 
@@ -91,7 +80,6 @@
                 </div>
 
                 <div class="flex items-center gap-3">
-                    {{-- perpage --}}
                     <div class="flex items-center gap-2">
                         <span class="text-sm text-white-dark">На странице</span>
                         <select class="form-select form-select-sm w-[110px]"
@@ -106,7 +94,6 @@
                         </select>
                     </div>
 
-                    {{-- pages --}}
                     <div class="flex items-center gap-2">
                         <button class="btn btn-outline-secondary"
                                 :disabled="page <= 1 || isLoading"
@@ -115,12 +102,11 @@
                         </button>
 
                         <template x-for="p in pagesToShow" :key="p">
-                            <button
-                                class="btn"
-                                :class="p === page ? 'btn-primary' : 'btn-outline-secondary'"
-                                :disabled="isLoading"
-                                @click="goToPage(p)"
-                                x-text="p">
+                            <button class="btn"
+                                    :class="p === page ? 'btn-primary' : 'btn-outline-secondary'"
+                                    :disabled="isLoading"
+                                    @click="goToPage(p)"
+                                    x-text="p">
                             </button>
                         </template>
 
@@ -173,19 +159,17 @@
                 items: [],
                 tabulator: null,
 
-                lookups: {},         // raw lookup arrays
-                lookupMaps: {},      // fieldKey => {id => name}
+                lookups: {},
+                lookupMaps: {},
 
                 deleteModal: false,
                 deleteId: null,
 
-                // ===== SERVER PAGINATION STATE =====
                 page: 1,
                 perpage: window.TABLE_CONFIG.perPage ?? 20,
                 count: 0,
                 isLoading: false,
 
-                // ===== SERVER SORT STATE =====
                 sortBy: null,
                 sortDir: 'desc',
 
@@ -217,17 +201,14 @@
                     return pages;
                 },
 
-                /* =============================
-                   INIT
-                ============================= */
                 async init() {
                     this.buildColumnsFromConfig();
                     this.initSortFromConfig();
 
                     await this.loadLookups();
 
-                    await this.loadData(1);      // заполнит this.items
-                    this.buildTable();           // создаст Tabulator и отрендерит this.items
+                    await this.loadData(1);
+                    this.buildTable();
 
                     window.addEventListener('datatable-delete', e => {
                         this.openDeleteModal(e.detail);
@@ -237,7 +218,6 @@
                 initSortFromConfig() {
                     const order = window.CONFIG.order ?? null;
 
-                    // ожидаем конфиг вида: 'order' => ['field' => 'desc']
                     if (order && typeof order === 'object' && !Array.isArray(order)) {
                         const entries = Object.entries(order);
                         if (entries.length > 0) {
@@ -248,14 +228,10 @@
                         }
                     }
 
-                    // fallback: id desc
                     this.sortBy = 'id';
                     this.sortDir = 'desc';
                 },
 
-                /* =============================
-                   COLUMNS
-                ============================= */
                 buildColumnsFromConfig() {
                     const fields = window.CONFIG.fields;
 
@@ -274,9 +250,6 @@
                         }));
                 },
 
-                /* =============================
-                   LOOKUPS
-                ============================= */
                 async loadLookups() {
                     const token = localStorage.getItem('access_token');
                     if (!token) return;
@@ -306,9 +279,6 @@
                     }
                 },
 
-                /* =============================
-                   API LOAD (SERVER PAGINATION + SERVER SORT)
-                ============================= */
                 async loadData(page = 1) {
                     const token = localStorage.getItem('access_token');
                     if (!token) return;
@@ -319,11 +289,7 @@
                         const payload = {
                             page: Math.max(1, Number(page) || 1),
                             perpage: Number(this.perpage),
-
-                            // ✅ формат сортировки, как ты попросил
-                            order: [
-                                { field: this.sortBy, direction: (this.sortDir || 'desc') }
-                            ]
+                            order: [{ field: this.sortBy, direction: (this.sortDir || 'desc') }]
                         };
 
                         const response = await fetch(this.config.api.list, {
@@ -345,7 +311,6 @@
                         this.page = (p.currentPage !== undefined) ? p.currentPage : payload.page;
                         this.count = (p.count !== undefined) ? p.count : this.items.length;
 
-                        // обновляем таблицу, если уже создана
                         if (this.tabulator) {
                             this.tabulator.replaceData(this.items);
                             this.syncTabulatorSortIndicator();
@@ -366,16 +331,12 @@
                     this.loadData(1);
                 },
 
-                /* =============================
-                   TABULATOR
-                ============================= */
                 buildTable() {
                     if (!window.Tabulator) {
                         console.error('Tabulator not loaded');
                         return;
                     }
 
-                    // уничтожаем старый инстанс
                     if (this.tabulator) {
                         try { this.tabulator.destroy(); } catch (e) {}
                         this.tabulator = null;
@@ -384,21 +345,16 @@
                     const entity = window.CONFIG.common.shortname;
                     const primaryKey = this.config.primaryKey;
 
-                    // Tabulator columns
                     const cols = this.config.columns.map((col) => {
                         return {
                             title: col.title,
                             field: col.key,
-
-                            // серверная сортировка -> кликом отправляем запрос
                             headerSort: true,
 
-                            // рисуем через FieldComponents.render + прокидываем config + row
                             formatter: (cell) => {
                                 const value = cell.getValue();
                                 const row = cell.getRow()?.getData?.() ?? null;
 
-                                // lookup
                                 if (col.is_lookup) {
                                     return this.lookupMaps[col.key]?.[value] ?? '—';
                                 }
@@ -412,36 +368,31 @@
                                     mode: 'index',
                                     name: col.key,
                                     value: value,
-
-                                    // ✅ конфиг поля
                                     config: col.fieldConfig ?? null,
-
-                                    // ✅ вся строка (БОЛЬШЕ НЕ null)
                                     row: row,
-
-                                    // дополнительно
                                     col: col,
                                     disabled: true,
                                     required: false,
                                 };
 
-                                if (cmp?.render) {
-                                    return cmp.render(payload);
-                                }
-
-                                // fallback
+                                if (cmp?.render) return cmp.render(payload);
                                 if (value === null || value === undefined || value === '') return '—';
                                 return String(value);
                             }
                         };
                     });
 
-                    // actions column
+                    // ✅ fixed actions column
                     cols.push({
                         title: 'Действия',
                         field: '__actions',
                         headerSort: false,
+                        frozen: true,
+                        width: 140,
+                        minWidth: 120,
                         hozAlign: 'right',
+                        headerHozAlign: 'right',
+
                         formatter: (cell) => {
                             const row = cell.getRow()?.getData?.() ?? {};
                             const id = row?.[primaryKey];
@@ -463,20 +414,12 @@
                         data: this.items,
                         layout: 'fitDataStretch',
                         reactiveData: false,
-
                         index: primaryKey,
-
                         columns: cols,
-
-                        // отключаем локальные пагинацию/сортировку табулятора как “источник данных”
-                        // сортировку используем как UI-триггер -> запрос на сервер
                         pagination: false,
-
-                        // темизация
                         height: "auto",
                     });
 
-                    // серверная сортировка: ловим событие и дергаем API
                     this.tabulator.on("headerClick", async (e, column) => {
                         if (this.isLoading) return;
                         if (!column) return;
@@ -484,7 +427,6 @@
                         const field = column.getField();
                         if (!field || field === '__actions') return;
 
-                        // toggle direction
                         if (this.sortBy === field) {
                             this.sortDir = (this.sortDir === 'asc') ? 'desc' : 'asc';
                         } else {
@@ -495,17 +437,12 @@
                         await this.loadData(1);
                     });
 
-                    // поставить первичную “индикацию” сортировки
                     this.syncTabulatorSortIndicator();
                 },
 
-                // чисто UI-подсветка текущей сортировки в заголовке (без реальной сортировки на клиенте)
                 syncTabulatorSortIndicator() {
                     if (!this.tabulator) return;
 
-                    // Tabulator умеет показывать стрелки сортировки только через setSort(),
-                    // но это отсортирует данные на клиенте. Нам это НЕ нужно.
-                    // Поэтому делаем простую подсветку текста заголовка через DOM.
                     const holder = document.querySelector('#mainTabulator');
                     if (!holder) return;
 
@@ -515,9 +452,10 @@
                         const titleEl = h.querySelector('.tabulator-col-title');
                         if (!titleEl) return;
 
-                        // восстановим базовый title из конфига
+                        let baseTitle = titleEl.textContent.replace(/[▲▼]\s*$/, '').trim();
                         const cfg = this.config.columns.find(c => c.key === field);
-                        const baseTitle = cfg ? cfg.title : titleEl.textContent.replace(/[▲▼]\s*$/, '').trim();
+                        if (cfg?.title) baseTitle = cfg.title;
+                        if (field === '__actions') baseTitle = 'Действия';
 
                         if (field && field === this.sortBy) {
                             titleEl.textContent = `${baseTitle} ${this.sortDir === 'asc' ? '▲' : '▼'}`;
@@ -527,9 +465,6 @@
                     });
                 },
 
-                /* =============================
-                   DELETE
-                ============================= */
                 openDeleteModal(id) {
                     this.deleteId = id;
                     this.deleteModal = true;
