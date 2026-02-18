@@ -412,7 +412,7 @@
 
                     this.tabulator = new Tabulator('#mainTabulator', {
                         data: this.items,
-                        layout: 'fitDataStretch',
+                        layout: 'fitColumns',
                         reactiveData: false,
                         index: primaryKey,
                         columns: cols,
