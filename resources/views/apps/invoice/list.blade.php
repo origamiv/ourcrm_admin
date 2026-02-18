@@ -1,5 +1,32 @@
 <x-layout.default>
+    <style>
+        /* ...твои стили выше... */
 
+        /* ✅ убрать полосатость (зебру) */
+        #mainTabulator .tabulator-row,
+        #mainTabulator .tabulator-row.tabulator-row-even,
+        #mainTabulator .tabulator-row.tabulator-row-odd {
+            background-color: transparent !important;
+        }
+
+        /* на всякий случай — фон ячеек тоже */
+        #mainTabulator .tabulator-cell {
+            background-color: transparent !important;
+        }
+
+        /* если хочешь единый фон (не прозрачный), задай так:
+        #mainTabulator .tabulator-row,
+        #mainTabulator .tabulator-row.tabulator-row-even,
+        #mainTabulator .tabulator-row.tabulator-row-odd {
+            background-color: #fff !important;
+        }
+        .dark #mainTabulator .tabulator-row,
+        .dark #mainTabulator .tabulator-row.tabulator-row-even,
+        .dark #mainTabulator .tabulator-row.tabulator-row-odd {
+            background-color: #0e1726 !important;
+        }
+        */
+    </style>
     {{-- =====================================================
         1. CONFIG
     ===================================================== --}}
@@ -20,32 +47,22 @@
     {{-- =====================================================
         STYLES
     ===================================================== --}}
+    {{-- ✅ Tabulator from CDN --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/css/tabulator.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/css/tabulator_bootstrap5.min.css">
+
     <style>
-        .dataTable-table thead th:last-child {
-            position: sticky;
-            right: 0;
-            z-index: 7;
-            background: #ffffff;
+        .dark .tabulator {
+            background: transparent;
         }
 
-        .dataTable-table tbody td:last-child {
-            position: sticky;
-            right: 0;
-            z-index: 6;
-            background: #ffffff;
-            box-shadow: -8px 0 12px -8px rgba(0,0,0,0.15);
-        }
-
-        .dark .dataTable-table thead th:last-child,
-        .dark .dataTable-table tbody td:last-child {
-            background: #0e1726;
-        }
-
-        /* Серверная сортировка по клику на заголовок */
-        .dt-server-sortable {
-            cursor: pointer;
+        /* лёгкая совместимость с твоей темой */
+        .tabulator .tabulator-header .tabulator-col {
             user-select: none;
-            white-space: nowrap;
+        }
+
+        .tabulator .tabulator-cell {
+            vertical-align: middle;
         }
     </style>
 
@@ -53,14 +70,14 @@
         2. UI
     ===================================================== --}}
     <div x-data="dataTable" x-init="init()">
-        <script src="/assets/js/simple-datatables.js"></script>
 
         {{-- ✅ Field component: text --}}
         <script src="/assets/js/components/text.js"></script>
 
         <div class="panel px-0 border-[#e0e6ed] dark:border-[#1b2e4b]">
-            <div class="invoice-table overflow-x-auto">
-                <table id="myTable" class="whitespace-nowrap w-full"></table>
+            <div class="invoice-table overflow-x-auto px-4 pt-4">
+                {{-- ✅ Tabulator mount point --}}
+                <div id="mainTabulator"></div>
             </div>
 
             {{-- SERVER PAGER --}}
@@ -145,6 +162,7 @@
         3. LOGIC
     ===================================================== --}}
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
 
     <script>
         document.addEventListener('alpine:init', () => {
@@ -153,12 +171,10 @@
                 config: window.TABLE_CONFIG,
 
                 items: [],
-                itemsById: {},       // ✅ id => row object
-                datatable: null,
-                dataArr: [],
+                tabulator: null,
 
                 lookups: {},         // raw lookup arrays
-                lookupMaps: {},      // id => name maps
+                lookupMaps: {},      // fieldKey => {id => name}
 
                 deleteModal: false,
                 deleteId: null,
@@ -172,8 +188,6 @@
                 // ===== SERVER SORT STATE =====
                 sortBy: null,
                 sortDir: 'desc',
-                _headerClickHandler: null,
-                _baseHeadings: [],
 
                 get usePagination() {
                     return (this.perpage ?? 0) !== -1;
@@ -212,8 +226,8 @@
 
                     await this.loadLookups();
 
-                    await this.loadData(1);
-                    this.buildTable();
+                    await this.loadData(1);      // заполнит this.items
+                    this.buildTable();           // создаст Tabulator и отрендерит this.items
 
                     window.addEventListener('datatable-delete', e => {
                         this.openDeleteModal(e.detail);
@@ -223,7 +237,7 @@
                 initSortFromConfig() {
                     const order = window.CONFIG.order ?? null;
 
-                    // ожидаем конфиг вида: 'order' => ['clicked_at' => 'desc']
+                    // ожидаем конфиг вида: 'order' => ['field' => 'desc']
                     if (order && typeof order === 'object' && !Array.isArray(order)) {
                         const entries = Object.entries(order);
                         if (entries.length > 0) {
@@ -250,21 +264,14 @@
                         .map(([key, field]) => ({
                             key,
                             title: field.name,
-
-                            // ✅ используем control для динамического компонента
                             control: field.control ?? 'text',
-
-                            // ✅ прокидываем конфиг поля как есть
                             fieldConfig: field,
-
                             formatter: field.formatter ?? null,
                             options: field.formatter_options ?? null,
                             is_lookup: field.is_lookup ?? false,
                             lookup_id: field.lookup_id,
                             lookup_name: field.lookup_name
                         }));
-
-                    this._baseHeadings = this.config.columns.map(c => c.title);
                 },
 
                 /* =============================
@@ -300,7 +307,7 @@
                 },
 
                 /* =============================
-                   LOAD DATA (SERVER PAGINATION + SERVER SORT)
+                   API LOAD (SERVER PAGINATION + SERVER SORT)
                 ============================= */
                 async loadData(page = 1) {
                     const token = localStorage.getItem('access_token');
@@ -313,12 +320,9 @@
                             page: Math.max(1, Number(page) || 1),
                             perpage: Number(this.perpage),
 
-                            // Сортировка в нужном формате
+                            // ✅ формат сортировки, как ты попросил
                             order: [
-                                {
-                                    field: this.sortBy,
-                                    direction: (this.sortDir || 'desc')
-                                }
+                                { field: this.sortBy, direction: (this.sortDir || 'desc') }
                             ]
                         };
 
@@ -336,14 +340,16 @@
 
                         this.items = Array.isArray(json.data) ? json.data : [];
 
-                        // expected: pagination: { perpage, currentPage, count }
                         const p = json.pagination ?? {};
                         this.perpage = (p.perpage !== undefined) ? p.perpage : this.perpage;
                         this.page = (p.currentPage !== undefined) ? p.currentPage : payload.page;
                         this.count = (p.count !== undefined) ? p.count : this.items.length;
 
-                        this.setTableData();
-                        this.refreshTable();
+                        // обновляем таблицу, если уже создана
+                        if (this.tabulator) {
+                            this.tabulator.replaceData(this.items);
+                            this.syncTabulatorSortIndicator();
+                        }
 
                     } finally {
                         this.isLoading = false;
@@ -361,215 +367,164 @@
                 },
 
                 /* =============================
-                   DATA PREP
+                   TABULATOR
                 ============================= */
-                setTableData() {
-                    // ✅ карта id => объект строки
-                    this.itemsById = {};
-                    this.items.forEach(item => {
-                        const id = item?.[this.config.primaryKey];
-                        if (id !== null && id !== undefined) {
-                            this.itemsById[id] = item;
+                buildTable() {
+                    if (!window.Tabulator) {
+                        console.error('Tabulator not loaded');
+                        return;
+                    }
+
+                    // уничтожаем старый инстанс
+                    if (this.tabulator) {
+                        try { this.tabulator.destroy(); } catch (e) {}
+                        this.tabulator = null;
+                    }
+
+                    const entity = window.CONFIG.common.shortname;
+                    const primaryKey = this.config.primaryKey;
+
+                    // Tabulator columns
+                    const cols = this.config.columns.map((col) => {
+                        return {
+                            title: col.title,
+                            field: col.key,
+
+                            // серверная сортировка -> кликом отправляем запрос
+                            headerSort: true,
+
+                            // рисуем через FieldComponents.render + прокидываем config + row
+                            formatter: (cell) => {
+                                const value = cell.getValue();
+                                const row = cell.getRow()?.getData?.() ?? null;
+
+                                // lookup
+                                if (col.is_lookup) {
+                                    return this.lookupMaps[col.key]?.[value] ?? '—';
+                                }
+
+                                const control = col.control ?? 'text';
+                                const cmp = (window.FieldComponents && window.FieldComponents[control])
+                                    ? window.FieldComponents[control]
+                                    : window.FieldComponents?.text;
+
+                                const payload = {
+                                    mode: 'index',
+                                    name: col.key,
+                                    value: value,
+
+                                    // ✅ конфиг поля
+                                    config: col.fieldConfig ?? null,
+
+                                    // ✅ вся строка (БОЛЬШЕ НЕ null)
+                                    row: row,
+
+                                    // дополнительно
+                                    col: col,
+                                    disabled: true,
+                                    required: false,
+                                };
+
+                                if (cmp?.render) {
+                                    return cmp.render(payload);
+                                }
+
+                                // fallback
+                                if (value === null || value === undefined || value === '') return '—';
+                                return String(value);
+                            }
+                        };
+                    });
+
+                    // actions column
+                    cols.push({
+                        title: 'Действия',
+                        field: '__actions',
+                        headerSort: false,
+                        hozAlign: 'right',
+                        formatter: (cell) => {
+                            const row = cell.getRow()?.getData?.() ?? {};
+                            const id = row?.[primaryKey];
+
+                            return `
+                                <div class="flex items-center justify-end gap-3 text-xl">
+                                    <a href="/${entity}/${id}/show" class="text-info"><i class="uil uil-eye"></i></a>
+                                    <a href="/${entity}/${id}/edit" class="text-warning"><i class="uil uil-edit"></i></a>
+                                    <button class="text-danger"
+                                        onclick="window.dispatchEvent(new CustomEvent('datatable-delete',{detail:${id}}))">
+                                        <i class="uil uil-trash-alt"></i>
+                                    </button>
+                                </div>
+                            `;
                         }
                     });
 
-                    // ✅ dataArr для datatable + кладём id последним элементом
-                    this.dataArr = this.items.map(item =>
-                        this.config.columns
-                            .map(col => item[col.key] ?? null)
-                            .concat(item[this.config.primaryKey])
-                    );
-                },
+                    this.tabulator = new Tabulator('#mainTabulator', {
+                        data: this.items,
+                        layout: 'fitDataStretch',
+                        reactiveData: false,
 
-                /* =============================
-                   TABLE
-                ============================= */
-                buildTable() {
-                    if (this.datatable) this.datatable.destroy();
+                        index: primaryKey,
 
-                    this.datatable = new simpleDatatables.DataTable('#myTable', {
-                        data: {
-                            headings: [...this._baseHeadings, 'Действия'],
-                            data: this.dataArr
-                        },
+                        columns: cols,
 
-                        // отключаем клиентскую пагинацию/поиск
-                        perPage: 999999,
-                        searchable: false,
+                        // отключаем локальные пагинацию/сортировку табулятора как “источник данных”
+                        // сортировку используем как UI-триггер -> запрос на сервер
+                        pagination: false,
 
-                        columns: this.buildColumns(),
-                        layout: { top: '', bottom: '' }
+                        // темизация
+                        height: "auto",
                     });
 
-                    this.bindServerSortHandlers();
-                    this.setSortIndicators();
-                },
+                    // серверная сортировка: ловим событие и дергаем API
+                    this.tabulator.on("headerClick", async (e, column) => {
+                        if (this.isLoading) return;
+                        if (!column) return;
 
-                refreshTable() {
-                    this.buildTable();
-                },
+                        const field = column.getField();
+                        if (!field || field === '__actions') return;
 
-                buildColumns() {
-                    const cols = [];
-
-                    this.config.columns.forEach((col, index) => {
-                        cols.push({
-                            select: index,
-                            sortable: false, // сортировка только серверная
-
-                            // ✅ В simple-datatables render(value, td, rowIndex, cellIndex)
-                            render: (value, td, rowIndex, cellIndex) => this.format(col, value, rowIndex, cellIndex)
-                        });
-                    });
-
-                    cols.push({
-                        select: this.config.columns.length,
-                        sortable: false,
-                        render: id => this.renderActions(id)
-                    });
-
-                    return cols;
-                },
-
-                bindServerSortHandlers() {
-                    const table = document.querySelector('#myTable');
-                    if (!table) return;
-
-                    const thead = table.querySelector('thead');
-                    if (!thead) return;
-
-                    if (this._headerClickHandler) {
-                        thead.removeEventListener('click', this._headerClickHandler, true);
-                    }
-
-                    const ths = thead.querySelectorAll('th');
-                    ths.forEach((th, idx) => {
-                        if (idx < this.config.columns.length) th.classList.add('dt-server-sortable');
-                        else th.classList.remove('dt-server-sortable');
-                    });
-
-                    this._headerClickHandler = async (e) => {
-                        const th = e.target?.closest?.('th');
-                        if (!th) return;
-
-                        const all = Array.from(thead.querySelectorAll('th'));
-                        const idx = all.indexOf(th);
-                        if (idx < 0) return;
-
-                        if (idx >= this.config.columns.length) return;
-
-                        const key = this.config.columns[idx].key;
-
-                        if (this.sortBy === key) {
+                        // toggle direction
+                        if (this.sortBy === field) {
                             this.sortDir = (this.sortDir === 'asc') ? 'desc' : 'asc';
                         } else {
-                            this.sortBy = key;
+                            this.sortBy = field;
                             this.sortDir = 'asc';
                         }
 
-                        this.setSortIndicators();
                         await this.loadData(1);
-                    };
+                    });
 
-                    thead.addEventListener('click', this._headerClickHandler, true);
+                    // поставить первичную “индикацию” сортировки
+                    this.syncTabulatorSortIndicator();
                 },
 
-                setSortIndicators() {
-                    const table = document.querySelector('#myTable');
-                    if (!table) return;
+                // чисто UI-подсветка текущей сортировки в заголовке (без реальной сортировки на клиенте)
+                syncTabulatorSortIndicator() {
+                    if (!this.tabulator) return;
 
-                    const thead = table.querySelector('thead');
-                    if (!thead) return;
+                    // Tabulator умеет показывать стрелки сортировки только через setSort(),
+                    // но это отсортирует данные на клиенте. Нам это НЕ нужно.
+                    // Поэтому делаем простую подсветку текста заголовка через DOM.
+                    const holder = document.querySelector('#mainTabulator');
+                    if (!holder) return;
 
-                    const ths = thead.querySelectorAll('th');
-                    ths.forEach((th, idx) => {
-                        if (idx >= this.config.columns.length) {
-                            th.textContent = 'Действия';
-                            return;
-                        }
+                    const headers = holder.querySelectorAll('.tabulator-col');
+                    headers.forEach((h) => {
+                        const field = h.getAttribute('tabulator-field');
+                        const titleEl = h.querySelector('.tabulator-col-title');
+                        if (!titleEl) return;
 
-                        const base = this._baseHeadings[idx] ?? th.textContent;
-                        const key = this.config.columns[idx].key;
+                        // восстановим базовый title из конфига
+                        const cfg = this.config.columns.find(c => c.key === field);
+                        const baseTitle = cfg ? cfg.title : titleEl.textContent.replace(/[▲▼]\s*$/, '').trim();
 
-                        if (this.sortBy === key) {
-                            th.textContent = `${base} ${this.sortDir === 'asc' ? '▲' : '▼'}`;
+                        if (field && field === this.sortBy) {
+                            titleEl.textContent = `${baseTitle} ${this.sortDir === 'asc' ? '▲' : '▼'}`;
                         } else {
-                            th.textContent = base;
+                            titleEl.textContent = baseTitle;
                         }
                     });
-                },
-
-                /* =============================
-                   FORMAT (DYNAMIC COMPONENTS)
-                ============================= */
-                format(col, value, rowIndex = null, cellIndex = null) {
-                    // ✅ rowIndex — индекс строки в текущем dataArr
-                    let rowId = null;
-
-                    if (rowIndex !== null && rowIndex !== undefined && this.dataArr?.[rowIndex]) {
-                        // id лежит последним элементом строки (мы его добавили в setTableData)
-                        rowId = this.dataArr[rowIndex][this.config.columns.length] ?? null;
-                    }
-
-                    const row = (rowId !== null && rowId !== undefined)
-                        ? (this.itemsById[rowId] ?? null)
-                        : null;
-
-                    // lookup (как было)
-                    if (col.is_lookup) {
-                        return this.lookupMaps[col.key]?.[value] ?? '—';
-                    }
-
-                    const control = col.control ?? 'text';
-
-                    const cmp = (window.FieldComponents && window.FieldComponents[control])
-                        ? window.FieldComponents[control]
-                        : window.FieldComponents?.text;
-
-                    // ✅ ВАЖНО: вызываем только через render()
-                    if (cmp?.render) {
-                        return cmp.render({
-                            mode: 'index',
-                            name: col.key,
-                            value: value,
-
-                            // ✅ конфиг поля
-                            config: col.fieldConfig ?? null,
-
-                            // ✅ вся строка
-                            row: row,
-
-                            // доп. если нужно компоненту
-                            col: col,
-                            rowIndex: rowIndex,
-                            cellIndex: cellIndex,
-
-                            disabled: true,
-                            required: false,
-                        });
-                    }
-
-                    // fallback
-                    if (value === null || value === undefined || value === '') return '—';
-                    return String(value);
-                },
-
-                /* =============================
-                   ACTIONS
-                ============================= */
-                renderActions(id) {
-                    const entity = window.CONFIG.common.shortname;
-
-                    return `
-                        <div class="flex items-center gap-3 text-xl">
-                            <a href="/${entity}/${id}/show" class="text-info"><i class="uil uil-eye"></i></a>
-                            <a href="/${entity}/${id}/edit" class="text-warning"><i class="uil uil-edit"></i></a>
-                            <button class="text-danger"
-                                onclick="window.dispatchEvent(new CustomEvent('datatable-delete',{detail:${id}}))">
-                                <i class="uil uil-trash-alt"></i>
-                            </button>
-                        </div>
-                    `;
                 },
 
                 /* =============================
