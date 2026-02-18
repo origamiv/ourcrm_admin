@@ -25,9 +25,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/css/tabulator_bootstrap5.min.css">
 
     <style>
+        /* ===== Tabulator base ===== */
+        #mainTabulator { width: 100%; }
+
         .dark .tabulator { background: transparent; }
         .tabulator .tabulator-header .tabulator-col { user-select: none; }
         .tabulator .tabulator-cell { vertical-align: middle; }
+
+        /* ✅ горизонтальная прокрутка */
+        #mainTabulator .tabulator-tableholder{
+            overflow-x: auto !important;
+        }
 
         /* ✅ убрать полосатость (зебру) */
         #mainTabulator .tabulator-row,
@@ -37,7 +45,12 @@
         }
         #mainTabulator .tabulator-cell { background-color: transparent !important; }
 
-        /* ✅ непрозрачный фон для фиксированной колонки "Действия" (чтобы не было "каши") */
+        /* ✅ "серверная сортировка" — курсор у заголовков */
+        #mainTabulator .tabulator-col.dt-server-sortable {
+            cursor: pointer;
+        }
+
+        /* ✅ фиксированная колонка "Действия": непрозрачный фон + разделитель */
         #mainTabulator .tabulator-frozen,
         #mainTabulator .tabulator-frozen .tabulator-cell {
             background: #ffffff !important;
@@ -47,12 +60,32 @@
             background: #0e1726 !important;
         }
 
-        /* небольшой разделитель слева от фиксированной колонки */
         #mainTabulator .tabulator-frozen {
             box-shadow: -10px 0 14px -12px rgba(0,0,0,0.35);
         }
         .dark #mainTabulator .tabulator-frozen {
             box-shadow: -10px 0 14px -12px rgba(0,0,0,0.6);
+        }
+
+        /* ✅ чтобы в "Действия" не раздувало ширину из-за шрифтов/иконок */
+        #mainTabulator .dt-actions-wrap{
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            white-space: nowrap;
+        }
+        #mainTabulator .dt-actions-wrap a,
+        #mainTabulator .dt-actions-wrap button{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #mainTabulator .dt-actions-wrap button{
+            background: transparent;
+            border: 0;
+            padding: 0;
+            line-height: 1;
         }
     </style>
 
@@ -218,6 +251,7 @@
                 initSortFromConfig() {
                     const order = window.CONFIG.order ?? null;
 
+                    // ожидаем конфиг вида: 'order' => ['clicked_at' => 'desc']
                     if (order && typeof order === 'object' && !Array.isArray(order)) {
                         const entries = Object.entries(order);
                         if (entries.length > 0) {
@@ -228,6 +262,7 @@
                         }
                     }
 
+                    // fallback: id desc
                     this.sortBy = 'id';
                     this.sortDir = 'desc';
                 },
@@ -312,7 +347,7 @@
                         this.count = (p.count !== undefined) ? p.count : this.items.length;
 
                         if (this.tabulator) {
-                            this.tabulator.replaceData(this.items);
+                            await this.tabulator.replaceData(this.items);
                             this.syncTabulatorSortIndicator();
                         }
 
@@ -329,6 +364,20 @@
 
                 changePerPage() {
                     this.loadData(1);
+                },
+
+                async onHeaderSort(field) {
+                    if (this.isLoading) return;
+                    if (!field || field === '__actions') return;
+
+                    if (this.sortBy === field) {
+                        this.sortDir = (this.sortDir === 'asc') ? 'desc' : 'asc';
+                    } else {
+                        this.sortBy = field;
+                        this.sortDir = 'asc';
+                    }
+
+                    await this.loadData(1);
                 },
 
                 buildTable() {
@@ -349,10 +398,21 @@
                         return {
                             title: col.title,
                             field: col.key,
-                            headerSort: true,
+
+                            // ✅ сортировка только серверная (локальную отключаем)
+                            headerSort: false,
+
+                            // ✅ курсор "sortable"
+                            cssClass: "dt-server-sortable",
+
+                            headerClick: async () => {
+                                await this.onHeaderSort(col.key);
+                            },
 
                             formatter: (cell) => {
                                 const value = cell.getValue();
+
+                                // ✅ тут всегда актуальные данные строки
                                 const row = cell.getRow()?.getData?.() ?? null;
 
                                 if (col.is_lookup) {
@@ -368,28 +428,37 @@
                                     mode: 'index',
                                     name: col.key,
                                     value: value,
-                                    config: col.fieldConfig ?? null,
-                                    row: row,
+                                    config: col.fieldConfig ?? null,  // ✅ config поля
+                                    row: row,                         // ✅ вся строка
                                     col: col,
                                     disabled: true,
                                     required: false,
                                 };
 
                                 if (cmp?.render) return cmp.render(payload);
+                                if (cmp?.index)  return cmp.index(payload);
+
                                 if (value === null || value === undefined || value === '') return '—';
                                 return String(value);
                             }
                         };
                     });
 
-                    // ✅ fixed actions column
                     cols.push({
                         title: 'Действия',
                         field: '__actions',
                         headerSort: false,
+
+                        // ✅ фиксируем колонку
                         frozen: true,
+
+                        // ✅ фиксируем ширину, чтобы не раздувалась
                         width: 140,
-                        minWidth: 120,
+                        minWidth: 140,
+                        maxWidth: 140,
+                        widthGrow: 0,
+                        widthShrink: 0,
+
                         hozAlign: 'right',
                         headerHozAlign: 'right',
 
@@ -398,7 +467,7 @@
                             const id = row?.[primaryKey];
 
                             return `
-                                <div class="flex items-center justify-end gap-3 text-xl">
+                                <div class="dt-actions-wrap text-xl">
                                     <a href="/${entity}/${id}/show" class="text-info"><i class="uil uil-eye"></i></a>
                                     <a href="/${entity}/${id}/edit" class="text-warning"><i class="uil uil-edit"></i></a>
                                     <button class="text-danger"
@@ -412,29 +481,22 @@
 
                     this.tabulator = new Tabulator('#mainTabulator', {
                         data: this.items,
-                        layout: 'fitColumns',
+
+                        // ✅ чтобы появилась горизонтальная прокрутка (таблица = сумме ширин колонок)
+                        layout: "fitDataTable",
+
+                        responsiveLayout: false,
                         reactiveData: false,
                         index: primaryKey,
                         columns: cols,
                         pagination: false,
                         height: "auto",
-                    });
 
-                    this.tabulator.on("headerClick", async (e, column) => {
-                        if (this.isLoading) return;
-                        if (!column) return;
-
-                        const field = column.getField();
-                        if (!field || field === '__actions') return;
-
-                        if (this.sortBy === field) {
-                            this.sortDir = (this.sortDir === 'asc') ? 'desc' : 'asc';
-                        } else {
-                            this.sortBy = field;
-                            this.sortDir = 'asc';
-                        }
-
-                        await this.loadData(1);
+                        // ✅ чтобы таблица гарантированно стала шире контейнера при большом кол-ве колонок
+                        columnDefaults: {
+                            minWidth: 140,
+                            resizable: true
+                        },
                     });
 
                     this.syncTabulatorSortIndicator();
@@ -452,7 +514,9 @@
                         const titleEl = h.querySelector('.tabulator-col-title');
                         if (!titleEl) return;
 
+                        // базовый тайтл из конфига
                         let baseTitle = titleEl.textContent.replace(/[▲▼]\s*$/, '').trim();
+
                         const cfg = this.config.columns.find(c => c.key === field);
                         if (cfg?.title) baseTitle = cfg.title;
                         if (field === '__actions') baseTitle = 'Действия';
