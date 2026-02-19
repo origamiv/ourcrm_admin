@@ -28,22 +28,44 @@
     window.FieldComponents.text = {
 
         // ===== TABLE (mode=index) =====
-        index({ value }) {
+        index({value}) {
             if (value === null || value === undefined || value === '') return '—';
             return escapeHtml(value);
         },
 
         // ===== SHOW (mode=show) =====
-        show({ value, config ={} }) {
-            if ((config.modifier != null) && (config.modifier == 'flag')) {
-                return '<img src=\'assets/images/flags/'+value+'.svg\' >';
+        show({value, config = {}, row = {}}) {
+            let modifierFieldValue = null;
+            //console.log(row);
+            if (config.modifier_field != null) {
+                let fieldName = config.modifier_field;
+                if (row[fieldName] != null) {
+                    modifierFieldValue = row[fieldName];
+                }
             }
+
+            if ((value == null) || (value == undefined) || (value == '')) {value = 'default';}
+            if (modifierFieldValue == null) {modifierFieldValue = value;}
+
+            if ((config.modifier != null) && (config.modifier == 'flag')) {
+                return '<img src=\'assets/images/flags/' + modifierFieldValue + '.svg\' title="' + value + '" >';
+            }
+            if ((config.modifier != null) && (config.modifier == 'icon')) {
+                let path = 'assets/images/icons/';
+                let width="24px";
+                let height="24px";
+                if ((config.icon_path != null)) {
+                    path = config.icon_path;
+                }
+                return '<img src="' + path + modifierFieldValue + '.png" width="'+width+'" height="'+height+'" title="' + value + '" >';
+            }
+
             if (value === null || value === undefined || value === '') return '—';
             return escapeHtml(value);
         },
 
         // ===== EDIT (mode=edit) =====
-        edit({ name, value, disabled = false, required = false, placeholder = '', config ={} }) {
+        edit({name, value, disabled = false, required = false, placeholder = '', config = {}, row = {}}) {
             const v = (value === null || value === undefined) ? '' : String(value);
 
             return `
@@ -60,12 +82,12 @@
         },
 
         // ===== CREATE (mode=create) =====
-        create({ name, value, disabled = false, required = false, placeholder = '', config ={} }) {
+        create({name, value, disabled = false, required = false, placeholder = '', config = {}}) {
             // create идентичен edit — оставляем явно, чтобы не было "mode=form"
-            return this.edit({ name, value, disabled, required, placeholder });
+            return this.edit({name, value, disabled, required, placeholder});
         },
         // опционально: универсальный рендер, если где-то удобно вызывать одним методом
-        render({ mode, ...props }) {
+        render({mode, ...props}) {
             //console.log('props',props);
             const m = normalizeMode(mode);
             if (m === 'show') return this.show(props);
