@@ -87,6 +87,23 @@
             padding: 0;
             line-height: 1;
         }
+
+        /* =====================================================
+           ✅ FIXED HEIGHT (фиксированная высота табулятора)
+           ===================================================== */
+
+        /* контейнер таблицы ограничиваем по высоте */
+        #mainTabulator{
+            height: 70vh;          /* <-- поменяй на нужное: 600px / 75vh / calc(100vh - 260px) */
+            max-height: 70vh;
+        }
+
+        /* скролл данных внутри таблицы */
+        #mainTabulator .tabulator-tableholder{
+            overflow-y: auto !important;
+            /* высоту холдера Tabulator можно не задавать —
+               Tabulator сам рассчитает по высоте контейнера */
+        }
     </style>
 
     {{-- =====================================================
@@ -251,7 +268,6 @@
                 initSortFromConfig() {
                     const order = window.CONFIG.order ?? null;
 
-                    // ожидаем конфиг вида: 'order' => ['clicked_at' => 'desc']
                     if (order && typeof order === 'object' && !Array.isArray(order)) {
                         const entries = Object.entries(order);
                         if (entries.length > 0) {
@@ -262,7 +278,6 @@
                         }
                     }
 
-                    // fallback: id desc
                     this.sortBy = 'id';
                     this.sortDir = 'desc';
                 },
@@ -398,21 +413,13 @@
                         return {
                             title: col.title,
                             field: col.key,
-
-                            // ✅ сортировка только серверная (локальную отключаем)
                             headerSort: false,
-
-                            // ✅ курсор "sortable"
                             cssClass: "dt-server-sortable",
-
                             headerClick: async () => {
                                 await this.onHeaderSort(col.key);
                             },
-
                             formatter: (cell) => {
                                 const value = cell.getValue();
-
-                                // ✅ тут всегда актуальные данные строки
                                 const row = cell.getRow()?.getData?.() ?? null;
 
                                 if (col.is_lookup) {
@@ -428,8 +435,8 @@
                                     mode: 'index',
                                     name: col.key,
                                     value: value,
-                                    config: col.fieldConfig ?? null,  // ✅ config поля
-                                    row: row,                         // ✅ вся строка
+                                    config: col.fieldConfig ?? null,
+                                    row: row,
                                     col: col,
                                     disabled: true,
                                     required: false,
@@ -448,20 +455,14 @@
                         title: 'Действия',
                         field: '__actions',
                         headerSort: false,
-
-                        // ✅ фиксируем колонку
                         frozen: true,
-
-                        // ✅ фиксируем ширину, чтобы не раздувалась
                         width: 140,
                         minWidth: 140,
                         maxWidth: 140,
                         widthGrow: 0,
                         widthShrink: 0,
-
                         hozAlign: 'right',
                         headerHozAlign: 'right',
-
                         formatter: (cell) => {
                             const row = cell.getRow()?.getData?.() ?? {};
                             const id = row?.[primaryKey];
@@ -481,18 +482,16 @@
 
                     this.tabulator = new Tabulator('#mainTabulator', {
                         data: this.items,
-
-                        // ✅ чтобы появилась горизонтальная прокрутка (таблица = сумме ширин колонок)
                         layout: "fitDataTable",
-
                         responsiveLayout: false,
                         reactiveData: false,
                         index: primaryKey,
                         columns: cols,
                         pagination: false,
-                        height: "auto",
 
-                        // ✅ чтобы таблица гарантированно стала шире контейнера при большом кол-ве колонок
+                        // ✅ фиксированная высота таблицы (вертикальный скролл будет внутри)
+                        height: "70vh",   // <-- поменяй на "600px" или "calc(100vh - 260px)" при необходимости
+
                         columnDefaults: {
                             minWidth: 140,
                             resizable: true
@@ -514,7 +513,6 @@
                         const titleEl = h.querySelector('.tabulator-col-title');
                         if (!titleEl) return;
 
-                        // базовый тайтл из конфига
                         let baseTitle = titleEl.textContent.replace(/[▲▼]\s*$/, '').trim();
 
                         const cfg = this.config.columns.find(c => c.key === field);
