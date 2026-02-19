@@ -72,18 +72,13 @@ return [
     */
     'fields' => [
 
-        'id' => [
-            'name' => 'ID',
-            'field_mode' => 'index,show',
-            'is_filter_need' => true,
-            'control' => 'number',
-            'formatter' => null,
-            'db_type' => 'integer',
-            'is_lookup' => false,
-        ],
-
-        'click_id' => [
-            'name' => 'Click ID (ext)',
+        /*
+  |--------------------------------------------------------------------------
+  | SUB IDs (сгруппированы рядом)
+  |--------------------------------------------------------------------------
+  */
+        'sub_id' => [
+            'name' => 'sub_id',
             'field_mode' => 'index,show',
             'is_filter_need' => true,
             'control' => 'text',
@@ -101,38 +96,11 @@ return [
             'db_type' => 'datetime',
             'is_lookup' => false,
         ],
-        /*
-        |--------------------------------------------------------------------------
-        | Остальные поля
-        |--------------------------------------------------------------------------
-        */
-        'visitor_code' => [
-            'name' => 'visitor_code',
-            'field_mode' => 'show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-//
-//        'campaign_id' => [
-//            'name' => 'Кампания',
-//            'field_mode' => 'index,create,edit,show',
-//            'is_filter_need' => true,
-//            'control' => 'lookup',
-//            'formatter' => null,
-//            'db_type' => 'integer',
-//            'is_lookup' => true,
-//            'lookup_api' => '/api/v1/campaigns',
-//            'lookup_id' => 'id',
-//            'lookup_name' => 'name',
-//        ],
 
-        'campaign' => [
-            'name' => 'campaign',
+        'ip' => [
+            'name' => 'IP',
             'field_mode' => 'index,show',
-            'is_filter_need' => false,
+            'is_filter_need' => true,
             'control' => 'text',
             'formatter' => null,
             'db_type' => 'string',
@@ -141,47 +109,13 @@ return [
 
         'ext_campaign_id' => [
             'name' => 'ext_campaign_id',
-            'field_mode' => 'show',
+            'field_mode' => 'index,show',
             'is_filter_need' => false,
             'control' => 'number',
             'formatter' => null,
             'db_type' => 'integer',
             'is_lookup' => false,
         ],
-
-
-//        'campaign_group_id' => [
-//            'name' => 'campaign_group_id',
-//            'field_mode' => 'show',
-//            'is_filter_need' => false,
-//            'control' => 'number',
-//            'formatter' => null,
-//            'db_type' => 'integer',
-//            'is_lookup' => false,
-//        ],
-
-        'campaign_group' => [
-            'name' => 'campaign_group',
-            'field_mode' => 'show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-//        'stream_id' => [
-//            'name' => 'Стрим',
-//            'field_mode' => 'index,create,edit,show',
-//            'is_filter_need' => true,
-//            'control' => 'lookup',
-//            'formatter' => null,
-//            'db_type' => 'integer',
-//            'is_lookup' => true,
-//            'lookup_api' => '/api/v1/streams',
-//            'lookup_id' => 'id',
-//            'lookup_name' => 'name',
-//        ],
 
         'stream' => [
             'name' => 'stream',
@@ -193,22 +127,224 @@ return [
             'is_lookup' => false,
         ],
 
-//        'offer_id' => [
-//            'name' => 'Оффер',
-//            'field_mode' => 'index,create,edit,show',
-//            'is_filter_need' => true,
-//            'control' => 'lookup',
-//            'formatter' => null,
-//            'db_type' => 'integer',
-//            'is_lookup' => true,
-//            'lookup_api' => '/api/v1/offers',
-//            'lookup_id' => 'id',
-//            'lookup_name' => 'name',
-//        ],
+        'landing' => [
+            'name' => 'landing',
+            'field_mode' => 'index,show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
 
         'offer' => [
             'name' => 'offer',
             'field_mode' => 'index,show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'source' => [
+            'name' => 'source',
+            'field_mode' => 'index,show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'partner_id' => [
+            'name' => 'partner_id',
+            'field_mode' => 'index,show',
+            'is_filter_need' => false,
+            'control' => 'number',
+            'formatter' => null,
+            'db_type' => 'integer',
+            'is_lookup' => false,
+        ],
+
+        'country' => [
+            'name' => 'Страна',
+            'field_mode' => 'index,show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'modifier' => 'flag',
+            'modifier_field'=>'country_code',
+            'template'=>'',
+            'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'region' => [
+            'name' => 'region',
+            'field_mode' => 'index,show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'city' => [
+            'name' => 'city',
+            'field_mode' => 'index,show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'os' => [
+            'name' => 'ОС',
+            'field_mode' => 'index,show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'modifier' => 'icon',
+            'icon_path' =>'/assets/images/os/',
+            'width' =>'24px',
+            'height' =>'24px',
+            'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'browser' => [
+            'name' => 'browser',
+            'field_mode' => 'index,show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'modifier' => 'icon',
+            'icon_path' =>'/assets/images/browser/',
+            'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'connection_type' => [
+            'name' => 'connection_type',
+            'field_mode' => 'index,show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'device_type' => [
+            'name' => 'device_type',
+            'field_mode' => 'index,show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'device_model' => [
+            'name' => 'device_model',
+            'field_mode' => 'index,show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'is_bot' => [
+            'name' => 'is_bot',
+            'field_mode' => 'index,show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'boolean',
+            'is_lookup' => false,
+        ],
+
+        'is_unique_campaign' => [
+            'name' => 'is_unique_campaign',
+            'field_mode' => 'index,show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'boolean',
+            'is_lookup' => false,
+        ],
+
+        'is_lead' => [
+            'name' => 'is_lead',
+            'field_mode' => 'index,show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'boolean',
+            'is_lookup' => false,
+        ],
+
+        'is_sale' => [
+            'name' => 'is_sale',
+            'field_mode' => 'index,show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'boolean',
+            'is_lookup' => false,
+        ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Остальные поля
+        |--------------------------------------------------------------------------
+        */
+
+        'id' => [
+            'name' => 'ID',
+            'field_mode' => 'show',
+            'is_filter_need' => true,
+            'control' => 'number',
+            'formatter' => null,
+            'db_type' => 'integer',
+            'is_lookup' => false,
+        ],
+
+        'click_id' => [
+            'name' => 'Click ID (ext)',
+            'field_mode' => 'show',
+            'is_filter_need' => true,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'visitor_code' => [
+            'name' => 'visitor_code',
+            'field_mode' => 'show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'campaign' => [
+            'name' => 'campaign',
+            'field_mode' => 'show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'campaign_group' => [
+            'name' => 'campaign_group',
+            'field_mode' => 'show',
             'is_filter_need' => false,
             'control' => 'text',
             'formatter' => null,
@@ -226,17 +362,6 @@ return [
             'is_lookup' => false,
         ],
 
-
-//        'offer_group_id' => [
-//            'name' => 'offer_group_id',
-//            'field_mode' => 'show',
-//            'is_filter_need' => false,
-//            'control' => 'number',
-//            'formatter' => null,
-//            'db_type' => 'integer',
-//            'is_lookup' => false,
-//        ],
-
         'offer_group' => [
             'name' => 'offer_group',
             'field_mode' => 'show',
@@ -247,16 +372,6 @@ return [
             'is_lookup' => false,
         ],
 
-
-        'landing' => [
-            'name' => 'landing',
-            'field_mode' => 'show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
         'landing_id' => [
             'name' => 'landing_id',
             'field_mode' => 'show',
@@ -283,15 +398,6 @@ return [
             'control' => 'number',
             'formatter' => null,
             'db_type' => 'integer',
-            'is_lookup' => false,
-        ],
-        'source' => [
-            'name' => 'source',
-            'field_mode' => 'index,show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
             'is_lookup' => false,
         ],
 
@@ -325,31 +431,6 @@ return [
             'is_lookup' => false,
         ],
 
-//        'geo_id' => [
-//            'name' => 'GEO',
-//            'field_mode' => 'index,create,edit,show',
-//            'is_filter_need' => true,
-//            'control' => 'lookup',
-//            'formatter' => null,
-//            'db_type' => 'integer',
-//            'is_lookup' => true,
-//            'lookup_api' => '/api/v1/geo',
-//            'lookup_id' => 'id',
-//            'lookup_name' => 'name',
-//        ],
-
-        'country' => [
-            'name' => 'Страна',
-            'field_mode' => 'index,show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'modifier' => 'flag',
-            'modifier_field'=>'country_code',
-            'template'=>'',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
         'country_code' => [
             'name' => 'country_code',
             'field_mode' => 'show',
@@ -359,24 +440,7 @@ return [
             'db_type' => 'string',
             'is_lookup' => false,
         ],
-        'region' => [
-            'name' => 'region',
-            'field_mode' => 'show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-        'city' => [
-            'name' => 'city',
-            'field_mode' => 'show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
+
         'isp' => [
             'name' => 'isp',
             'field_mode' => 'show',
@@ -395,47 +459,7 @@ return [
             'db_type' => 'string',
             'is_lookup' => false,
         ],
-        'connection_type' => [
-            'name' => 'connection_type',
-            'field_mode' => 'show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
 
-        'device_type' => [
-            'name' => 'device_type',
-            'field_mode' => 'show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-        'device_model' => [
-            'name' => 'device_model',
-            'field_mode' => 'show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-        'os' => [
-            'name' => 'ОС',
-            'field_mode' => 'index,show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'modifier' => 'icon',
-            'icon_path' =>'/assets/images/os/',
-            'width' =>'24px',
-            'height' =>'24px',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
         'os_version' => [
             'name' => 'os_version',
             'field_mode' => 'show',
@@ -445,15 +469,7 @@ return [
             'db_type' => 'string',
             'is_lookup' => false,
         ],
-        'browser' => [
-            'name' => 'browser',
-            'field_mode' => 'show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
+
         'browser_version' => [
             'name' => 'browser_version',
             'field_mode' => 'show',
@@ -471,16 +487,6 @@ return [
             'control' => 'textarea',
             'formatter' => null,
             'db_type' => 'text',
-            'is_lookup' => false,
-        ],
-
-        'ip' => [
-            'name' => 'IP',
-            'field_mode' => 'show',
-            'is_filter_need' => true,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
             'is_lookup' => false,
         ],
 
@@ -513,15 +519,7 @@ return [
             'db_type' => 'boolean',
             'is_lookup' => false,
         ],
-        'is_unique_campaign' => [
-            'name' => 'is_unique_campaign',
-            'field_mode' => 'show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'boolean',
-            'is_lookup' => false,
-        ],
+
         'is_unique_global' => [
             'name' => 'is_unique_global',
             'field_mode' => 'show',
@@ -531,15 +529,7 @@ return [
             'db_type' => 'boolean',
             'is_lookup' => false,
         ],
-        'is_bot' => [
-            'name' => 'is_bot',
-            'field_mode' => 'show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'boolean',
-            'is_lookup' => false,
-        ],
+
         'is_using_proxy' => [
             'name' => 'is_using_proxy',
             'field_mode' => 'show',
@@ -579,24 +569,7 @@ return [
             'db_type' => 'boolean',
             'is_lookup' => false,
         ],
-        'is_lead' => [
-            'name' => 'is_lead',
-            'field_mode' => 'show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'boolean',
-            'is_lookup' => false,
-        ],
-        'is_sale' => [
-            'name' => 'is_sale',
-            'field_mode' => 'show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'boolean',
-            'is_lookup' => false,
-        ],
+
         'is_rejected' => [
             'name' => 'is_rejected',
             'field_mode' => 'show',
@@ -722,16 +695,6 @@ return [
             'is_lookup' => false,
         ],
 
-        'partner_id' => [
-            'name' => 'partner_id',
-            'field_mode' => 'show',
-            'is_filter_need' => false,
-            'control' => 'number',
-            'formatter' => null,
-            'db_type' => 'integer',
-            'is_lookup' => false,
-        ],
-
         'account_id' => [
             'name' => 'account_id',
             'field_mode' => 'show',
@@ -746,23 +709,6 @@ return [
             'name' => 'ext_id',
             'field_mode' => 'show',
             'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-
-
-        /*
-  |--------------------------------------------------------------------------
-  | SUB IDs (сгруппированы рядом)
-  |--------------------------------------------------------------------------
-  */
-        'sub_id' => [
-            'name' => 'sub_id',
-            'field_mode' => 'index,show',
-            'is_filter_need' => true,
             'control' => 'text',
             'formatter' => null,
             'db_type' => 'string',
@@ -890,7 +836,6 @@ return [
             'db_type' => 'json',
             'is_lookup' => false,
         ],
-
 
         'created_at' => [
             'name' => 'Создано',
