@@ -68,7 +68,7 @@ class DownloadController extends Controller
         $exts = config('download.image.extensions', ['png', 'svg', 'webp', 'jpg', 'jpeg']);
         $found = $this->findFirstExisting('', $dir, (string)$val, $exts);
         if ($found === null) {
-            return $this->serveFallback($field, $variant);
+            return $this->serveFallback($field, $variant, $dir);
         }
 
         return $this->serveFile('', $found);
