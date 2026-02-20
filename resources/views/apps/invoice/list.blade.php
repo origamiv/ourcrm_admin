@@ -1,6 +1,20 @@
 <x-layout.default>
 
     {{-- =====================================================
+        SCRIPTS (подключаем сверху)
+    ===================================================== --}}
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+
+    {{-- field components --}}
+    <script src="/assets/js/components/text.js"></script>
+
+    {{-- menus/components --}}
+    <script src="/assets/js/components/tabulatorFilterMenu.js"></script>
+    <script src="/assets/js/components/tabulatorColumnsMenu.js"></script>
+    <script src="/assets/js/components/deleteModal.js"></script>
+
+    {{-- =====================================================
         1. CONFIG
     ===================================================== --}}
     <script>
@@ -150,7 +164,6 @@
             flex: 0 0 auto;
         }
 
-        /* оставляем кликабельной (disabled проверяем в JS) */
         #mainTabulator .dt-clearfilters-btn[disabled]{
             opacity: .45;
             cursor: default;
@@ -261,12 +274,6 @@
     ===================================================== --}}
     <div x-data="dataTable" x-init="init()">
 
-        {{-- ✅ Field component: text --}}
-        <script src="/assets/js/components/text.js"></script>
-
-        {{-- ✅ NEW: вынесенный компонент фильтров --}}
-        <script src="/assets/js/components/tabulatorFilterMenu.js"></script>
-
         <div class="panel px-0 border-[#e0e6ed] dark:border-[#1b2e4b]">
             <div class="invoice-table overflow-x-auto px-4 pt-4">
                 <div id="mainTabulator"></div>
@@ -318,32 +325,11 @@
             </div>
         </div>
 
-        {{-- DELETE MODAL --}}
-        <template x-teleport="body">
-            <div x-show="deleteModal" x-cloak class="fixed inset-0 z-[99999] flex items-center justify-center bg-black/50">
-                <div @click.away="closeDeleteModal" class="bg-white dark:bg-[#0e1726] rounded-xl shadow-xl max-w-md p-6">
-                    <div class="flex items-center gap-3 mb-4">
-                        <i class="uil uil-exclamation-triangle text-danger text-2xl"></i>
-                        <div class="text-lg font-semibold">Подтверждение удаления</div>
-                    </div>
-
-                    <div class="text-white-dark mb-6">Вы действительно хотите удалить эту запись?</div>
-
-                    <div class="flex justify-end gap-3">
-                        <button class="btn btn-outline-secondary" @click="closeDeleteModal">Нет</button>
-                        <button class="btn btn-danger" @click="confirmDelete">Да</button>
-                    </div>
-                </div>
-            </div>
-        </template>
     </div>
 
     {{-- =====================================================
         3. LOGIC
     ===================================================== --}}
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
-
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('dataTable', () => ({
@@ -356,9 +342,6 @@
                 lookups: {},
                 lookupMaps: {},
 
-                deleteModal: false,
-                deleteId: null,
-
                 page: 1,
                 perpage: window.TABLE_CONFIG.perPage ?? 20,
                 count: 0,
@@ -367,13 +350,10 @@
                 sortBy: null,
                 sortDir: 'desc',
 
-                // ✅ menus
-                colMenuEl: null,
-                colMenuOpen: false,
-                colMenuDocHandler: null,
-
-                // ✅ NEW: фильтр-меню компонентом
+                // ✅ components
                 filterMenu: null,
+                columnsMenu: null,
+                deleteModal: null,
 
                 // filters ui state: {field: {kind, ...}}
                 filters: {},
@@ -412,53 +392,75 @@
                     this.buildColumnsFromConfig();
                     this.initSortFromConfig();
 
-                    // ✅ init filter menu component
-                    this.initFilterMenuComponent();
+                    this.initComponents();
 
                     await this.loadLookups();
 
                     await this.loadData(1);
                     this.buildTable();
 
-                    window.addEventListener('datatable-delete', e => this.openDeleteModal(e.detail));
+                    window.addEventListener('datatable-delete', e => {
+                        const id = e.detail;
+                        this.deleteModal?.open(id);
+                    });
+                },
+
+                initComponents() {
+                    // filter menu
+                    if (window.DTFilterMenu) {
+                        this.filterMenu = new window.DTFilterMenu({
+                            escapeHtml: (s) => this.escapeHtml(s),
+                            escapeAttr: (s) => this.escapeAttr(s),
+
+                            getCol: (field) => this.config.columns.find(c => c.key === field) || null,
+                            inferKind: (col) => this.inferFilterKindByDbType(col),
+
+                            getState: (field) => this.filters?.[field] ?? null,
+                            setState: (field, state) => { this.filters[field] = state; },
+                            deleteState: (field) => { delete this.filters[field]; },
+
+                            onApply: async () => {
+                                await this.loadData(1);
+                                this.syncFilterIcons();
+                            },
+
+                            onClearField: async () => {
+                                await this.loadData(1);
+                                this.syncFilterIcons();
+                            },
+                        });
+                    }
+
+                    // columns menu
+                    if (window.DTColumnsMenu) {
+                        this.columnsMenu = new window.DTColumnsMenu({
+                            escapeHtml: (s) => this.escapeHtml(s),
+                            escapeAttr: (s) => this.escapeAttr(s),
+                            getTabulator: () => this.tabulator
+                        });
+                    }
+
+                    // delete modal
+                    if (window.DeleteModal) {
+                        this.deleteModal = new window.DeleteModal({
+                            onConfirm: async (id) => {
+                                await this.doDelete(id);
+                            }
+                        });
+                    }
 
                     document.addEventListener('keydown', (e) => {
                         if (e.key === 'Escape') {
-                            this.closeColMenu();
-                            this.closeFilterMenu();
+                            this.columnsMenu?.close?.();
+                            this.filterMenu?.close?.();
+                            this.deleteModal?.close?.();
                         }
                     });
                 },
 
-                initFilterMenuComponent() {
-                    if (!window.DTFilterMenu) return;
-
-                    this.filterMenu = new window.DTFilterMenu({
-                        escapeHtml: (s) => this.escapeHtml(s),
-                        escapeAttr: (s) => this.escapeAttr(s),
-
-                        getCol: (field) => this.config.columns.find(c => c.key === field) || null,
-                        inferKind: (col) => this.inferFilterKindByDbType(col),
-
-                        getState: (field) => this.filters?.[field] ?? null,
-                        setState: (field, state) => { this.filters[field] = state; },
-                        deleteState: (field) => { delete this.filters[field]; },
-
-                        onApply: async () => {
-                            // применить текущий state
-                            await this.loadData(1);
-                            this.syncFilterIcons();
-                        },
-
-                        onClearField: async () => {
-                            await this.loadData(1);
-                            this.syncFilterIcons();
-                        },
-                    });
-                },
-
-                closeFilterMenu() {
-                    if (this.filterMenu) this.filterMenu.close();
+                closeMenus() {
+                    this.columnsMenu?.close?.();
+                    this.filterMenu?.close?.();
                 },
 
                 initSortFromConfig() {
@@ -636,9 +638,9 @@
 
                 async resetAllFilters() {
                     this.filters = {};
-                    this.closeFilterMenu();
-                    this.syncFilterIcons();
+                    this.filterMenu?.close?.();
                     await this.loadData(1);
+                    this.syncFilterIcons();
                     this.tabulator?.redraw(true);
                 },
 
@@ -710,106 +712,6 @@
                     await this.loadData(1);
                 },
 
-                // =====================================================
-                // ✅ Columns menu (gear) — NO inputs, keep open on toggle
-                // =====================================================
-                ensureColMenu() {
-                    if (this.colMenuEl) return;
-
-                    const el = document.createElement('div');
-                    el.className = 'dt-menu';
-                    el.style.display = 'none';
-
-                    el.addEventListener('mousedown', (e) => e.stopPropagation());
-                    el.addEventListener('click', (e) => e.stopPropagation());
-
-                    document.body.appendChild(el);
-                    this.colMenuEl = el;
-                },
-
-                renderColMenu() {
-                    if (!this.tabulator || !this.colMenuEl) return;
-
-                    const cols = this.tabulator.getColumns()
-                        .filter(c => (c.getField && c.getField()) && c.getField() !== '__actions');
-
-                    let html = `<div class="dt-menu-title">Колонки</div>`;
-
-                    cols.forEach((c) => {
-                        const def = c.getDefinition();
-                        const field = c.getField();
-                        const title = def.title ?? field;
-                        const visible = c.isVisible();
-
-                        html += `
-                            <div class="dt-menu-item" data-field="${this.escapeAttr(field)}">
-                                <span class="dt-menu-mark">${visible ? '✓' : ''}</span>
-                                <div class="text-sm">${this.escapeHtml(title)}</div>
-                            </div>
-                        `;
-                    });
-
-                    this.colMenuEl.innerHTML = html;
-
-                    this.colMenuEl.querySelectorAll('.dt-menu-item').forEach((rowEl) => {
-                        rowEl.addEventListener('click', () => {
-                            const field = rowEl.getAttribute('data-field');
-                            if (!field) return;
-
-                            const col = this.tabulator.getColumn(field);
-                            if (!col) return;
-
-                            if (col.isVisible()) col.hide();
-                            else col.show();
-
-                            this.renderColMenu();
-                        });
-                    });
-                },
-
-                openColMenuNear(elBtn) {
-                    this.ensureColMenu();
-                    this.renderColMenu();
-
-                    const r = elBtn.getBoundingClientRect();
-                    const w = 320;
-                    const pad = 8;
-
-                    let left = Math.round(r.right - w);
-                    left = Math.max(pad, Math.min(left, window.innerWidth - w - pad));
-
-                    let top = Math.round(r.bottom + 8);
-                    top = Math.max(pad, Math.min(top, window.innerHeight - 200 - pad));
-
-                    this.colMenuEl.style.left = left + 'px';
-                    this.colMenuEl.style.top  = top + 'px';
-                    this.colMenuEl.style.display = 'block';
-                    this.colMenuOpen = true;
-
-                    if (this.colMenuDocHandler) {
-                        document.removeEventListener('mousedown', this.colMenuDocHandler, true);
-                    }
-
-                    setTimeout(() => {
-                        this.colMenuDocHandler = (e) => {
-                            if (!this.colMenuOpen) return;
-                            const inMenu = this.colMenuEl && this.colMenuEl.contains(e.target);
-                            const onBtn = e.target.closest && e.target.closest('.dt-colmenu-btn');
-                            if (!inMenu && !onBtn) this.closeColMenu();
-                        };
-                        document.addEventListener('mousedown', this.colMenuDocHandler, true);
-                    }, 0);
-                },
-
-                closeColMenu() {
-                    this.colMenuOpen = false;
-                    if (this.colMenuEl) this.colMenuEl.style.display = 'none';
-                    if (this.colMenuDocHandler) {
-                        document.removeEventListener('mousedown', this.colMenuDocHandler, true);
-                        this.colMenuDocHandler = null;
-                    }
-                },
-
                 syncFilterIcons() {
                     const holder = document.querySelector('#mainTabulator');
                     if (!holder) return;
@@ -871,9 +773,8 @@
                                     e.preventDefault();
                                     e.stopPropagation();
 
-                                    this.closeColMenu();
-
-                                    if (this.filterMenu) this.filterMenu.toggleNear(fb);
+                                    this.columnsMenu?.close?.();
+                                    this.filterMenu?.toggleNear?.(fb);
                                     return;
                                 }
 
@@ -951,7 +852,6 @@
                                 e.stopPropagation();
                                 if (!this.hasAnyFilters) return;
                                 await this.resetAllFilters();
-                                this.syncFilterIcons();
                                 return;
                             }
 
@@ -960,11 +860,8 @@
                                 e.preventDefault();
                                 e.stopPropagation();
 
-                                this.closeFilterMenu();
-
-                                if (this.colMenuOpen) this.closeColMenu();
-                                else this.openColMenuNear(gearBtn);
-
+                                this.filterMenu?.close?.();
+                                this.columnsMenu?.toggleNear?.(gearBtn);
                                 return;
                             }
                         },
@@ -1003,13 +900,11 @@
 
                     // ✅ закрытие по клику "в пустоту"
                     this.tabulator.on("tableClick", () => {
-                        this.closeColMenu();
-                        this.closeFilterMenu();
+                        this.closeMenus();
                     });
                     this.tabulator.on("headerClick", (e) => {
                         if (!e.target.closest('.dt-colmenu-btn') && !e.target.closest('.dt-filter-btn') && !e.target.closest('.dt-clearfilters-btn')) {
-                            this.closeColMenu();
-                            this.closeFilterMenu();
+                            this.closeMenus();
                         }
                     });
 
@@ -1060,21 +955,11 @@
                 // ============================
                 // 🗑 Delete
                 // ============================
-                openDeleteModal(id) {
-                    this.deleteId = id;
-                    this.deleteModal = true;
-                },
-
-                closeDeleteModal() {
-                    this.deleteId = null;
-                    this.deleteModal = false;
-                },
-
-                async confirmDelete() {
+                async doDelete(id) {
                     const token = localStorage.getItem('access_token');
                     if (!token) return;
 
-                    await fetch(`${this.config.api.delete}/${this.deleteId}/destroy`, {
+                    await fetch(`${this.config.api.delete}/${id}/destroy`, {
                         method: 'DELETE',
                         headers: {
                             'Accept': 'application/json',
@@ -1084,7 +969,7 @@
 
                     const nextPage = (this.page > 1 && this.items.length === 1) ? (this.page - 1) : this.page;
 
-                    this.closeDeleteModal();
+                    this.deleteModal?.close?.();
                     await this.loadData(nextPage);
                 },
 
