@@ -41,7 +41,6 @@ class DownloadController extends Controller
 
         $fieldName = $configField['modifier_field'] ?? $field;
         $val = $record[$fieldName] ?? null;
-
         if (empty($configField['icon_path'])) {
             $baseDir = trim(config('download.image.base_dir', 'public/assets/images'), '/');
             $dir = "{$baseDir}/{$variant}";
@@ -50,19 +49,24 @@ class DownloadController extends Controller
             $dir = $baseDir;
         }
 
+        //dd($val, $dir);
+
         if ($val === null || $val === '') {
             // нет значения — сразу fallback-картинку
             return $this->serveFallback($field, $variant, $dir);
         }
 
-        $val = $this->sanitizeValue((string)$val);
+        if (is_bool($val)) {
+            $val= ($val) ? 'true' : 'false';
+        }
+        else {
+            $val = $this->sanitizeValue((string)$val);
+            $val = (string)$val;
+        }
 
         // 3) Ищем файл и отдаём (логика как у тебя была)
         $exts = config('download.image.extensions', ['png', 'svg', 'webp', 'jpg', 'jpeg']);
-        $found = $this->findFirstExisting('', $dir, $val, $exts);
-
-        //dd($found);
-
+        $found = $this->findFirstExisting('', $dir, (string)$val, $exts);
         if ($found === null) {
             return $this->serveFallback($field, $variant);
         }
