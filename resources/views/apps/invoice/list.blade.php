@@ -89,20 +89,87 @@
         }
 
         /* =====================================================
-           ✅ FIXED HEIGHT (фиксированная высота табулятора)
+           ✅ FIXED HEIGHT
            ===================================================== */
-
-        /* контейнер таблицы ограничиваем по высоте */
         #mainTabulator{
-            height: 70vh;          /* <-- поменяй на нужное: 600px / 75vh / calc(100vh - 260px) */
+            height: 70vh;
             max-height: 70vh;
         }
-
-        /* скролл данных внутри таблицы */
         #mainTabulator .tabulator-tableholder{
             overflow-y: auto !important;
-            /* высоту холдера Tabulator можно не задавать —
-               Tabulator сам рассчитает по высоте контейнера */
+        }
+
+        /* =====================================================
+           ✅ Gear in header "Действия"
+           ===================================================== */
+        #mainTabulator .dt-actions-header{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            width: 100%;
+        }
+        #mainTabulator .tabulator-col[tabulator-field="__actions"] .tabulator-col-title{
+            width: 100%;
+        }
+
+        #mainTabulator .dt-colmenu-btn{
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: rgba(0,0,0,0.04);
+        }
+        .dark #mainTabulator .dt-colmenu-btn{
+            background: rgba(255,255,255,0.08);
+        }
+
+        /* dropdown */
+        .dt-colmenu{
+            position: fixed;
+            z-index: 99999;
+            min-width: 240px;
+            max-height: 340px;
+            overflow: auto;
+            border-radius: 12px;
+            padding: 10px;
+            background: #ffffff;
+            border: 1px solid rgba(0,0,0,0.08);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.15);
+        }
+        .dark .dt-colmenu{
+            background: #0e1726;
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+        }
+
+        .dt-colmenu-title{
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: rgba(0,0,0,0.75);
+        }
+        .dark .dt-colmenu-title{
+            color: rgba(255,255,255,0.8);
+        }
+
+        .dt-colmenu-item{
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 8px;
+            border-radius: 10px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .dt-colmenu-item:hover{
+            background: rgba(0,0,0,0.05);
+        }
+        .dark .dt-colmenu-item:hover{
+            background: rgba(255,255,255,0.08);
         }
     </style>
 
@@ -117,6 +184,26 @@
         <div class="panel px-0 border-[#e0e6ed] dark:border-[#1b2e4b]">
             <div class="invoice-table overflow-x-auto px-4 pt-4">
                 <div id="mainTabulator"></div>
+            </div>
+
+            {{-- ⚙️ Dropdown выбора колонок --}}
+            <div
+                x-show="colMenuOpen"
+                x-cloak
+                class="dt-colmenu"
+                :style="`left:${colMenuPos.x}px; top:${colMenuPos.y}px;`"
+            >
+                <div class="dt-colmenu-title">Колонки</div>
+
+                <template x-for="c in colMenuItems" :key="c.field">
+                    <div class="dt-colmenu-item" @click="toggleColumnVisibility(c.field)">
+                        {{-- важно: чекбокс сам переключает видимость --}}
+                        <input type="checkbox"
+                               :checked="c.visible"
+                               @click.stop="toggleColumnVisibility(c.field)" />
+                        <div class="text-sm" x-text="c.title"></div>
+                    </div>
+                </template>
             </div>
 
             {{-- SERVER PAGER --}}
@@ -223,6 +310,11 @@
                 sortBy: null,
                 sortDir: 'desc',
 
+                // ⚙️ column chooser
+                colMenuOpen: false,
+                colMenuItems: [],
+                colMenuPos: { x: 0, y: 0 },
+
                 get usePagination() {
                     return (this.perpage ?? 0) !== -1;
                 },
@@ -263,6 +355,19 @@
                     window.addEventListener('datatable-delete', e => {
                         this.openDeleteModal(e.detail);
                     });
+
+                    window.addEventListener('datatable-colmenu-toggle', (e) => {
+                        this.toggleColMenu(e.detail?.x, e.detail?.y);
+                    });
+
+                    // ✅ закрытие по "клику в пустоту" (CAPTURE — Tabulator иногда гасит bubbling)
+                    document.addEventListener('mousedown', (e) => {
+                        if (!this.colMenuOpen) return;
+
+                        if (!e.target.closest('.dt-colmenu') && !e.target.closest('.dt-colmenu-btn')) {
+                            this.closeColMenu();
+                        }
+                    }, true);
                 },
 
                 initSortFromConfig() {
@@ -364,6 +469,7 @@
                         if (this.tabulator) {
                             await this.tabulator.replaceData(this.items);
                             this.syncTabulatorSortIndicator();
+                            if (this.colMenuOpen) this.refreshColMenuItems();
                         }
 
                     } finally {
@@ -452,6 +558,7 @@
                         };
                     });
 
+                    // ✅ Actions column with gear IN HEADER
                     cols.push({
                         title: 'Действия',
                         field: '__actions',
@@ -464,6 +571,34 @@
                         widthShrink: 0,
                         hozAlign: 'right',
                         headerHozAlign: 'right',
+
+                        titleFormatter: () => {
+                            return `
+                                <div class="dt-actions-header">
+                                    <span>Действия</span>
+                                    <button class="dt-colmenu-btn text-primary" title="Колонки" type="button">
+                                        <i class="uil uil-setting"></i>
+                                    </button>
+                                </div>
+                            `;
+                        },
+
+                        headerClick: (e) => {
+                            const btn = e.target.closest('.dt-colmenu-btn');
+                            if (!btn) return;
+
+                            e.preventDefault();
+                            e.stopPropagation();
+
+                            const r = btn.getBoundingClientRect();
+                            window.dispatchEvent(new CustomEvent('datatable-colmenu-toggle', {
+                                detail: {
+                                    x: Math.round(r.right - 6 - 240),
+                                    y: Math.round(r.bottom + 8)
+                                }
+                            }));
+                        },
+
                         formatter: (cell) => {
                             const row = cell.getRow()?.getData?.() ?? {};
                             const id = row?.[primaryKey];
@@ -489,17 +624,25 @@
                         index: primaryKey,
                         columns: cols,
                         pagination: false,
-
-                        // ✅ фиксированная высота таблицы (вертикальный скролл будет внутри)
-                        height: "70vh",   // <-- поменяй на "600px" или "calc(100vh - 260px)" при необходимости
-
+                        height: "70vh",
                         columnDefaults: {
                             minWidth: 140,
                             resizable: true
                         },
                     });
 
+                    // ✅ ещё одна гарантия закрытия по клику "в пустоту" внутри табличной области
+                    this.tabulator.on("tableClick", () => {
+                        this.closeColMenu();
+                    });
+                    this.tabulator.on("headerClick", () => {
+                        // headerClick по другим колонкам — тоже закрываем
+                        // (шестерёнка сама откроет, а event там stopPropagation)
+                        this.closeColMenu();
+                    });
+
                     this.syncTabulatorSortIndicator();
+                    this.refreshColMenuItems();
                 },
 
                 syncTabulatorSortIndicator() {
@@ -528,6 +671,58 @@
                     });
                 },
 
+                // ============================
+                // ⚙️ Column chooser
+                // ============================
+                toggleColMenu(x = null, y = null) {
+                    if (x !== null && y !== null) {
+                        const w = 240;
+                        const pad = 8;
+                        const maxX = window.innerWidth - w - pad;
+                        this.colMenuPos.x = Math.max(pad, Math.min(Number(x) || pad, maxX));
+                        this.colMenuPos.y = Math.max(pad, Number(y) || pad);
+                    }
+
+                    this.colMenuOpen = !this.colMenuOpen;
+                    if (this.colMenuOpen) this.refreshColMenuItems();
+                },
+
+                closeColMenu() {
+                    this.colMenuOpen = false;
+                },
+
+                refreshColMenuItems() {
+                    if (!this.tabulator) return;
+
+                    const columns = this.tabulator.getColumns()
+                        .map(c => c.getDefinition())
+                        .filter(def => def.field && def.field !== '__actions');
+
+                    this.colMenuItems = columns.map(def => {
+                        const col = this.tabulator.getColumn(def.field);
+                        return {
+                            field: def.field,
+                            title: def.title ?? def.field,
+                            visible: col ? col.isVisible() : true
+                        };
+                    });
+                },
+
+                toggleColumnVisibility(field) {
+                    if (!this.tabulator) return;
+
+                    const col = this.tabulator.getColumn(field);
+                    if (!col) return;
+
+                    if (col.isVisible()) col.hide();
+                    else col.show();
+
+                    this.refreshColMenuItems();
+                },
+
+                // ============================
+                // 🗑 Delete
+                // ============================
                 openDeleteModal(id) {
                     this.deleteId = id;
                     this.deleteModal = true;
