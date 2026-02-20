@@ -20,8 +20,8 @@ class DownloadController extends Controller
      */
     public function image(Request $request, string $entity, int $id, string $field, string $variant): BinaryFileResponse
     {
-        $entity  = $this->sanitizeSegment($entity);
-        $field   = $this->sanitizeSegment($field);
+        $entity = $this->sanitizeSegment($entity);
+        $field = $this->sanitizeSegment($field);
         $variant = $this->sanitizeSegment($variant);
 
         $config = config('entities.' . $entity);
@@ -42,22 +42,24 @@ class DownloadController extends Controller
         $fieldName = $configField['modifier_field'] ?? $field;
         $val = $record[$fieldName] ?? null;
 
+        if (empty($configField['icon_path'])) {
+            $baseDir = trim(config('download.image.base_dir', 'public/assets/images'), '/');
+            $dir = "{$baseDir}/{$variant}";
+        } else {
+            $baseDir = 'public' . $configField['icon_path'];
+            $dir = $baseDir;
+        }
+
         if ($val === null || $val === '') {
             // нет значения — сразу fallback-картинку
-            return $this->serveFallback($field, $variant);
+            return $this->serveFallback($field, $variant, $dir);
         }
 
         $val = $this->sanitizeValue((string)$val);
 
         // 3) Ищем файл и отдаём (логика как у тебя была)
         $exts = config('download.image.extensions', ['png', 'svg', 'webp', 'jpg', 'jpeg']);
-
-        $baseDir = trim(config('download.image.base_dir', 'public/assets/images'), '/');
-        $pathNoExt = "{$baseDir}/{$variant}/{$val}";
-
-        //dd($pathNoExt);
-
-        $found = $this->findFirstExisting('', $pathNoExt, $exts);
+        $found = $this->findFirstExisting('', $dir, $val, $exts);
 
         //dd($found);
 
@@ -85,8 +87,8 @@ class DownloadController extends Controller
 
         //dd($cacheTtl);
 
-        // return Cache::remember($cacheKey, $cacheTtl, function () use ($url, $request) {
-            $token=$this->buildAuthorizationHeader($request);
+        return Cache::remember($cacheKey, $cacheTtl, function () use ($url, $request) {
+            $token = $this->buildAuthorizationHeader($request);
             //dd($token);
             $client = new Client([
                 'timeout' => (float)config('download.api.timeout', 3.0),
@@ -125,9 +127,8 @@ class DownloadController extends Controller
             }
 
 
-
             return is_array($json) ? $json : [];
-        //});
+        });
     }
 
     private function buildAuthorizationHeader(Request $request): string
@@ -147,24 +148,28 @@ class DownloadController extends Controller
         return '';
     }
 
-    private function serveFallback(string $field, string $variant): BinaryFileResponse
+    private function serveFallback(string $field, string $variant, $dir = ''): BinaryFileResponse
     {
         $disk = config('download.disk', 'local');
         $exts = config('download.image.extensions', ['png', 'svg', 'webp', 'jpg', 'jpeg']);
         $defaultsDir = trim(config('download.image.defaults_dir', 'download/defaults'), '/');
-
-        $fallbackCandidates = [
-            "{$defaultsDir}/{$field}/{$variant}/default",
-            "{$defaultsDir}/_any/{$variant}/default",
-            "{$defaultsDir}/_any/_any/default",
-        ];
-
-        foreach ($fallbackCandidates as $candidateNoExt) {
-            $found = $this->findFirstExisting($disk, $candidateNoExt, $exts);
-            if ($found !== null) {
-                return $this->serveFile($disk, $found);
-            }
+        if (!empty($dir)) {
+            $defaultsDir = $dir;
         }
+        //dd($dir);
+
+//        $fallbackCandidates = [
+//            "{$defaultsDir}/{$field}/{$variant}/default",
+//            "{$defaultsDir}/_any/{$variant}/default",
+//            "{$defaultsDir}/_any/_any/default",
+//        ];
+
+        //foreach ($fallbackCandidates as $candidateNoExt) {
+        $found = $this->findFirstExisting($disk, $defaultsDir, 'default', $exts);
+        if ($found !== null) {
+            return $this->serveFile($disk, $found);
+        }
+        //}
 
         abort(404);
     }
@@ -172,24 +177,24 @@ class DownloadController extends Controller
     private function serveFile(string $disk, string $relativePath): BinaryFileResponse
     {
         //$absolutePath = Storage::disk($disk)->path($relativePath);
-        $absolutePath=base_path($relativePath);
+        $absolutePath = base_path($relativePath);
 
         return response()->file($absolutePath, [
             'Cache-Control' => 'public, max-age=' . (int)config('download.cache.max_age', 604800) . ', immutable',
         ]);
     }
 
-    private function findFirstExisting(string $disk, string $pathNoExt, array $exts): ?string
+    private function findFirstExisting(string $disk, string $dir, string $fn, array $exts): ?string
     {
+        $pathNoExt = $dir . '/' . $fn;
         foreach ($exts as $ext) {
             $p = "/{$pathNoExt}.{$ext}";
             //if (Storage::disk($disk)->exists($p))
-            if (file_exists(base_path($p)))
-            {
+            if (file_exists(base_path($p))) {
                 return $p;
             }
         }
-        return null;
+        return $dir . "/default.png";
     }
 
     private function sanitizeSegment(string $s): string

@@ -206,7 +206,7 @@ return [
             'is_filter_need' => false,
             'control' => 'text',
             'modifier' => 'icon',
-            'icon_path' =>'/assets/images/os/',
+            'icon_path' =>'/assets/images/os',
             'width' =>'24px',
             'height' =>'24px',
             'formatter' => null,

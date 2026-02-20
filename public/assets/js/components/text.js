@@ -58,7 +58,8 @@
                 if ((config.icon_path != null)) {
                     path = config.icon_path;
                 }
-                return '<img src="' + path + modifierFieldValue + '.png" width="'+width+'" height="'+height+'" title="' + value + '" >';
+                return '<img src=\'/download/image/'+entity+'/'+row['id']+'/'+name+'/icons\' width="'+width+'" height="'+height+'" title="' + value + '"  >';
+                //return '<img src="' + path + modifierFieldValue + '.png" width="'+width+'" height="'+height+'" title="' + value + '" >';
             }
 
             if (value === null || value === undefined || value === '') return '—';
