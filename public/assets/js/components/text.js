@@ -48,7 +48,9 @@
             if (modifierFieldValue == null) {modifierFieldValue = value;}
 
             if ((config.modifier != null) && (config.modifier == 'flag')) {
-                return '<img src=\'/download/image/'+entity+'/'+row['id']+'/'+name+'/flags\' title="' + value + '" >';
+                let width="24px";
+                let height="24px";
+                return '<img src=\'/download/image/'+entity+'/'+row['id']+'/'+name+'/flags\' width="'+width+'" title="' + value + '" >';
                 //return '<img src=\'assets/images/flags/' + modifierFieldValue + '.svg\' title="' + value + '" >';
             }
             if ((config.modifier != null) && (config.modifier == 'icon')) {
