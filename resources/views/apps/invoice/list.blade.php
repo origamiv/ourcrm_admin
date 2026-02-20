@@ -127,12 +127,14 @@
             background: rgba(255,255,255,0.08);
         }
 
-        /* dropdown */
+        /* =====================================================
+           ✅ Column chooser (pure DOM, appended to body)
+           ===================================================== */
         .dt-colmenu{
             position: fixed;
-            z-index: 99999;
-            min-width: 240px;
-            max-height: 340px;
+            z-index: 2147483647;
+            min-width: 260px;
+            max-height: 360px;
             overflow: auto;
             border-radius: 12px;
             padding: 10px;
@@ -184,26 +186,6 @@
         <div class="panel px-0 border-[#e0e6ed] dark:border-[#1b2e4b]">
             <div class="invoice-table overflow-x-auto px-4 pt-4">
                 <div id="mainTabulator"></div>
-            </div>
-
-            {{-- ⚙️ Dropdown выбора колонок --}}
-            <div
-                x-show="colMenuOpen"
-                x-cloak
-                class="dt-colmenu"
-                :style="`left:${colMenuPos.x}px; top:${colMenuPos.y}px;`"
-            >
-                <div class="dt-colmenu-title">Колонки</div>
-
-                <template x-for="c in colMenuItems" :key="c.field">
-                    <div class="dt-colmenu-item" @click="toggleColumnVisibility(c.field)">
-                        {{-- важно: чекбокс сам переключает видимость --}}
-                        <input type="checkbox"
-                               :checked="c.visible"
-                               @click.stop="toggleColumnVisibility(c.field)" />
-                        <div class="text-sm" x-text="c.title"></div>
-                    </div>
-                </template>
             </div>
 
             {{-- SERVER PAGER --}}
@@ -310,10 +292,10 @@
                 sortBy: null,
                 sortDir: 'desc',
 
-                // ⚙️ column chooser
+                // ✅ Pure DOM column menu (no Alpine rendering/teleport)
+                colMenuEl: null,
                 colMenuOpen: false,
-                colMenuItems: [],
-                colMenuPos: { x: 0, y: 0 },
+                colMenuDocHandler: null,
 
                 get usePagination() {
                     return (this.perpage ?? 0) !== -1;
@@ -356,18 +338,10 @@
                         this.openDeleteModal(e.detail);
                     });
 
-                    window.addEventListener('datatable-colmenu-toggle', (e) => {
-                        this.toggleColMenu(e.detail?.x, e.detail?.y);
+                    // ✅ Escape closes menu
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === 'Escape') this.closeColMenu();
                     });
-
-                    // ✅ закрытие по "клику в пустоту" (CAPTURE — Tabulator иногда гасит bubbling)
-                    document.addEventListener('mousedown', (e) => {
-                        if (!this.colMenuOpen) return;
-
-                        if (!e.target.closest('.dt-colmenu') && !e.target.closest('.dt-colmenu-btn')) {
-                            this.closeColMenu();
-                        }
-                    }, true);
                 },
 
                 initSortFromConfig() {
@@ -469,7 +443,6 @@
                         if (this.tabulator) {
                             await this.tabulator.replaceData(this.items);
                             this.syncTabulatorSortIndicator();
-                            if (this.colMenuOpen) this.refreshColMenuItems();
                         }
 
                     } finally {
@@ -499,6 +472,128 @@
                     }
 
                     await this.loadData(1);
+                },
+
+                // =====================================================
+                // ✅ Column Menu (Pure DOM) — reliable close on outside click
+                // =====================================================
+                ensureColMenu() {
+                    if (this.colMenuEl) return;
+
+                    const el = document.createElement('div');
+                    el.className = 'dt-colmenu';
+                    el.style.display = 'none';
+                    el.setAttribute('role', 'menu');
+
+                    // clicks inside menu should not close it
+                    el.addEventListener('mousedown', (e) => e.stopPropagation());
+                    el.addEventListener('click', (e) => e.stopPropagation());
+
+                    document.body.appendChild(el);
+                    this.colMenuEl = el;
+                },
+
+                renderColMenu() {
+                    if (!this.tabulator || !this.colMenuEl) return;
+
+                    const cols = this.tabulator.getColumns()
+                        .filter(c => (c.getField && c.getField()) && c.getField() !== '__actions');
+
+                    let html = `<div class="dt-colmenu-title">Колонки</div>`;
+
+                    cols.forEach((c) => {
+                        const def = c.getDefinition();
+                        const field = c.getField();
+                        const title = def.title ?? field;
+                        const checked = c.isVisible();
+
+                        html += `
+                            <div class="dt-colmenu-item" data-field="${String(field)}">
+                                <input type="checkbox" ${checked ? 'checked' : ''} />
+                                <div class="text-sm">${this.escapeHtml(title)}</div>
+                            </div>
+                        `;
+                    });
+
+                    this.colMenuEl.innerHTML = html;
+
+                    // wire events
+                    this.colMenuEl.querySelectorAll('.dt-colmenu-item').forEach((rowEl) => {
+                        rowEl.addEventListener('click', (e) => {
+                            const field = rowEl.getAttribute('data-field');
+                            if (!field) return;
+
+                            // toggle
+                            const col = this.tabulator.getColumn(field);
+                            if (!col) return;
+
+                            if (col.isVisible()) col.hide();
+                            else col.show();
+
+                            // keep checkbox synced
+                            const cb = rowEl.querySelector('input[type="checkbox"]');
+                            if (cb) cb.checked = col.isVisible();
+                        });
+
+                        const cb = rowEl.querySelector('input[type="checkbox"]');
+                        if (cb) {
+                            cb.addEventListener('click', (e) => {
+                                e.stopPropagation(); // do not double toggle (row click)
+                                rowEl.click();
+                            });
+                        }
+                    });
+                },
+
+                openColMenuAt(x, y) {
+                    this.ensureColMenu();
+                    this.renderColMenu();
+
+                    const w = 260;
+                    const pad = 8;
+                    const left = Math.max(pad, Math.min((Number(x) || pad), window.innerWidth - w - pad));
+                    const top  = Math.max(pad, (Number(y) || pad));
+
+                    this.colMenuEl.style.left = left + 'px';
+                    this.colMenuEl.style.top  = top + 'px';
+                    this.colMenuEl.style.display = 'block';
+                    this.colMenuOpen = true;
+
+                    // add outside click listener in CAPTURE (чтобы Tabulator не съедал)
+                    if (this.colMenuDocHandler) {
+                        document.removeEventListener('mousedown', this.colMenuDocHandler, true);
+                    }
+
+                    // важно: повесить слушатель в следующий тик, чтобы "тот же клик" по шестерёнке не закрыл меню
+                    setTimeout(() => {
+                        this.colMenuDocHandler = (e) => {
+                            if (!this.colMenuOpen) return;
+
+                            const inMenu = this.colMenuEl && this.colMenuEl.contains(e.target);
+                            const onBtn = e.target.closest && e.target.closest('.dt-colmenu-btn');
+                            if (!inMenu && !onBtn) this.closeColMenu();
+                        };
+                        document.addEventListener('mousedown', this.colMenuDocHandler, true);
+                    }, 0);
+                },
+
+                closeColMenu() {
+                    this.colMenuOpen = false;
+                    if (this.colMenuEl) this.colMenuEl.style.display = 'none';
+
+                    if (this.colMenuDocHandler) {
+                        document.removeEventListener('mousedown', this.colMenuDocHandler, true);
+                        this.colMenuDocHandler = null;
+                    }
+                },
+
+                escapeHtml(str) {
+                    return String(str)
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#039;');
                 },
 
                 buildTable() {
@@ -591,12 +686,12 @@
                             e.stopPropagation();
 
                             const r = btn.getBoundingClientRect();
-                            window.dispatchEvent(new CustomEvent('datatable-colmenu-toggle', {
-                                detail: {
-                                    x: Math.round(r.right - 6 - 240),
-                                    y: Math.round(r.bottom + 8)
-                                }
-                            }));
+                            const x = Math.round(r.right - 8 - 260);
+                            const y = Math.round(r.bottom + 8);
+
+                            // toggle open/close
+                            if (this.colMenuOpen) this.closeColMenu();
+                            else this.openColMenuAt(x, y);
                         },
 
                         formatter: (cell) => {
@@ -631,18 +726,14 @@
                         },
                     });
 
-                    // ✅ ещё одна гарантия закрытия по клику "в пустоту" внутри табличной области
-                    this.tabulator.on("tableClick", () => {
-                        this.closeColMenu();
-                    });
-                    this.tabulator.on("headerClick", () => {
-                        // headerClick по другим колонкам — тоже закрываем
-                        // (шестерёнка сама откроет, а event там stopPropagation)
-                        this.closeColMenu();
+                    // ✅ любые клики по таблице закрывают меню (на всякий)
+                    this.tabulator.on("tableClick", () => this.closeColMenu());
+                    this.tabulator.on("headerClick", (e) => {
+                        // если клик не по шестерёнке — закрываем
+                        if (!e.target.closest('.dt-colmenu-btn')) this.closeColMenu();
                     });
 
                     this.syncTabulatorSortIndicator();
-                    this.refreshColMenuItems();
                 },
 
                 syncTabulatorSortIndicator() {
@@ -669,55 +760,6 @@
                             titleEl.textContent = baseTitle;
                         }
                     });
-                },
-
-                // ============================
-                // ⚙️ Column chooser
-                // ============================
-                toggleColMenu(x = null, y = null) {
-                    if (x !== null && y !== null) {
-                        const w = 240;
-                        const pad = 8;
-                        const maxX = window.innerWidth - w - pad;
-                        this.colMenuPos.x = Math.max(pad, Math.min(Number(x) || pad, maxX));
-                        this.colMenuPos.y = Math.max(pad, Number(y) || pad);
-                    }
-
-                    this.colMenuOpen = !this.colMenuOpen;
-                    if (this.colMenuOpen) this.refreshColMenuItems();
-                },
-
-                closeColMenu() {
-                    this.colMenuOpen = false;
-                },
-
-                refreshColMenuItems() {
-                    if (!this.tabulator) return;
-
-                    const columns = this.tabulator.getColumns()
-                        .map(c => c.getDefinition())
-                        .filter(def => def.field && def.field !== '__actions');
-
-                    this.colMenuItems = columns.map(def => {
-                        const col = this.tabulator.getColumn(def.field);
-                        return {
-                            field: def.field,
-                            title: def.title ?? def.field,
-                            visible: col ? col.isVisible() : true
-                        };
-                    });
-                },
-
-                toggleColumnVisibility(field) {
-                    if (!this.tabulator) return;
-
-                    const col = this.tabulator.getColumn(field);
-                    if (!col) return;
-
-                    if (col.isVisible()) col.hide();
-                    else col.show();
-
-                    this.refreshColMenuItems();
                 },
 
                 // ============================
