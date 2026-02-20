@@ -100,20 +100,23 @@
         }
 
         /* =====================================================
-           ✅ Gear in header "Действия"
+           ✅ Header UI (gear + filter)
            ===================================================== */
-        #mainTabulator .dt-actions-header{
+        #mainTabulator .dt-col-header{
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 10px;
             width: 100%;
         }
-        #mainTabulator .tabulator-col[tabulator-field="__actions"] .tabulator-col-title{
-            width: 100%;
+        #mainTabulator .dt-col-header .dt-col-title{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        #mainTabulator .dt-colmenu-btn{
+        #mainTabulator .dt-colmenu-btn,
+        #mainTabulator .dt-filter-btn{
             width: 26px;
             height: 26px;
             border-radius: 8px;
@@ -122,19 +125,30 @@
             justify-content: center;
             cursor: pointer;
             background: rgba(0,0,0,0.04);
+            border: 0;
+            padding: 0;
         }
-        .dark #mainTabulator .dt-colmenu-btn{
+        .dark #mainTabulator .dt-colmenu-btn,
+        .dark #mainTabulator .dt-filter-btn{
             background: rgba(255,255,255,0.08);
         }
 
+        #mainTabulator .dt-filter-btn.dt-active{
+            background: rgba(0, 123, 255, 0.14);
+        }
+        .dark #mainTabulator .dt-filter-btn.dt-active{
+            background: rgba(0, 123, 255, 0.22);
+        }
+
         /* =====================================================
-           ✅ Column chooser (pure DOM, appended to body)
+           ✅ Column chooser + filter menu (pure DOM, appended to body)
            ===================================================== */
-        .dt-colmenu{
+        .dt-menu{
             position: fixed;
             z-index: 2147483647;
-            min-width: 260px;
-            max-height: 360px;
+            min-width: 280px;
+            max-width: 360px;
+            max-height: 420px;
             overflow: auto;
             border-radius: 12px;
             padding: 10px;
@@ -142,23 +156,23 @@
             border: 1px solid rgba(0,0,0,0.08);
             box-shadow: 0 16px 40px rgba(0,0,0,0.15);
         }
-        .dark .dt-colmenu{
+        .dark .dt-menu{
             background: #0e1726;
             border: 1px solid rgba(255,255,255,0.12);
             box-shadow: 0 16px 40px rgba(0,0,0,0.45);
         }
 
-        .dt-colmenu-title{
+        .dt-menu-title{
             font-weight: 600;
             font-size: 13px;
             margin-bottom: 8px;
             color: rgba(0,0,0,0.75);
         }
-        .dark .dt-colmenu-title{
+        .dark .dt-menu-title{
             color: rgba(255,255,255,0.8);
         }
 
-        .dt-colmenu-item{
+        .dt-menu-item{
             display: flex;
             align-items: center;
             gap: 10px;
@@ -167,11 +181,64 @@
             cursor: pointer;
             user-select: none;
         }
-        .dt-colmenu-item:hover{
+        .dt-menu-item:hover{
             background: rgba(0,0,0,0.05);
         }
-        .dark .dt-colmenu-item:hover{
+        .dark .dt-menu-item:hover{
             background: rgba(255,255,255,0.08);
+        }
+
+        .dt-menu-form{
+            display: grid;
+            gap: 8px;
+        }
+        .dt-menu-row{
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 6px;
+        }
+        .dt-menu-row-2{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .dt-menu-label{
+            font-size: 12px;
+            opacity: .75;
+        }
+        .dt-menu-actions{
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            padding-top: 6px;
+        }
+
+        .dt-menu input,
+        .dt-menu select{
+            width: 100%;
+            border: 1px solid rgba(0,0,0,0.12);
+            border-radius: 10px;
+            padding: 8px 10px;
+            outline: none;
+            background: transparent;
+        }
+        .dark .dt-menu input,
+        .dark .dt-menu select{
+            border: 1px solid rgba(255,255,255,0.14);
+        }
+
+        .dt-menu .btnx{
+            border-radius: 10px;
+            padding: 8px 10px;
+            border: 1px solid rgba(0,0,0,0.12);
+            background: transparent;
+            cursor: pointer;
+        }
+        .dark .dt-menu .btnx{
+            border: 1px solid rgba(255,255,255,0.14);
+        }
+        .dt-menu .btnx.primary{
+            border-color: rgba(0, 123, 255, 0.45);
         }
     </style>
 
@@ -292,10 +359,18 @@
                 sortBy: null,
                 sortDir: 'desc',
 
-                // ✅ Pure DOM column menu (no Alpine rendering/teleport)
+                // ✅ DOM menus
                 colMenuEl: null,
                 colMenuOpen: false,
                 colMenuDocHandler: null,
+
+                filterMenuEl: null,
+                filterMenuOpen: false,
+                filterMenuDocHandler: null,
+                activeFilterField: null,
+
+                // фильтры (UI state)
+                filters: {},
 
                 get usePagination() {
                     return (this.perpage ?? 0) !== -1;
@@ -338,9 +413,11 @@
                         this.openDeleteModal(e.detail);
                     });
 
-                    // ✅ Escape closes menu
                     document.addEventListener('keydown', (e) => {
-                        if (e.key === 'Escape') this.closeColMenu();
+                        if (e.key === 'Escape') {
+                            this.closeColMenu();
+                            this.closeFilterMenu();
+                        }
                     });
                 },
 
@@ -408,6 +485,114 @@
                     }
                 },
 
+                // =========================================================
+                // ✅ API FILTER MAPPING (NEW FORMAT)
+                // payload.filter = [{field, op, val}]
+                // =========================================================
+                buildApiFilterArray() {
+                    const arr = [];
+
+                    Object.entries(this.filters || {}).forEach(([field, f]) => {
+                        if (!f || !f.kind) return;
+
+                        // TEXT
+                        if (f.kind === 'text') {
+                            const v = String(f.value ?? '').trim();
+                            if (!v) return;
+
+                            // map UI op -> API op
+                            // contains (case-insensitive by default) => icontain
+                            // eq => =
+                            // starts => ilike
+                            // ends => icontain (нет ends в API; делаем contain как максимально близко)
+                            let op = String(f.op || 'icontain');
+
+                            // позволяем хранить сразу API op
+                            const allowed = ['=','>','<','>=','<=','!=','like','ilike','contain','icontain','~','in'];
+                            if (!allowed.includes(op)) {
+                                // legacy UI values:
+                                if (op === 'contains') op = 'icontain';
+                                else if (op === 'eq') op = '=';
+                                else if (op === 'starts') op = 'ilike';
+                                else if (op === 'ends') op = 'icontain';
+                                else op = 'icontain';
+                            }
+
+                            arr.push({ field, op, val: v });
+                            return;
+                        }
+
+                        // NUMBER (between as 2 conditions)
+                        if (f.kind === 'number') {
+                            const hasMin = !(f.min === '' || f.min === null || f.min === undefined);
+                            const hasMax = !(f.max === '' || f.max === null || f.max === undefined);
+
+                            if (!hasMin && !hasMax) return;
+
+                            if (hasMin) arr.push({ field, op: '>=', val: Number(f.min) });
+                            if (hasMax) arr.push({ field, op: '<=', val: Number(f.max) });
+                            return;
+                        }
+
+                        // DATE (between as 2 conditions)
+                        if (f.kind === 'date') {
+                            const from = String(f.from ?? '').trim();
+                            const to = String(f.to ?? '').trim();
+                            if (!from && !to) return;
+
+                            if (from) arr.push({ field, op: '>=', val: from });
+                            if (to)   arr.push({ field, op: '<=', val: to });
+                            return;
+                        }
+
+                        // BOOL (= 0/1)
+                        if (f.kind === 'bool') {
+                            if (f.value === '' || f.value === null || f.value === undefined) return;
+                            const v = (String(f.value) === '1') ? 1 : 0;
+                            arr.push({ field, op: '=', val: v });
+                            return;
+                        }
+
+                        // SELECT (=) or IN (array)
+                        if (f.kind === 'select') {
+                            const v = f.value;
+
+                            if (Array.isArray(v)) {
+                                if (v.length === 0) return;
+                                arr.push({ field, op: 'in', val: v });
+                                return;
+                            }
+
+                            if (v === '' || v === null || v === undefined) return;
+                            arr.push({ field, op: '=', val: v });
+                            return;
+                        }
+
+                        // JSON (~) (если вдруг будешь использовать)
+                        if (f.kind === 'json') {
+                            const v = String(f.value ?? '').trim();
+                            if (!v) return;
+                            arr.push({ field, op: '~', val: v });
+                            return;
+                        }
+                    });
+
+                    return arr;
+                },
+
+                hasActiveFilter(field) {
+                    const f = this.filters?.[field];
+                    if (!f) return false;
+
+                    if (f.kind === 'text') return String(f.value ?? '').trim().length > 0;
+                    if (f.kind === 'number') return (f.min !== '' && f.min !== null && f.min !== undefined) || (f.max !== '' && f.max !== null && f.max !== undefined);
+                    if (f.kind === 'date') return String(f.from ?? '').trim() || String(f.to ?? '').trim();
+                    if (f.kind === 'bool') return !(f.value === '' || f.value === null || f.value === undefined);
+                    if (f.kind === 'select') return Array.isArray(f.value) ? f.value.length > 0 : !(f.value === '' || f.value === null || f.value === undefined);
+
+                    return false;
+                },
+
                 async loadData(page = 1) {
                     const token = localStorage.getItem('access_token');
                     if (!token) return;
@@ -418,7 +603,8 @@
                         const payload = {
                             page: Math.max(1, Number(page) || 1),
                             perpage: Number(this.perpage),
-                            order: [{ field: this.sortBy, direction: (this.sortDir || 'desc') }]
+                            order: [{ field: this.sortBy, direction: (this.sortDir || 'desc') }],
+                            filter: this.buildApiFilterArray(), // ✅ FIX HERE
                         };
 
                         const response = await fetch(this.config.api.list, {
@@ -443,6 +629,7 @@
                         if (this.tabulator) {
                             await this.tabulator.replaceData(this.items);
                             this.syncTabulatorSortIndicator();
+                            this.syncFilterIcons();
                         }
 
                     } finally {
@@ -475,17 +662,15 @@
                 },
 
                 // =====================================================
-                // ✅ Column Menu (Pure DOM) — reliable close on outside click
+                // ✅ Column chooser menu (gear)
                 // =====================================================
                 ensureColMenu() {
                     if (this.colMenuEl) return;
 
                     const el = document.createElement('div');
-                    el.className = 'dt-colmenu';
+                    el.className = 'dt-menu';
                     el.style.display = 'none';
-                    el.setAttribute('role', 'menu');
 
-                    // clicks inside menu should not close it
                     el.addEventListener('mousedown', (e) => e.stopPropagation());
                     el.addEventListener('click', (e) => e.stopPropagation());
 
@@ -499,7 +684,7 @@
                     const cols = this.tabulator.getColumns()
                         .filter(c => (c.getField && c.getField()) && c.getField() !== '__actions');
 
-                    let html = `<div class="dt-colmenu-title">Колонки</div>`;
+                    let html = `<div class="dt-menu-title">Колонки</div>`;
 
                     cols.forEach((c) => {
                         const def = c.getDefinition();
@@ -508,7 +693,7 @@
                         const checked = c.isVisible();
 
                         html += `
-                            <div class="dt-colmenu-item" data-field="${String(field)}">
+                            <div class="dt-menu-item" data-field="${String(field)}">
                                 <input type="checkbox" ${checked ? 'checked' : ''} />
                                 <div class="text-sm">${this.escapeHtml(title)}</div>
                             </div>
@@ -517,20 +702,17 @@
 
                     this.colMenuEl.innerHTML = html;
 
-                    // wire events
-                    this.colMenuEl.querySelectorAll('.dt-colmenu-item').forEach((rowEl) => {
-                        rowEl.addEventListener('click', (e) => {
+                    this.colMenuEl.querySelectorAll('.dt-menu-item').forEach((rowEl) => {
+                        rowEl.addEventListener('click', () => {
                             const field = rowEl.getAttribute('data-field');
                             if (!field) return;
 
-                            // toggle
                             const col = this.tabulator.getColumn(field);
                             if (!col) return;
 
                             if (col.isVisible()) col.hide();
                             else col.show();
 
-                            // keep checkbox synced
                             const cb = rowEl.querySelector('input[type="checkbox"]');
                             if (cb) cb.checked = col.isVisible();
                         });
@@ -538,7 +720,7 @@
                         const cb = rowEl.querySelector('input[type="checkbox"]');
                         if (cb) {
                             cb.addEventListener('click', (e) => {
-                                e.stopPropagation(); // do not double toggle (row click)
+                                e.stopPropagation();
                                 rowEl.click();
                             });
                         }
@@ -549,7 +731,7 @@
                     this.ensureColMenu();
                     this.renderColMenu();
 
-                    const w = 260;
+                    const w = 280;
                     const pad = 8;
                     const left = Math.max(pad, Math.min((Number(x) || pad), window.innerWidth - w - pad));
                     const top  = Math.max(pad, (Number(y) || pad));
@@ -559,16 +741,13 @@
                     this.colMenuEl.style.display = 'block';
                     this.colMenuOpen = true;
 
-                    // add outside click listener in CAPTURE (чтобы Tabulator не съедал)
                     if (this.colMenuDocHandler) {
                         document.removeEventListener('mousedown', this.colMenuDocHandler, true);
                     }
 
-                    // важно: повесить слушатель в следующий тик, чтобы "тот же клик" по шестерёнке не закрыл меню
                     setTimeout(() => {
                         this.colMenuDocHandler = (e) => {
                             if (!this.colMenuOpen) return;
-
                             const inMenu = this.colMenuEl && this.colMenuEl.contains(e.target);
                             const onBtn = e.target.closest && e.target.closest('.dt-colmenu-btn');
                             if (!inMenu && !onBtn) this.closeColMenu();
@@ -580,22 +759,272 @@
                 closeColMenu() {
                     this.colMenuOpen = false;
                     if (this.colMenuEl) this.colMenuEl.style.display = 'none';
-
                     if (this.colMenuDocHandler) {
                         document.removeEventListener('mousedown', this.colMenuDocHandler, true);
                         this.colMenuDocHandler = null;
                     }
                 },
 
-                escapeHtml(str) {
-                    return String(str)
-                        .replace(/&/g, '&amp;')
-                        .replace(/</g, '&lt;')
-                        .replace(/>/g, '&gt;')
-                        .replace(/"/g, '&quot;')
-                        .replace(/'/g, '&#039;');
+                // =====================================================
+                // ✅ Filter menu
+                // =====================================================
+                ensureFilterMenu() {
+                    if (this.filterMenuEl) return;
+
+                    const el = document.createElement('div');
+                    el.className = 'dt-menu';
+                    el.style.display = 'none';
+
+                    el.addEventListener('mousedown', (e) => e.stopPropagation());
+                    el.addEventListener('click', (e) => e.stopPropagation());
+
+                    document.body.appendChild(el);
+                    this.filterMenuEl = el;
                 },
 
+                inferFilterKind(col) {
+                    if (col.is_lookup) return 'select';
+
+                    const control = String(col.control || '').toLowerCase();
+
+                    if (['checkbox','switch','bool','boolean'].includes(control)) return 'bool';
+                    if (['number','int','integer','float','double','decimal'].includes(control)) return 'number';
+                    if (['date','datetime','datetime_local','datetimelocal','time'].includes(control)) return 'date';
+                    if (['select','dropdown','radio'].includes(control)) return 'select';
+
+                    return 'text';
+                },
+
+                getSelectOptionsFor(col) {
+                    const field = col.key;
+
+                    if (col.is_lookup) {
+                        const list = this.lookups?.[field] || [];
+                        const idKey = col.lookup_id;
+                        const nameKey = col.lookup_name;
+
+                        return list.map(item => ({
+                            value: item?.[idKey],
+                            label: item?.[nameKey] ?? String(item?.[idKey] ?? '')
+                        })).filter(o => o.value !== undefined && o.value !== null);
+                    }
+
+                    const opt = col.options || col.fieldConfig?.formatter_options || null;
+                    if (opt?.items && Array.isArray(opt.items)) {
+                        return opt.items.map(i => ({ value: i.value, label: i.label ?? i.name ?? String(i.value) }));
+                    }
+                    if (opt?.options && typeof opt.options === 'object') {
+                        return Object.entries(opt.options).map(([v, l]) => ({ value: v, label: String(l) }));
+                    }
+
+                    return [];
+                },
+
+                renderFilterMenu(field) {
+                    if (!this.filterMenuEl) return;
+
+                    const col = this.config.columns.find(c => c.key === field);
+                    if (!col) return;
+
+                    const kind = this.inferFilterKind(col);
+
+                    if (!this.filters[field] || this.filters[field].kind !== kind) {
+                        // ✅ операции под твой API
+                        if (kind === 'text')   this.filters[field] = { kind, op: 'icontain', value: '' };
+                        if (kind === 'number') this.filters[field] = { kind, min: '', max: '' };
+                        if (kind === 'date')   this.filters[field] = { kind, from: '', to: '' };
+                        if (kind === 'bool')   this.filters[field] = { kind, value: '' };
+                        if (kind === 'select') this.filters[field] = { kind, value: '' };
+                    }
+
+                    const state = this.filters[field];
+                    const title = col.title ?? field;
+
+                    let body = `<div class="dt-menu-title">Фильтр: ${this.escapeHtml(title)}</div>`;
+                    body += `<div class="dt-menu-form">`;
+
+                    if (kind === 'text') {
+                        body += `
+                            <div class="dt-menu-row">
+                                <div class="dt-menu-label">Операция</div>
+                                <select data-k="op">
+                                    <option value="like" ${state.op==='like'?'selected':''}>Начинается (с учётом регистра)</option>
+                                    <option value="ilike" ${state.op==='ilike'?'selected':''}>Начинается (без учёта регистра)</option>
+                                    <option value="contain" ${state.op==='contain'?'selected':''}>Содержит (с учётом регистра)</option>
+                                    <option value="icontain" ${state.op==='icontain'?'selected':''}>Содержит (без учёта регистра)</option>
+                                    <option value="=" ${state.op==='='?'selected':''}>Точное совпадение</option>
+                                    <option value="!=" ${state.op==='!='?'selected':''}>Не равно</option>
+                                </select>
+                            </div>
+                            <div class="dt-menu-row">
+                                <div class="dt-menu-label">Значение</div>
+                                <input data-k="value" type="text" value="${this.escapeAttr(state.value ?? '')}" placeholder="Введите текст">
+                            </div>
+                        `;
+                    }
+
+                    if (kind === 'number') {
+                        body += `
+                            <div class="dt-menu-row-2">
+                                <div class="dt-menu-row">
+                                    <div class="dt-menu-label">От (>=)</div>
+                                    <input data-k="min" type="number" value="${this.escapeAttr(state.min ?? '')}" placeholder="min">
+                                </div>
+                                <div class="dt-menu-row">
+                                    <div class="dt-menu-label">До (<=)</div>
+                                    <input data-k="max" type="number" value="${this.escapeAttr(state.max ?? '')}" placeholder="max">
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    if (kind === 'date') {
+                        body += `
+                            <div class="dt-menu-row-2">
+                                <div class="dt-menu-row">
+                                    <div class="dt-menu-label">С (>=)</div>
+                                    <input data-k="from" type="date" value="${this.escapeAttr(state.from ?? '')}">
+                                </div>
+                                <div class="dt-menu-row">
+                                    <div class="dt-menu-label">По (<=)</div>
+                                    <input data-k="to" type="date" value="${this.escapeAttr(state.to ?? '')}">
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    if (kind === 'bool') {
+                        body += `
+                            <div class="dt-menu-row">
+                                <div class="dt-menu-label">Значение</div>
+                                <select data-k="value">
+                                    <option value="" ${state.value===''?'selected':''}>Любое</option>
+                                    <option value="1" ${String(state.value)==='1'?'selected':''}>Да</option>
+                                    <option value="0" ${String(state.value)==='0'?'selected':''}>Нет</option>
+                                </select>
+                            </div>
+                        `;
+                    }
+
+                    if (kind === 'select') {
+                        const opts = this.getSelectOptionsFor(col);
+                        let optionsHtml = `<option value="">Любое</option>`;
+                        opts.forEach(o => {
+                            const sel = String(o.value) === String(state.value) ? 'selected' : '';
+                            optionsHtml += `<option value="${this.escapeAttr(o.value)}" ${sel}>${this.escapeHtml(o.label)}</option>`;
+                        });
+
+                        body += `
+                            <div class="dt-menu-row">
+                                <div class="dt-menu-label">Значение (=)</div>
+                                <select data-k="value">
+                                    ${optionsHtml}
+                                </select>
+                            </div>
+                        `;
+                    }
+
+                    body += `
+                        <div class="dt-menu-actions">
+                            <button class="btnx" type="button" data-action="clear">Сбросить</button>
+                            <button class="btnx primary" type="button" data-action="apply">Применить</button>
+                        </div>
+                    `;
+                    body += `</div>`;
+
+                    this.filterMenuEl.innerHTML = body;
+
+                    // bind inputs -> state
+                    const el = this.filterMenuEl;
+
+                    el.querySelectorAll('[data-k]').forEach(inp => {
+                        const k = inp.getAttribute('data-k');
+                        if (!k) return;
+
+                        const handler = () => { this.filters[field][k] = inp.value; };
+
+                        inp.addEventListener('input', handler);
+                        inp.addEventListener('change', handler);
+                    });
+
+                    const btnApply = el.querySelector('[data-action="apply"]');
+                    const btnClear = el.querySelector('[data-action="clear"]');
+
+                    if (btnApply) {
+                        btnApply.addEventListener('click', async () => {
+                            this.closeFilterMenu();
+                            await this.loadData(1);
+                        });
+                    }
+
+                    if (btnClear) {
+                        btnClear.addEventListener('click', async () => {
+                            delete this.filters[field];
+                            this.closeFilterMenu();
+                            await this.loadData(1);
+                        });
+                    }
+                },
+
+                openFilterMenuAt(field, x, y) {
+                    this.ensureFilterMenu();
+                    this.activeFilterField = field;
+
+                    this.renderFilterMenu(field);
+
+                    const w = 280;
+                    const pad = 8;
+                    const left = Math.max(pad, Math.min((Number(x) || pad), window.innerWidth - w - pad));
+                    const top  = Math.max(pad, (Number(y) || pad));
+
+                    this.filterMenuEl.style.left = left + 'px';
+                    this.filterMenuEl.style.top  = top + 'px';
+                    this.filterMenuEl.style.display = 'block';
+                    this.filterMenuOpen = true;
+
+                    if (this.filterMenuDocHandler) {
+                        document.removeEventListener('mousedown', this.filterMenuDocHandler, true);
+                    }
+
+                    setTimeout(() => {
+                        this.filterMenuDocHandler = (e) => {
+                            if (!this.filterMenuOpen) return;
+
+                            const inMenu = this.filterMenuEl && this.filterMenuEl.contains(e.target);
+                            const onBtn = e.target.closest && e.target.closest('.dt-filter-btn');
+                            if (!inMenu && !onBtn) this.closeFilterMenu();
+                        };
+                        document.addEventListener('mousedown', this.filterMenuDocHandler, true);
+                    }, 0);
+                },
+
+                closeFilterMenu() {
+                    this.filterMenuOpen = false;
+                    this.activeFilterField = null;
+
+                    if (this.filterMenuEl) this.filterMenuEl.style.display = 'none';
+                    if (this.filterMenuDocHandler) {
+                        document.removeEventListener('mousedown', this.filterMenuDocHandler, true);
+                        this.filterMenuDocHandler = null;
+                    }
+                },
+
+                syncFilterIcons() {
+                    const holder = document.querySelector('#mainTabulator');
+                    if (!holder) return;
+
+                    holder.querySelectorAll('.dt-filter-btn').forEach(btn => {
+                        const field = btn.getAttribute('data-field');
+                        if (!field) return;
+
+                        if (this.hasActiveFilter(field)) btn.classList.add('dt-active');
+                        else btn.classList.remove('dt-active');
+                    });
+                },
+
+                // =====================================================
+                // Tabulator build
+                // =====================================================
                 buildTable() {
                     if (!window.Tabulator) {
                         console.error('Tabulator not loaded');
@@ -616,9 +1045,45 @@
                             field: col.key,
                             headerSort: false,
                             cssClass: "dt-server-sortable",
-                            headerClick: async () => {
+
+                            titleFormatter: () => {
+                                const active = this.hasActiveFilter(col.key) ? 'dt-active' : '';
+                                return `
+                                    <div class="dt-col-header">
+                                        <span class="dt-col-title">${this.escapeHtml(col.title)}</span>
+                                        <button class="dt-filter-btn ${active}" type="button" title="Фильтр" data-field="${this.escapeAttr(col.key)}">
+                                            <i class="uil uil-filter"></i>
+                                        </button>
+                                    </div>
+                                `;
+                            },
+
+                            headerClick: async (e) => {
+                                const fb = e.target.closest && e.target.closest('.dt-filter-btn');
+                                if (fb) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+
+                                    this.closeColMenu();
+
+                                    const field = fb.getAttribute('data-field');
+                                    const r = fb.getBoundingClientRect();
+
+                                    if (this.filterMenuOpen && this.activeFilterField === field) {
+                                        this.closeFilterMenu();
+                                    } else {
+                                        this.openFilterMenuAt(
+                                            field,
+                                            Math.round(r.right - 8 - 280),
+                                            Math.round(r.bottom + 8)
+                                        );
+                                    }
+                                    return;
+                                }
+
                                 await this.onHeaderSort(col.key);
                             },
+
                             formatter: (cell) => {
                                 const value = cell.getValue();
                                 const row = cell.getRow()?.getData?.() ?? null;
@@ -653,7 +1118,7 @@
                         };
                     });
 
-                    // ✅ Actions column with gear IN HEADER
+                    // ✅ Actions column with gear (NO filter)
                     cols.push({
                         title: 'Действия',
                         field: '__actions',
@@ -669,8 +1134,8 @@
 
                         titleFormatter: () => {
                             return `
-                                <div class="dt-actions-header">
-                                    <span>Действия</span>
+                                <div class="dt-col-header">
+                                    <span class="dt-col-title">Действия</span>
                                     <button class="dt-colmenu-btn text-primary" title="Колонки" type="button">
                                         <i class="uil uil-setting"></i>
                                     </button>
@@ -685,11 +1150,12 @@
                             e.preventDefault();
                             e.stopPropagation();
 
+                            this.closeFilterMenu();
+
                             const r = btn.getBoundingClientRect();
-                            const x = Math.round(r.right - 8 - 260);
+                            const x = Math.round(r.right - 8 - 280);
                             const y = Math.round(r.bottom + 8);
 
-                            // toggle open/close
                             if (this.colMenuOpen) this.closeColMenu();
                             else this.openColMenuAt(x, y);
                         },
@@ -726,14 +1192,125 @@
                         },
                     });
 
-                    // ✅ любые клики по таблице закрывают меню (на всякий)
-                    this.tabulator.on("tableClick", () => this.closeColMenu());
+                    this.tabulator.on("tableClick", () => {
+                        this.closeColMenu();
+                        this.closeFilterMenu();
+                    });
+
                     this.tabulator.on("headerClick", (e) => {
-                        // если клик не по шестерёнке — закрываем
-                        if (!e.target.closest('.dt-colmenu-btn')) this.closeColMenu();
+                        if (!e.target.closest('.dt-colmenu-btn') && !e.target.closest('.dt-filter-btn')) {
+                            this.closeColMenu();
+                            this.closeFilterMenu();
+                        }
                     });
 
                     this.syncTabulatorSortIndicator();
+                    this.syncFilterIcons();
+                },
+
+                // ============================
+                // (остальной код без изменений — col menu + delete)
+                // ============================
+                // ✅ Column chooser menu (gear) — implementation
+                ensureColMenu() {
+                    if (this.colMenuEl) return;
+
+                    const el = document.createElement('div');
+                    el.className = 'dt-menu';
+                    el.style.display = 'none';
+
+                    el.addEventListener('mousedown', (e) => e.stopPropagation());
+                    el.addEventListener('click', (e) => e.stopPropagation());
+
+                    document.body.appendChild(el);
+                    this.colMenuEl = el;
+                },
+
+                renderColMenu() {
+                    if (!this.tabulator || !this.colMenuEl) return;
+
+                    const cols = this.tabulator.getColumns()
+                        .filter(c => (c.getField && c.getField()) && c.getField() !== '__actions');
+
+                    let html = `<div class="dt-menu-title">Колонки</div>`;
+
+                    cols.forEach((c) => {
+                        const def = c.getDefinition();
+                        const field = c.getField();
+                        const title = def.title ?? field;
+                        const checked = c.isVisible();
+
+                        html += `
+                            <div class="dt-menu-item" data-field="${String(field)}">
+                                <input type="checkbox" ${checked ? 'checked' : ''} />
+                                <div class="text-sm">${this.escapeHtml(title)}</div>
+                            </div>
+                        `;
+                    });
+
+                    this.colMenuEl.innerHTML = html;
+
+                    this.colMenuEl.querySelectorAll('.dt-menu-item').forEach((rowEl) => {
+                        rowEl.addEventListener('click', () => {
+                            const field = rowEl.getAttribute('data-field');
+                            if (!field) return;
+
+                            const col = this.tabulator.getColumn(field);
+                            if (!col) return;
+
+                            if (col.isVisible()) col.hide();
+                            else col.show();
+
+                            const cb = rowEl.querySelector('input[type="checkbox"]');
+                            if (cb) cb.checked = col.isVisible();
+                        });
+
+                        const cb = rowEl.querySelector('input[type="checkbox"]');
+                        if (cb) {
+                            cb.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                rowEl.click();
+                            });
+                        }
+                    });
+                },
+
+                openColMenuAt(x, y) {
+                    this.ensureColMenu();
+                    this.renderColMenu();
+
+                    const w = 280;
+                    const pad = 8;
+                    const left = Math.max(pad, Math.min((Number(x) || pad), window.innerWidth - w - pad));
+                    const top  = Math.max(pad, (Number(y) || pad));
+
+                    this.colMenuEl.style.left = left + 'px';
+                    this.colMenuEl.style.top  = top + 'px';
+                    this.colMenuEl.style.display = 'block';
+                    this.colMenuOpen = true;
+
+                    if (this.colMenuDocHandler) {
+                        document.removeEventListener('mousedown', this.colMenuDocHandler, true);
+                    }
+
+                    setTimeout(() => {
+                        this.colMenuDocHandler = (e) => {
+                            if (!this.colMenuOpen) return;
+                            const inMenu = this.colMenuEl && this.colMenuEl.contains(e.target);
+                            const onBtn = e.target.closest && e.target.closest('.dt-colmenu-btn');
+                            if (!inMenu && !onBtn) this.closeColMenu();
+                        };
+                        document.addEventListener('mousedown', this.colMenuDocHandler, true);
+                    }, 0);
+                },
+
+                closeColMenu() {
+                    this.colMenuOpen = false;
+                    if (this.colMenuEl) this.colMenuEl.style.display = 'none';
+                    if (this.colMenuDocHandler) {
+                        document.removeEventListener('mousedown', this.colMenuDocHandler, true);
+                        this.colMenuDocHandler = null;
+                    }
                 },
 
                 syncTabulatorSortIndicator() {
@@ -745,21 +1322,35 @@
                     const headers = holder.querySelectorAll('.tabulator-col');
                     headers.forEach((h) => {
                         const field = h.getAttribute('tabulator-field');
-                        const titleEl = h.querySelector('.tabulator-col-title');
-                        if (!titleEl) return;
+                        const titleSpan = h.querySelector('.dt-col-title');
+                        if (!titleSpan) return;
 
-                        let baseTitle = titleEl.textContent.replace(/[▲▼]\s*$/, '').trim();
-
-                        const cfg = this.config.columns.find(c => c.key === field);
-                        if (cfg?.title) baseTitle = cfg.title;
+                        let baseTitle = null;
                         if (field === '__actions') baseTitle = 'Действия';
+                        else {
+                            const cfg = this.config.columns.find(c => c.key === field);
+                            if (cfg?.title) baseTitle = cfg.title;
+                        }
+                        if (!baseTitle) return;
 
                         if (field && field === this.sortBy) {
-                            titleEl.textContent = `${baseTitle} ${this.sortDir === 'asc' ? '▲' : '▼'}`;
+                            titleSpan.textContent = `${baseTitle} ${this.sortDir === 'asc' ? '▲' : '▼'}`;
                         } else {
-                            titleEl.textContent = baseTitle;
+                            titleSpan.textContent = baseTitle;
                         }
                     });
+                },
+
+                escapeHtml(str) {
+                    return String(str)
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#039;');
+                },
+                escapeAttr(str) {
+                    return this.escapeHtml(str).replace(/`/g, '&#096;');
                 },
 
                 // ============================
