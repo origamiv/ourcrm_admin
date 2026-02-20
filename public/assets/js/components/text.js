@@ -34,9 +34,9 @@
         },
 
         // ===== SHOW (mode=show) =====
-        show({value, config = {}, row = {}}) {
+        show({entity, name, value, config = {}, row = {}}) {
             let modifierFieldValue = null;
-            //console.log(row);
+            //console.log(entity);
             if (config.modifier_field != null) {
                 let fieldName = config.modifier_field;
                 if (row[fieldName] != null) {
@@ -48,7 +48,8 @@
             if (modifierFieldValue == null) {modifierFieldValue = value;}
 
             if ((config.modifier != null) && (config.modifier == 'flag')) {
-                return '<img src=\'assets/images/flags/' + modifierFieldValue + '.svg\' title="' + value + '" >';
+                return '<img src=\'/download/image/'+entity+'/'+row['id']+'/'+name+'/flags\' title="' + value + '" >';
+                //return '<img src=\'assets/images/flags/' + modifierFieldValue + '.svg\' title="' + value + '" >';
             }
             if ((config.modifier != null) && (config.modifier == 'icon')) {
                 let path = 'assets/images/icons/';

@@ -433,6 +433,7 @@
 
                                 const payload = {
                                     mode: 'index',
+                                    entity: entity,
                                     name: col.key,
                                     value: value,
                                     config: col.fieldConfig ?? null,
