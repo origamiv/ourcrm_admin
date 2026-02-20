@@ -141,14 +141,14 @@
         }
 
         /* =====================================================
-           ✅ Column chooser + filter menu (pure DOM, appended to body)
+           ✅ Menus (pure DOM, appended to body)
            ===================================================== */
         .dt-menu{
             position: fixed;
             z-index: 2147483647;
-            min-width: 280px;
-            max-width: 360px;
-            max-height: 420px;
+            min-width: 300px;
+            max-width: 420px;
+            max-height: 460px;
             overflow: auto;
             border-radius: 12px;
             padding: 10px;
@@ -188,33 +188,15 @@
             background: rgba(255,255,255,0.08);
         }
 
-        .dt-menu-form{
-            display: grid;
-            gap: 8px;
-        }
-        .dt-menu-row{
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 6px;
-        }
-        .dt-menu-row-2{
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-        .dt-menu-label{
-            font-size: 12px;
-            opacity: .75;
-        }
-        .dt-menu-actions{
-            display: flex;
-            gap: 8px;
-            justify-content: flex-end;
-            padding-top: 6px;
-        }
+        .dt-menu-form{ display: grid; gap: 8px; }
+        .dt-menu-row{ display: grid; grid-template-columns: 1fr; gap: 6px; }
+        .dt-menu-row-2{ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .dt-menu-label{ font-size: 12px; opacity: .75; }
+        .dt-menu-actions{ display: flex; gap: 8px; justify-content: flex-end; padding-top: 6px; flex-wrap: wrap; }
 
         .dt-menu input,
-        .dt-menu select{
+        .dt-menu select,
+        .dt-menu textarea{
             width: 100%;
             border: 1px solid rgba(0,0,0,0.12);
             border-radius: 10px;
@@ -223,9 +205,11 @@
             background: transparent;
         }
         .dark .dt-menu input,
-        .dark .dt-menu select{
+        .dark .dt-menu select,
+        .dark .dt-menu textarea{
             border: 1px solid rgba(255,255,255,0.14);
         }
+        .dt-menu textarea{ min-height: 78px; resize: vertical; }
 
         .dt-menu .btnx{
             border-radius: 10px;
@@ -239,6 +223,25 @@
         }
         .dt-menu .btnx.primary{
             border-color: rgba(0, 123, 255, 0.45);
+        }
+        .dt-hint{
+            font-size: 11px;
+            opacity: .7;
+            line-height: 1.25;
+        }
+        .dt-chip{
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 8px;
+            border-radius: 10px;
+            border: 1px dashed rgba(0,0,0,0.12);
+            margin-top: 6px;
+            font-size: 12px;
+            opacity: .85;
+        }
+        .dark .dt-chip{
+            border: 1px dashed rgba(255,255,255,0.18);
         }
     </style>
 
@@ -283,24 +286,19 @@
                     <div class="flex items-center gap-2">
                         <button class="btn btn-outline-secondary"
                                 :disabled="page <= 1 || isLoading"
-                                @click="goToPage(page - 1)">
-                            ←
-                        </button>
+                                @click="goToPage(page - 1)">←</button>
 
                         <template x-for="p in pagesToShow" :key="p">
                             <button class="btn"
                                     :class="p === page ? 'btn-primary' : 'btn-outline-secondary'"
                                     :disabled="isLoading"
                                     @click="goToPage(p)"
-                                    x-text="p">
-                            </button>
+                                    x-text="p"></button>
                         </template>
 
                         <button class="btn btn-outline-secondary"
                                 :disabled="page >= totalPages || isLoading"
-                                @click="goToPage(page + 1)">
-                            →
-                        </button>
+                                @click="goToPage(page + 1)">→</button>
                     </div>
                 </div>
             </div>
@@ -308,18 +306,14 @@
 
         {{-- DELETE MODAL --}}
         <template x-teleport="body">
-            <div x-show="deleteModal" x-cloak
-                 class="fixed inset-0 z-[99999] flex items-center justify-center bg-black/50">
-                <div @click.away="closeDeleteModal"
-                     class="bg-white dark:bg-[#0e1726] rounded-xl shadow-xl max-w-md p-6">
+            <div x-show="deleteModal" x-cloak class="fixed inset-0 z-[99999] flex items-center justify-center bg-black/50">
+                <div @click.away="closeDeleteModal" class="bg-white dark:bg-[#0e1726] rounded-xl shadow-xl max-w-md p-6">
                     <div class="flex items-center gap-3 mb-4">
                         <i class="uil uil-exclamation-triangle text-danger text-2xl"></i>
                         <div class="text-lg font-semibold">Подтверждение удаления</div>
                     </div>
 
-                    <div class="text-white-dark mb-6">
-                        Вы действительно хотите удалить эту запись?
-                    </div>
+                    <div class="text-white-dark mb-6">Вы действительно хотите удалить эту запись?</div>
 
                     <div class="flex justify-end gap-3">
                         <button class="btn btn-outline-secondary" @click="closeDeleteModal">Нет</button>
@@ -369,12 +363,10 @@
                 filterMenuDocHandler: null,
                 activeFilterField: null,
 
-                // фильтры (UI state)
+                // filters ui state: {field: {kind, ...}}
                 filters: {},
 
-                get usePagination() {
-                    return (this.perpage ?? 0) !== -1;
-                },
+                get usePagination() { return (this.perpage ?? 0) !== -1; },
 
                 get totalPages() {
                     if (!this.usePagination) return 1;
@@ -409,9 +401,7 @@
                     await this.loadData(1);
                     this.buildTable();
 
-                    window.addEventListener('datatable-delete', e => {
-                        this.openDeleteModal(e.detail);
-                    });
+                    window.addEventListener('datatable-delete', e => this.openDeleteModal(e.detail));
 
                     document.addEventListener('keydown', (e) => {
                         if (e.key === 'Escape') {
@@ -447,6 +437,7 @@
                             key,
                             title: field.name,
                             control: field.control ?? 'text',
+                            db_type: String(field.db_type ?? '').toLowerCase(), // ✅ needed
                             fieldConfig: field,
                             formatter: field.formatter ?? null,
                             options: field.formatter_options ?? null,
@@ -460,8 +451,7 @@
                     const token = localStorage.getItem('access_token');
                     if (!token) return;
 
-                    const lookupFields = Object.entries(window.CONFIG.fields)
-                        .filter(([_, f]) => f.is_lookup);
+                    const lookupFields = Object.entries(window.CONFIG.fields).filter(([_, f]) => f.is_lookup);
 
                     for (const [key, field] of lookupFields) {
                         const res = await axios.post(
@@ -486,93 +476,99 @@
                 },
 
                 // =========================================================
-                // ✅ API FILTER MAPPING (NEW FORMAT)
+                // ✅ API FILTER ARRAY
                 // payload.filter = [{field, op, val}]
+                // allowed ops include: like/ilike/contain/icontain, =, !=, >,<,>=,<=, ~, in
+                // NOT IN in swagger is missing; we send op:'not in' (если бэк поддерживает),
+                // иначе легко заменить на op:'in' + negate:true (если у тебя так принято).
                 // =========================================================
                 buildApiFilterArray() {
                     const arr = [];
 
+                    const push = (field, op, val) => {
+                        if (val === undefined) return;
+                        arr.push({ field, op, val });
+                    };
+
                     Object.entries(this.filters || {}).forEach(([field, f]) => {
                         if (!f || !f.kind) return;
 
-                        // TEXT
+                        // ---------- STRING/TEXT ----------
                         if (f.kind === 'text') {
                             const v = String(f.value ?? '').trim();
                             if (!v) return;
 
-                            // map UI op -> API op
-                            // contains (case-insensitive by default) => icontain
-                            // eq => =
-                            // starts => ilike
-                            // ends => icontain (нет ends в API; делаем contain как максимально близко)
-                            let op = String(f.op || 'icontain');
-
-                            // позволяем хранить сразу API op
-                            const allowed = ['=','>','<','>=','<=','!=','like','ilike','contain','icontain','~','in'];
-                            if (!allowed.includes(op)) {
-                                // legacy UI values:
-                                if (op === 'contains') op = 'icontain';
-                                else if (op === 'eq') op = '=';
-                                else if (op === 'starts') op = 'ilike';
-                                else if (op === 'ends') op = 'icontain';
-                                else op = 'icontain';
-                            }
-
-                            arr.push({ field, op, val: v });
+                            const op = String(f.op || 'icontain');
+                            push(field, op, v);
                             return;
                         }
 
-                        // NUMBER (between as 2 conditions)
-                        if (f.kind === 'number') {
-                            const hasMin = !(f.min === '' || f.min === null || f.min === undefined);
-                            const hasMax = !(f.max === '' || f.max === null || f.max === undefined);
-
-                            if (!hasMin && !hasMax) return;
-
-                            if (hasMin) arr.push({ field, op: '>=', val: Number(f.min) });
-                            if (hasMax) arr.push({ field, op: '<=', val: Number(f.max) });
-                            return;
-                        }
-
-                        // DATE (between as 2 conditions)
-                        if (f.kind === 'date') {
-                            const from = String(f.from ?? '').trim();
-                            const to = String(f.to ?? '').trim();
-                            if (!from && !to) return;
-
-                            if (from) arr.push({ field, op: '>=', val: from });
-                            if (to)   arr.push({ field, op: '<=', val: to });
-                            return;
-                        }
-
-                        // BOOL (= 0/1)
+                        // ---------- BOOLEAN ----------
+                        // ops: yes/no/undefined -> map to "=" true/false OR IS NULL semantics
+                        // Swagger doesn't list "is null", so we use:
+                        // - "!=" with val: null to mean NOT NULL is not possible, but for "Не определено" we send "=" null
+                        // If your backend expects another op for NULL — скажи, и я подстрою.
                         if (f.kind === 'bool') {
                             if (f.value === '' || f.value === null || f.value === undefined) return;
-                            const v = (String(f.value) === '1') ? 1 : 0;
-                            arr.push({ field, op: '=', val: v });
+
+                            if (String(f.value) === 'null') {
+                                push(field, '=', null);
+                            } else if (String(f.value) === '1') {
+                                push(field, '=', 1);
+                            } else if (String(f.value) === '0') {
+                                push(field, '=', 0);
+                            }
                             return;
                         }
 
-                        // SELECT (=) or IN (array)
-                        if (f.kind === 'select') {
-                            const v = f.value;
+                        // ---------- DATE / DATETIME ----------
+                        if (f.kind === 'datetime') {
+                            // text op optional (contain/like etc) + from/to
+                            const op = String(f.op || '');
+                            const v = String(f.value ?? '').trim(); // optional "text search" over datetime as string (если нужно)
+                            const from = String(f.from ?? '').trim();
+                            const to = String(f.to ?? '').trim();
 
-                            if (Array.isArray(v)) {
-                                if (v.length === 0) return;
-                                arr.push({ field, op: 'in', val: v });
+                            // если заполнено текстовое условие — отправляем его
+                            if (op && v) push(field, op, v);
+
+                            // диапазон
+                            if (from) push(field, '>=', from);
+                            if (to)   push(field, '<=', to);
+                            return;
+                        }
+
+                        // ---------- INTEGER ----------
+                        if (f.kind === 'int') {
+                            const mode = String(f.mode || 'cmp'); // cmp | in | not_in
+                            if (mode === 'cmp') {
+                                const op = String(f.op || '=');
+                                const vRaw = (f.value ?? '');
+                                if (vRaw === '' || vRaw === null || vRaw === undefined) return;
+                                const v = Number(vRaw);
+                                if (Number.isNaN(v)) return;
+                                push(field, op, v);
                                 return;
                             }
 
-                            if (v === '' || v === null || v === undefined) return;
-                            arr.push({ field, op: '=', val: v });
-                            return;
-                        }
+                            // in / not in
+                            const raw = String(f.list ?? '').trim();
+                            if (!raw) return;
 
-                        // JSON (~) (если вдруг будешь использовать)
-                        if (f.kind === 'json') {
-                            const v = String(f.value ?? '').trim();
-                            if (!v) return;
-                            arr.push({ field, op: '~', val: v });
+                            // allow: "1,2,3" or "1 2 3" or "1\n2\n3"
+                            const parts = raw
+                                .split(/[\s,;]+/g)
+                                .map(s => s.trim())
+                                .filter(Boolean);
+
+                            const nums = parts
+                                .map(x => Number(x))
+                                .filter(n => !Number.isNaN(n));
+
+                            if (nums.length === 0) return;
+
+                            if (mode === 'in') push(field, 'in', nums);
+                            if (mode === 'not_in') push(field, 'not in', nums); // ✅ see note above
                             return;
                         }
                     });
@@ -580,15 +576,42 @@
                     return arr;
                 },
 
+                // =========================================================
+                // Helpers: detect filter kind by db_type
+                // =========================================================
+                inferFilterKindByDbType(col) {
+                    const t = String(col.db_type || '').toLowerCase();
+
+                    if (t.includes('bool')) return 'bool';
+
+                    // datetime/timestamp/date/time
+                    if (t.includes('timestamp') || t.includes('datetime') || t === 'date' || t === 'time') return 'datetime';
+
+                    // integer family
+                    if (t.includes('int') || t.includes('bigint') || t.includes('smallint')) return 'int';
+
+                    // default string/text
+                    return 'text';
+                },
+
                 hasActiveFilter(field) {
                     const f = this.filters?.[field];
                     if (!f) return false;
 
                     if (f.kind === 'text') return String(f.value ?? '').trim().length > 0;
-                    if (f.kind === 'number') return (f.min !== '' && f.min !== null && f.min !== undefined) || (f.max !== '' && f.max !== null && f.max !== undefined);
-                    if (f.kind === 'date') return String(f.from ?? '').trim() || String(f.to ?? '').trim();
                     if (f.kind === 'bool') return !(f.value === '' || f.value === null || f.value === undefined);
-                    if (f.kind === 'select') return Array.isArray(f.value) ? f.value.length > 0 : !(f.value === '' || f.value === null || f.value === undefined);
+                    if (f.kind === 'datetime') {
+                        return (
+                            (String(f.value ?? '').trim().length > 0 && String(f.op ?? '').trim().length > 0) ||
+                            String(f.from ?? '').trim().length > 0 ||
+                            String(f.to ?? '').trim().length > 0
+                        );
+                    }
+                    if (f.kind === 'int') {
+                        const mode = String(f.mode || 'cmp');
+                        if (mode === 'cmp') return !(f.value === '' || f.value === null || f.value === undefined);
+                        if (mode === 'in' || mode === 'not_in') return String(f.list ?? '').trim().length > 0;
+                    }
 
                     return false;
                 },
@@ -604,7 +627,7 @@
                             page: Math.max(1, Number(page) || 1),
                             perpage: Number(this.perpage),
                             order: [{ field: this.sortBy, direction: (this.sortDir || 'desc') }],
-                            filter: this.buildApiFilterArray(), // ✅ FIX HERE
+                            filter: this.buildApiFilterArray(), // ✅ correct parameter name/format
                         };
 
                         const response = await fetch(this.config.api.list, {
@@ -731,7 +754,7 @@
                     this.ensureColMenu();
                     this.renderColMenu();
 
-                    const w = 280;
+                    const w = 300;
                     const pad = 8;
                     const left = Math.max(pad, Math.min((Number(x) || pad), window.innerWidth - w - pad));
                     const top  = Math.max(pad, (Number(y) || pad));
@@ -766,7 +789,7 @@
                 },
 
                 // =====================================================
-                // ✅ Filter menu
+                // ✅ Filter menu (by db_type)
                 // =====================================================
                 ensureFilterMenu() {
                     if (this.filterMenuEl) return;
@@ -782,59 +805,30 @@
                     this.filterMenuEl = el;
                 },
 
-                inferFilterKind(col) {
-                    if (col.is_lookup) return 'select';
-
-                    const control = String(col.control || '').toLowerCase();
-
-                    if (['checkbox','switch','bool','boolean'].includes(control)) return 'bool';
-                    if (['number','int','integer','float','double','decimal'].includes(control)) return 'number';
-                    if (['date','datetime','datetime_local','datetimelocal','time'].includes(control)) return 'date';
-                    if (['select','dropdown','radio'].includes(control)) return 'select';
-
-                    return 'text';
-                },
-
-                getSelectOptionsFor(col) {
-                    const field = col.key;
-
-                    if (col.is_lookup) {
-                        const list = this.lookups?.[field] || [];
-                        const idKey = col.lookup_id;
-                        const nameKey = col.lookup_name;
-
-                        return list.map(item => ({
-                            value: item?.[idKey],
-                            label: item?.[nameKey] ?? String(item?.[idKey] ?? '')
-                        })).filter(o => o.value !== undefined && o.value !== null);
-                    }
-
-                    const opt = col.options || col.fieldConfig?.formatter_options || null;
-                    if (opt?.items && Array.isArray(opt.items)) {
-                        return opt.items.map(i => ({ value: i.value, label: i.label ?? i.name ?? String(i.value) }));
-                    }
-                    if (opt?.options && typeof opt.options === 'object') {
-                        return Object.entries(opt.options).map(([v, l]) => ({ value: v, label: String(l) }));
-                    }
-
-                    return [];
-                },
-
                 renderFilterMenu(field) {
                     if (!this.filterMenuEl) return;
 
                     const col = this.config.columns.find(c => c.key === field);
                     if (!col) return;
 
-                    const kind = this.inferFilterKind(col);
+                    const kind = this.inferFilterKindByDbType(col);
 
+                    // init state if absent or kind changed
                     if (!this.filters[field] || this.filters[field].kind !== kind) {
-                        // ✅ операции под твой API
-                        if (kind === 'text')   this.filters[field] = { kind, op: 'icontain', value: '' };
-                        if (kind === 'number') this.filters[field] = { kind, min: '', max: '' };
-                        if (kind === 'date')   this.filters[field] = { kind, from: '', to: '' };
-                        if (kind === 'bool')   this.filters[field] = { kind, value: '' };
-                        if (kind === 'select') this.filters[field] = { kind, value: '' };
+                        if (kind === 'text') {
+                            this.filters[field] = { kind, op: 'icontain', value: '' };
+                        } else if (kind === 'bool') {
+                            // Yes/No/Undefined
+                            this.filters[field] = { kind, value: '' }; // '1'|'0'|'null'|''
+                        } else if (kind === 'datetime') {
+                            // text filters + date from/to
+                            this.filters[field] = { kind, op: 'icontain', value: '', from: '', to: '' };
+                        } else if (kind === 'int') {
+                            // comparator OR in/not in
+                            this.filters[field] = { kind, mode: 'cmp', op: '=', value: '', list: '' };
+                        } else {
+                            this.filters[field] = { kind: 'text', op: 'icontain', value: '' };
+                        }
                     }
 
                     const state = this.filters[field];
@@ -843,6 +837,7 @@
                     let body = `<div class="dt-menu-title">Фильтр: ${this.escapeHtml(title)}</div>`;
                     body += `<div class="dt-menu-form">`;
 
+                    // ---------------- TEXT / STRING ----------------
                     if (kind === 'text') {
                         body += `
                             <div class="dt-menu-row">
@@ -852,8 +847,8 @@
                                     <option value="ilike" ${state.op==='ilike'?'selected':''}>Начинается (без учёта регистра)</option>
                                     <option value="contain" ${state.op==='contain'?'selected':''}>Содержит (с учётом регистра)</option>
                                     <option value="icontain" ${state.op==='icontain'?'selected':''}>Содержит (без учёта регистра)</option>
-                                    <option value="=" ${state.op==='='?'selected':''}>Точное совпадение</option>
-                                    <option value="!=" ${state.op==='!='?'selected':''}>Не равно</option>
+                                    <option value="=" ${state.op==='='?'selected':''}>= (точно)</option>
+                                    <option value="!=" ${state.op==='!='?'selected':''}>!=</option>
                                 </select>
                             </div>
                             <div class="dt-menu-row">
@@ -863,63 +858,85 @@
                         `;
                     }
 
-                    if (kind === 'number') {
-                        body += `
-                            <div class="dt-menu-row-2">
-                                <div class="dt-menu-row">
-                                    <div class="dt-menu-label">От (>=)</div>
-                                    <input data-k="min" type="number" value="${this.escapeAttr(state.min ?? '')}" placeholder="min">
-                                </div>
-                                <div class="dt-menu-row">
-                                    <div class="dt-menu-label">До (<=)</div>
-                                    <input data-k="max" type="number" value="${this.escapeAttr(state.max ?? '')}" placeholder="max">
-                                </div>
-                            </div>
-                        `;
-                    }
-
-                    if (kind === 'date') {
-                        body += `
-                            <div class="dt-menu-row-2">
-                                <div class="dt-menu-row">
-                                    <div class="dt-menu-label">С (>=)</div>
-                                    <input data-k="from" type="date" value="${this.escapeAttr(state.from ?? '')}">
-                                </div>
-                                <div class="dt-menu-row">
-                                    <div class="dt-menu-label">По (<=)</div>
-                                    <input data-k="to" type="date" value="${this.escapeAttr(state.to ?? '')}">
-                                </div>
-                            </div>
-                        `;
-                    }
-
+                    // ---------------- BOOLEAN ----------------
                     if (kind === 'bool') {
                         body += `
                             <div class="dt-menu-row">
                                 <div class="dt-menu-label">Значение</div>
                                 <select data-k="value">
-                                    <option value="" ${state.value===''?'selected':''}>Любое</option>
+                                    <option value="" ${String(state.value)===''?'selected':''}>—</option>
                                     <option value="1" ${String(state.value)==='1'?'selected':''}>Да</option>
                                     <option value="0" ${String(state.value)==='0'?'selected':''}>Нет</option>
+                                    <option value="null" ${String(state.value)==='null'?'selected':''}>Не определено</option>
                                 </select>
+                                <div class="dt-hint">«Не определено» отправляется как <span class="dt-chip">op "=" val null</span></div>
                             </div>
                         `;
                     }
 
-                    if (kind === 'select') {
-                        const opts = this.getSelectOptionsFor(col);
-                        let optionsHtml = `<option value="">Любое</option>`;
-                        opts.forEach(o => {
-                            const sel = String(o.value) === String(state.value) ? 'selected' : '';
-                            optionsHtml += `<option value="${this.escapeAttr(o.value)}" ${sel}>${this.escapeHtml(o.label)}</option>`;
-                        });
-
+                    // ---------------- DATETIME/DATE/TIME ----------------
+                    if (kind === 'datetime') {
                         body += `
                             <div class="dt-menu-row">
-                                <div class="dt-menu-label">Значение (=)</div>
-                                <select data-k="value">
-                                    ${optionsHtml}
+                                <div class="dt-menu-label">Текстовый фильтр (опционально)</div>
+                                <select data-k="op">
+                                    <option value="" ${(state.op||'')===''?'selected':''}>—</option>
+                                    <option value="like" ${state.op==='like'?'selected':''}>Начинается (с учётом регистра)</option>
+                                    <option value="ilike" ${state.op==='ilike'?'selected':''}>Начинается (без учёта регистра)</option>
+                                    <option value="contain" ${state.op==='contain'?'selected':''}>Содержит (с учётом регистра)</option>
+                                    <option value="icontain" ${state.op==='icontain'?'selected':''}>Содержит (без учёта регистра)</option>
+                                    <option value="=" ${state.op==='='?'selected':''}>= (точно)</option>
+                                    <option value="!=" ${state.op==='!='?'selected':''}>!=</option>
                                 </select>
+                                <input data-k="value" type="text" value="${this.escapeAttr(state.value ?? '')}" placeholder="например 2026-02">
+                                <div class="dt-hint">Если не нужно — оставь операцию «—».</div>
+                            </div>
+
+                            <div class="dt-menu-row-2">
+                                <div class="dt-menu-row">
+                                    <div class="dt-menu-label">Дата от (>=)</div>
+                                    <input data-k="from" type="date" value="${this.escapeAttr(state.from ?? '')}">
+                                </div>
+                                <div class="dt-menu-row">
+                                    <div class="dt-menu-label">Дата по (<=)</div>
+                                    <input data-k="to" type="date" value="${this.escapeAttr(state.to ?? '')}">
+                                </div>
+                            </div>
+                            <div class="dt-hint">Диапазон работает по отдельности или вместе.</div>
+                        `;
+                    }
+
+                    // ---------------- INTEGER ----------------
+                    if (kind === 'int') {
+                        const mode = String(state.mode || 'cmp');
+                        body += `
+                            <div class="dt-menu-row">
+                                <div class="dt-menu-label">Режим</div>
+                                <select data-k="mode">
+                                    <option value="cmp" ${mode==='cmp'?'selected':''}>Сравнение</option>
+                                    <option value="in" ${mode==='in'?'selected':''}>IN (в списке)</option>
+                                    <option value="not_in" ${mode==='not_in'?'selected':''}>NOT IN (не в списке)</option>
+                                </select>
+                            </div>
+
+                            <div class="dt-menu-row" data-block="cmp" style="${mode==='cmp'?'':'display:none'}">
+                                <div class="dt-menu-label">Операция</div>
+                                <select data-k="op">
+                                    <option value="=" ${state.op==='='?'selected':''}>=</option>
+                                    <option value="!=" ${state.op==='!='?'selected':''}>!=</option>
+                                    <option value=">" ${state.op==='>'?'selected':''}>&gt;</option>
+                                    <option value=">=" ${state.op==='>='?'selected':''}>&gt;=</option>
+                                    <option value="<" ${state.op==='<'?'selected':''}>&lt;</option>
+                                    <option value="<=" ${state.op==='<='?'selected':''}>&lt;=</option>
+                                </select>
+                                <div class="dt-menu-label">Значение</div>
+                                <input data-k="value" type="number" value="${this.escapeAttr(state.value ?? '')}" placeholder="например 10">
+                            </div>
+
+                            <div class="dt-menu-row" data-block="list" style="${(mode==='in'||mode==='not_in')?'':'display:none'}">
+                                <div class="dt-menu-label">Список значений</div>
+                                <textarea data-k="list" placeholder="1,2,3 или 1 2 3 или построчно">${this.escapeHtml(state.list ?? '')}</textarea>
+                                <div class="dt-hint">Парсится в массив чисел и отправляется как <span class="dt-chip">op in / not in</span></div>
                             </div>
                         `;
                     }
@@ -934,9 +951,23 @@
 
                     this.filterMenuEl.innerHTML = body;
 
-                    // bind inputs -> state
                     const el = this.filterMenuEl;
 
+                    // show/hide blocks for int mode
+                    const modeSel = el.querySelector('select[data-k="mode"]');
+                    if (modeSel) {
+                        modeSel.addEventListener('change', () => {
+                            const v = modeSel.value;
+                            this.filters[field].mode = v;
+
+                            const cmp = el.querySelector('[data-block="cmp"]');
+                            const list = el.querySelector('[data-block="list"]');
+                            if (cmp)  cmp.style.display = (v === 'cmp') ? '' : 'none';
+                            if (list) list.style.display = (v === 'in' || v === 'not_in') ? '' : 'none';
+                        });
+                    }
+
+                    // bind inputs -> state
                     el.querySelectorAll('[data-k]').forEach(inp => {
                         const k = inp.getAttribute('data-k');
                         if (!k) return;
@@ -972,7 +1003,7 @@
 
                     this.renderFilterMenu(field);
 
-                    const w = 280;
+                    const w = 300;
                     const pad = 8;
                     const left = Math.max(pad, Math.min((Number(x) || pad), window.innerWidth - w - pad));
                     const top  = Math.max(pad, (Number(y) || pad));
@@ -989,7 +1020,6 @@
                     setTimeout(() => {
                         this.filterMenuDocHandler = (e) => {
                             if (!this.filterMenuOpen) return;
-
                             const inMenu = this.filterMenuEl && this.filterMenuEl.contains(e.target);
                             const onBtn = e.target.closest && e.target.closest('.dt-filter-btn');
                             if (!inMenu && !onBtn) this.closeFilterMenu();
@@ -1074,7 +1104,7 @@
                                     } else {
                                         this.openFilterMenuAt(
                                             field,
-                                            Math.round(r.right - 8 - 280),
+                                            Math.round(r.right - 8 - 300),
                                             Math.round(r.bottom + 8)
                                         );
                                     }
@@ -1153,7 +1183,7 @@
                             this.closeFilterMenu();
 
                             const r = btn.getBoundingClientRect();
-                            const x = Math.round(r.right - 8 - 280);
+                            const x = Math.round(r.right - 8 - 300);
                             const y = Math.round(r.bottom + 8);
 
                             if (this.colMenuOpen) this.closeColMenu();
@@ -1208,111 +1238,9 @@
                     this.syncFilterIcons();
                 },
 
-                // ============================
-                // (остальной код без изменений — col menu + delete)
-                // ============================
-                // ✅ Column chooser menu (gear) — implementation
-                ensureColMenu() {
-                    if (this.colMenuEl) return;
-
-                    const el = document.createElement('div');
-                    el.className = 'dt-menu';
-                    el.style.display = 'none';
-
-                    el.addEventListener('mousedown', (e) => e.stopPropagation());
-                    el.addEventListener('click', (e) => e.stopPropagation());
-
-                    document.body.appendChild(el);
-                    this.colMenuEl = el;
-                },
-
-                renderColMenu() {
-                    if (!this.tabulator || !this.colMenuEl) return;
-
-                    const cols = this.tabulator.getColumns()
-                        .filter(c => (c.getField && c.getField()) && c.getField() !== '__actions');
-
-                    let html = `<div class="dt-menu-title">Колонки</div>`;
-
-                    cols.forEach((c) => {
-                        const def = c.getDefinition();
-                        const field = c.getField();
-                        const title = def.title ?? field;
-                        const checked = c.isVisible();
-
-                        html += `
-                            <div class="dt-menu-item" data-field="${String(field)}">
-                                <input type="checkbox" ${checked ? 'checked' : ''} />
-                                <div class="text-sm">${this.escapeHtml(title)}</div>
-                            </div>
-                        `;
-                    });
-
-                    this.colMenuEl.innerHTML = html;
-
-                    this.colMenuEl.querySelectorAll('.dt-menu-item').forEach((rowEl) => {
-                        rowEl.addEventListener('click', () => {
-                            const field = rowEl.getAttribute('data-field');
-                            if (!field) return;
-
-                            const col = this.tabulator.getColumn(field);
-                            if (!col) return;
-
-                            if (col.isVisible()) col.hide();
-                            else col.show();
-
-                            const cb = rowEl.querySelector('input[type="checkbox"]');
-                            if (cb) cb.checked = col.isVisible();
-                        });
-
-                        const cb = rowEl.querySelector('input[type="checkbox"]');
-                        if (cb) {
-                            cb.addEventListener('click', (e) => {
-                                e.stopPropagation();
-                                rowEl.click();
-                            });
-                        }
-                    });
-                },
-
-                openColMenuAt(x, y) {
-                    this.ensureColMenu();
-                    this.renderColMenu();
-
-                    const w = 280;
-                    const pad = 8;
-                    const left = Math.max(pad, Math.min((Number(x) || pad), window.innerWidth - w - pad));
-                    const top  = Math.max(pad, (Number(y) || pad));
-
-                    this.colMenuEl.style.left = left + 'px';
-                    this.colMenuEl.style.top  = top + 'px';
-                    this.colMenuEl.style.display = 'block';
-                    this.colMenuOpen = true;
-
-                    if (this.colMenuDocHandler) {
-                        document.removeEventListener('mousedown', this.colMenuDocHandler, true);
-                    }
-
-                    setTimeout(() => {
-                        this.colMenuDocHandler = (e) => {
-                            if (!this.colMenuOpen) return;
-                            const inMenu = this.colMenuEl && this.colMenuEl.contains(e.target);
-                            const onBtn = e.target.closest && e.target.closest('.dt-colmenu-btn');
-                            if (!inMenu && !onBtn) this.closeColMenu();
-                        };
-                        document.addEventListener('mousedown', this.colMenuDocHandler, true);
-                    }, 0);
-                },
-
-                closeColMenu() {
-                    this.colMenuOpen = false;
-                    if (this.colMenuEl) this.colMenuEl.style.display = 'none';
-                    if (this.colMenuDocHandler) {
-                        document.removeEventListener('mousedown', this.colMenuDocHandler, true);
-                        this.colMenuDocHandler = null;
-                    }
-                },
-
+                // =====================================================
+                // Sort indicator + utils
+                // =====================================================
                 syncTabulatorSortIndicator() {
                     if (!this.tabulator) return;
 
