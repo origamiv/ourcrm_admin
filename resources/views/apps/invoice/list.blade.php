@@ -100,7 +100,7 @@
         }
 
         /* =====================================================
-           ✅ Header UI (gear + filter)
+           ✅ Header UI
            ===================================================== */
         #mainTabulator .dt-col-header{
             display: flex;
@@ -115,8 +115,9 @@
             white-space: nowrap;
         }
 
+        #mainTabulator .dt-filter-btn,
         #mainTabulator .dt-colmenu-btn,
-        #mainTabulator .dt-filter-btn{
+        #mainTabulator .dt-clearfilters-btn{
             width: 26px;
             height: 26px;
             border-radius: 8px;
@@ -127,9 +128,11 @@
             background: rgba(0,0,0,0.04);
             border: 0;
             padding: 0;
+            flex: 0 0 auto;
         }
+        .dark #mainTabulator .dt-filter-btn,
         .dark #mainTabulator .dt-colmenu-btn,
-        .dark #mainTabulator .dt-filter-btn{
+        .dark #mainTabulator .dt-clearfilters-btn{
             background: rgba(255,255,255,0.08);
         }
 
@@ -140,15 +143,29 @@
             background: rgba(0, 123, 255, 0.22);
         }
 
+        #mainTabulator .dt-actions-header-btns{
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            flex: 0 0 auto;
+        }
+
+        /* ✅ ИЗМЕНЕНО: не блокируем клики pointer-events:none, чтобы кнопку можно было нажать */
+        #mainTabulator .dt-clearfilters-btn[disabled]{
+            opacity: .45;
+            cursor: default;
+            /* pointer-events: none; */
+        }
+
         /* =====================================================
-           ✅ Menus (pure DOM, appended to body)
+           ✅ Menus (custom, NO <input> checkboxes)
            ===================================================== */
         .dt-menu{
             position: fixed;
             z-index: 2147483647;
-            min-width: 300px;
-            max-width: 420px;
-            max-height: 460px;
+            min-width: 320px;
+            max-width: 460px;
+            max-height: 520px;
             overflow: auto;
             border-radius: 12px;
             padding: 10px;
@@ -176,7 +193,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 6px 8px;
+            padding: 8px 10px;
             border-radius: 10px;
             cursor: pointer;
             user-select: none;
@@ -186,6 +203,20 @@
         }
         .dark .dt-menu-item:hover{
             background: rgba(255,255,255,0.08);
+        }
+        .dt-menu-mark{
+            width: 18px;
+            height: 18px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.06);
+            font-weight: 800;
+            font-size: 12px;
+        }
+        .dark .dt-menu-mark{
+            background: rgba(255,255,255,0.10);
         }
 
         .dt-menu-form{ display: grid; gap: 8px; }
@@ -223,25 +254,6 @@
         }
         .dt-menu .btnx.primary{
             border-color: rgba(0, 123, 255, 0.45);
-        }
-        .dt-hint{
-            font-size: 11px;
-            opacity: .7;
-            line-height: 1.25;
-        }
-        .dt-chip{
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 8px;
-            border-radius: 10px;
-            border: 1px dashed rgba(0,0,0,0.12);
-            margin-top: 6px;
-            font-size: 12px;
-            opacity: .85;
-        }
-        .dark .dt-chip{
-            border: 1px dashed rgba(255,255,255,0.18);
         }
     </style>
 
@@ -353,7 +365,7 @@
                 sortBy: null,
                 sortDir: 'desc',
 
-                // ✅ DOM menus
+                // ✅ menus
                 colMenuEl: null,
                 colMenuOpen: false,
                 colMenuDocHandler: null,
@@ -390,6 +402,10 @@
                     const pages = [];
                     for (let i = start; i <= end; i++) pages.push(i);
                     return pages;
+                },
+
+                get hasAnyFilters() {
+                    return Object.keys(this.filters || {}).some(f => this.hasActiveFilter(f));
                 },
 
                 async init() {
@@ -437,7 +453,7 @@
                             key,
                             title: field.name,
                             control: field.control ?? 'text',
-                            db_type: String(field.db_type ?? '').toLowerCase(), // ✅ needed
+                            db_type: String(field.db_type ?? '').toLowerCase(),
                             fieldConfig: field,
                             formatter: field.formatter ?? null,
                             options: field.formatter_options ?? null,
@@ -451,7 +467,8 @@
                     const token = localStorage.getItem('access_token');
                     if (!token) return;
 
-                    const lookupFields = Object.entries(window.CONFIG.fields).filter(([_, f]) => f.is_lookup);
+                    const lookupFields = Object.entries(window.CONFIG.fields)
+                        .filter(([_, f]) => f.is_lookup);
 
                     for (const [key, field] of lookupFields) {
                         const res = await axios.post(
@@ -476,71 +493,46 @@
                 },
 
                 // =========================================================
-                // ✅ API FILTER ARRAY
-                // payload.filter = [{field, op, val}]
-                // allowed ops include: like/ilike/contain/icontain, =, !=, >,<,>=,<=, ~, in
-                // NOT IN in swagger is missing; we send op:'not in' (если бэк поддерживает),
-                // иначе легко заменить на op:'in' + negate:true (если у тебя так принято).
+                // ✅ API FILTER ARRAY: filter: [{field, op, val}]
                 // =========================================================
                 buildApiFilterArray() {
                     const arr = [];
-
-                    const push = (field, op, val) => {
-                        if (val === undefined) return;
-                        arr.push({ field, op, val });
-                    };
+                    const push = (field, op, val) => arr.push({ field, op, val });
 
                     Object.entries(this.filters || {}).forEach(([field, f]) => {
                         if (!f || !f.kind) return;
 
-                        // ---------- STRING/TEXT ----------
                         if (f.kind === 'text') {
                             const v = String(f.value ?? '').trim();
                             if (!v) return;
-
-                            const op = String(f.op || 'icontain');
-                            push(field, op, v);
+                            push(field, String(f.op || 'icontain'), v);
                             return;
                         }
 
-                        // ---------- BOOLEAN ----------
-                        // ops: yes/no/undefined -> map to "=" true/false OR IS NULL semantics
-                        // Swagger doesn't list "is null", so we use:
-                        // - "!=" with val: null to mean NOT NULL is not possible, but for "Не определено" we send "=" null
-                        // If your backend expects another op for NULL — скажи, и я подстрою.
                         if (f.kind === 'bool') {
                             if (f.value === '' || f.value === null || f.value === undefined) return;
 
-                            if (String(f.value) === 'null') {
-                                push(field, '=', null);
-                            } else if (String(f.value) === '1') {
-                                push(field, '=', 1);
-                            } else if (String(f.value) === '0') {
-                                push(field, '=', 0);
-                            }
+                            if (String(f.value) === 'null') push(field, '=', null);
+                            else if (String(f.value) === '1') push(field, '=', 1);
+                            else if (String(f.value) === '0') push(field, '=', 0);
                             return;
                         }
 
-                        // ---------- DATE / DATETIME ----------
                         if (f.kind === 'datetime') {
-                            // text op optional (contain/like etc) + from/to
                             const op = String(f.op || '');
-                            const v = String(f.value ?? '').trim(); // optional "text search" over datetime as string (если нужно)
+                            const v = String(f.value ?? '').trim();
                             const from = String(f.from ?? '').trim();
                             const to = String(f.to ?? '').trim();
 
-                            // если заполнено текстовое условие — отправляем его
                             if (op && v) push(field, op, v);
-
-                            // диапазон
                             if (from) push(field, '>=', from);
                             if (to)   push(field, '<=', to);
                             return;
                         }
 
-                        // ---------- INTEGER ----------
                         if (f.kind === 'int') {
-                            const mode = String(f.mode || 'cmp'); // cmp | in | not_in
+                            const mode = String(f.mode || 'cmp');
+
                             if (mode === 'cmp') {
                                 const op = String(f.op || '=');
                                 const vRaw = (f.value ?? '');
@@ -551,24 +543,19 @@
                                 return;
                             }
 
-                            // in / not in
                             const raw = String(f.list ?? '').trim();
                             if (!raw) return;
 
-                            // allow: "1,2,3" or "1 2 3" or "1\n2\n3"
                             const parts = raw
                                 .split(/[\s,;]+/g)
                                 .map(s => s.trim())
                                 .filter(Boolean);
 
-                            const nums = parts
-                                .map(x => Number(x))
-                                .filter(n => !Number.isNaN(n));
-
+                            const nums = parts.map(x => Number(x)).filter(n => !Number.isNaN(n));
                             if (nums.length === 0) return;
 
                             if (mode === 'in') push(field, 'in', nums);
-                            if (mode === 'not_in') push(field, 'not in', nums); // ✅ see note above
+                            if (mode === 'not_in') push(field, 'not in', nums);
                             return;
                         }
                     });
@@ -576,21 +563,13 @@
                     return arr;
                 },
 
-                // =========================================================
-                // Helpers: detect filter kind by db_type
-                // =========================================================
                 inferFilterKindByDbType(col) {
                     const t = String(col.db_type || '').toLowerCase();
 
                     if (t.includes('bool')) return 'bool';
-
-                    // datetime/timestamp/date/time
                     if (t.includes('timestamp') || t.includes('datetime') || t === 'date' || t === 'time') return 'datetime';
-
-                    // integer family
                     if (t.includes('int') || t.includes('bigint') || t.includes('smallint')) return 'int';
 
-                    // default string/text
                     return 'text';
                 },
 
@@ -599,7 +578,11 @@
                     if (!f) return false;
 
                     if (f.kind === 'text') return String(f.value ?? '').trim().length > 0;
-                    if (f.kind === 'bool') return !(f.value === '' || f.value === null || f.value === undefined);
+
+                    if (f.kind === 'bool') {
+                        return !(f.value === '' || f.value === null || f.value === undefined);
+                    }
+
                     if (f.kind === 'datetime') {
                         return (
                             (String(f.value ?? '').trim().length > 0 && String(f.op ?? '').trim().length > 0) ||
@@ -607,6 +590,7 @@
                             String(f.to ?? '').trim().length > 0
                         );
                     }
+
                     if (f.kind === 'int') {
                         const mode = String(f.mode || 'cmp');
                         if (mode === 'cmp') return !(f.value === '' || f.value === null || f.value === undefined);
@@ -614,6 +598,14 @@
                     }
 
                     return false;
+                },
+
+                async resetAllFilters() {
+                    this.filters = {};
+                    this.closeFilterMenu();
+                    this.syncFilterIcons();
+                    await this.loadData(1);
+                    this.tabulator?.redraw(true);
                 },
 
                 async loadData(page = 1) {
@@ -627,7 +619,7 @@
                             page: Math.max(1, Number(page) || 1),
                             perpage: Number(this.perpage),
                             order: [{ field: this.sortBy, direction: (this.sortDir || 'desc') }],
-                            filter: this.buildApiFilterArray(), // ✅ correct parameter name/format
+                            filter: this.buildApiFilterArray(),
                         };
 
                         const response = await fetch(this.config.api.list, {
@@ -685,7 +677,7 @@
                 },
 
                 // =====================================================
-                // ✅ Column chooser menu (gear)
+                // ✅ Columns menu (gear) — NO inputs, keep open on toggle
                 // =====================================================
                 ensureColMenu() {
                     if (this.colMenuEl) return;
@@ -713,11 +705,11 @@
                         const def = c.getDefinition();
                         const field = c.getField();
                         const title = def.title ?? field;
-                        const checked = c.isVisible();
+                        const visible = c.isVisible();
 
                         html += `
-                            <div class="dt-menu-item" data-field="${String(field)}">
-                                <input type="checkbox" ${checked ? 'checked' : ''} />
+                            <div class="dt-menu-item" data-field="${this.escapeAttr(field)}">
+                                <span class="dt-menu-mark">${visible ? '✓' : ''}</span>
                                 <div class="text-sm">${this.escapeHtml(title)}</div>
                             </div>
                         `;
@@ -736,28 +728,25 @@
                             if (col.isVisible()) col.hide();
                             else col.show();
 
-                            const cb = rowEl.querySelector('input[type="checkbox"]');
-                            if (cb) cb.checked = col.isVisible();
+                            // ✅ меню НЕ закрываем — просто перерисуем, чтобы обновить галочки
+                            this.renderColMenu();
                         });
-
-                        const cb = rowEl.querySelector('input[type="checkbox"]');
-                        if (cb) {
-                            cb.addEventListener('click', (e) => {
-                                e.stopPropagation();
-                                rowEl.click();
-                            });
-                        }
                     });
                 },
 
-                openColMenuAt(x, y) {
+                openColMenuNear(elBtn) {
                     this.ensureColMenu();
                     this.renderColMenu();
 
-                    const w = 300;
+                    const r = elBtn.getBoundingClientRect();
+                    const w = 320;
                     const pad = 8;
-                    const left = Math.max(pad, Math.min((Number(x) || pad), window.innerWidth - w - pad));
-                    const top  = Math.max(pad, (Number(y) || pad));
+
+                    let left = Math.round(r.right - w);
+                    left = Math.max(pad, Math.min(left, window.innerWidth - w - pad));
+
+                    let top = Math.round(r.bottom + 8);
+                    top = Math.max(pad, Math.min(top, window.innerHeight - 200 - pad));
 
                     this.colMenuEl.style.left = left + 'px';
                     this.colMenuEl.style.top  = top + 'px';
@@ -789,7 +778,7 @@
                 },
 
                 // =====================================================
-                // ✅ Filter menu (by db_type)
+                // ✅ Filter menu
                 // =====================================================
                 ensureFilterMenu() {
                     if (this.filterMenuEl) return;
@@ -813,22 +802,12 @@
 
                     const kind = this.inferFilterKindByDbType(col);
 
-                    // init state if absent or kind changed
                     if (!this.filters[field] || this.filters[field].kind !== kind) {
-                        if (kind === 'text') {
-                            this.filters[field] = { kind, op: 'icontain', value: '' };
-                        } else if (kind === 'bool') {
-                            // Yes/No/Undefined
-                            this.filters[field] = { kind, value: '' }; // '1'|'0'|'null'|''
-                        } else if (kind === 'datetime') {
-                            // text filters + date from/to
-                            this.filters[field] = { kind, op: 'icontain', value: '', from: '', to: '' };
-                        } else if (kind === 'int') {
-                            // comparator OR in/not in
-                            this.filters[field] = { kind, mode: 'cmp', op: '=', value: '', list: '' };
-                        } else {
-                            this.filters[field] = { kind: 'text', op: 'icontain', value: '' };
-                        }
+                        if (kind === 'text') this.filters[field] = { kind, op: 'icontain', value: '' };
+                        else if (kind === 'bool') this.filters[field] = { kind, value: '' }; // 1|0|null|''
+                        else if (kind === 'datetime') this.filters[field] = { kind, op: '', value: '', from: '', to: '' };
+                        else if (kind === 'int') this.filters[field] = { kind, mode: 'cmp', op: '=', value: '', list: '' };
+                        else this.filters[field] = { kind: 'text', op: 'icontain', value: '' };
                     }
 
                     const state = this.filters[field];
@@ -837,7 +816,6 @@
                     let body = `<div class="dt-menu-title">Фильтр: ${this.escapeHtml(title)}</div>`;
                     body += `<div class="dt-menu-form">`;
 
-                    // ---------------- TEXT / STRING ----------------
                     if (kind === 'text') {
                         body += `
                             <div class="dt-menu-row">
@@ -847,18 +825,17 @@
                                     <option value="ilike" ${state.op==='ilike'?'selected':''}>Начинается (без учёта регистра)</option>
                                     <option value="contain" ${state.op==='contain'?'selected':''}>Содержит (с учётом регистра)</option>
                                     <option value="icontain" ${state.op==='icontain'?'selected':''}>Содержит (без учёта регистра)</option>
-                                    <option value="=" ${state.op==='='?'selected':''}>= (точно)</option>
+                                    <option value="=" ${state.op==='='?'selected':''}>=</option>
                                     <option value="!=" ${state.op==='!='?'selected':''}>!=</option>
                                 </select>
                             </div>
                             <div class="dt-menu-row">
                                 <div class="dt-menu-label">Значение</div>
-                                <input data-k="value" type="text" value="${this.escapeAttr(state.value ?? '')}" placeholder="Введите текст">
+                                <input data-k="value" type="text" value="${this.escapeAttr(state.value ?? '')}">
                             </div>
                         `;
                     }
 
-                    // ---------------- BOOLEAN ----------------
                     if (kind === 'bool') {
                         body += `
                             <div class="dt-menu-row">
@@ -869,12 +846,10 @@
                                     <option value="0" ${String(state.value)==='0'?'selected':''}>Нет</option>
                                     <option value="null" ${String(state.value)==='null'?'selected':''}>Не определено</option>
                                 </select>
-                                <div class="dt-hint">«Не определено» отправляется как <span class="dt-chip">op "=" val null</span></div>
                             </div>
                         `;
                     }
 
-                    // ---------------- DATETIME/DATE/TIME ----------------
                     if (kind === 'datetime') {
                         body += `
                             <div class="dt-menu-row">
@@ -885,11 +860,10 @@
                                     <option value="ilike" ${state.op==='ilike'?'selected':''}>Начинается (без учёта регистра)</option>
                                     <option value="contain" ${state.op==='contain'?'selected':''}>Содержит (с учётом регистра)</option>
                                     <option value="icontain" ${state.op==='icontain'?'selected':''}>Содержит (без учёта регистра)</option>
-                                    <option value="=" ${state.op==='='?'selected':''}>= (точно)</option>
+                                    <option value="=" ${state.op==='='?'selected':''}>=</option>
                                     <option value="!=" ${state.op==='!='?'selected':''}>!=</option>
                                 </select>
                                 <input data-k="value" type="text" value="${this.escapeAttr(state.value ?? '')}" placeholder="например 2026-02">
-                                <div class="dt-hint">Если не нужно — оставь операцию «—».</div>
                             </div>
 
                             <div class="dt-menu-row-2">
@@ -902,11 +876,9 @@
                                     <input data-k="to" type="date" value="${this.escapeAttr(state.to ?? '')}">
                                 </div>
                             </div>
-                            <div class="dt-hint">Диапазон работает по отдельности или вместе.</div>
                         `;
                     }
 
-                    // ---------------- INTEGER ----------------
                     if (kind === 'int') {
                         const mode = String(state.mode || 'cmp');
                         body += `
@@ -914,8 +886,8 @@
                                 <div class="dt-menu-label">Режим</div>
                                 <select data-k="mode">
                                     <option value="cmp" ${mode==='cmp'?'selected':''}>Сравнение</option>
-                                    <option value="in" ${mode==='in'?'selected':''}>IN (в списке)</option>
-                                    <option value="not_in" ${mode==='not_in'?'selected':''}>NOT IN (не в списке)</option>
+                                    <option value="in" ${mode==='in'?'selected':''}>IN</option>
+                                    <option value="not_in" ${mode==='not_in'?'selected':''}>NOT IN</option>
                                 </select>
                             </div>
 
@@ -930,13 +902,12 @@
                                     <option value="<=" ${state.op==='<='?'selected':''}>&lt;=</option>
                                 </select>
                                 <div class="dt-menu-label">Значение</div>
-                                <input data-k="value" type="number" value="${this.escapeAttr(state.value ?? '')}" placeholder="например 10">
+                                <input data-k="value" type="number" value="${this.escapeAttr(state.value ?? '')}">
                             </div>
 
                             <div class="dt-menu-row" data-block="list" style="${(mode==='in'||mode==='not_in')?'':'display:none'}">
                                 <div class="dt-menu-label">Список значений</div>
-                                <textarea data-k="list" placeholder="1,2,3 или 1 2 3 или построчно">${this.escapeHtml(state.list ?? '')}</textarea>
-                                <div class="dt-hint">Парсится в массив чисел и отправляется как <span class="dt-chip">op in / not in</span></div>
+                                <textarea data-k="list" placeholder="1,2,3 или 1 2 3">${this.escapeHtml(state.list ?? '')}</textarea>
                             </div>
                         `;
                     }
@@ -953,7 +924,6 @@
 
                     const el = this.filterMenuEl;
 
-                    // show/hide blocks for int mode
                     const modeSel = el.querySelector('select[data-k="mode"]');
                     if (modeSel) {
                         modeSel.addEventListener('change', () => {
@@ -967,13 +937,11 @@
                         });
                     }
 
-                    // bind inputs -> state
                     el.querySelectorAll('[data-k]').forEach(inp => {
                         const k = inp.getAttribute('data-k');
                         if (!k) return;
 
                         const handler = () => { this.filters[field][k] = inp.value; };
-
                         inp.addEventListener('input', handler);
                         inp.addEventListener('change', handler);
                     });
@@ -993,20 +961,28 @@
                             delete this.filters[field];
                             this.closeFilterMenu();
                             await this.loadData(1);
+                            this.syncFilterIcons();
                         });
                     }
                 },
 
-                openFilterMenuAt(field, x, y) {
+                openFilterMenuNear(btnEl) {
                     this.ensureFilterMenu();
+
+                    const field = btnEl.getAttribute('data-field');
                     this.activeFilterField = field;
 
                     this.renderFilterMenu(field);
 
-                    const w = 300;
+                    const r = btnEl.getBoundingClientRect();
+                    const w = 320;
                     const pad = 8;
-                    const left = Math.max(pad, Math.min((Number(x) || pad), window.innerWidth - w - pad));
-                    const top  = Math.max(pad, (Number(y) || pad));
+
+                    let left = Math.round(r.right - w);
+                    left = Math.max(pad, Math.min(left, window.innerWidth - w - pad));
+
+                    let top = Math.round(r.bottom + 8);
+                    top = Math.max(pad, Math.min(top, window.innerHeight - 220 - pad));
 
                     this.filterMenuEl.style.left = left + 'px';
                     this.filterMenuEl.style.top  = top + 'px';
@@ -1039,6 +1015,7 @@
                     }
                 },
 
+                // ✅ ИЗМЕНЕНО: дополнительно обновляем состояние кнопки "сбросить все"
                 syncFilterIcons() {
                     const holder = document.querySelector('#mainTabulator');
                     if (!holder) return;
@@ -1050,6 +1027,12 @@
                         if (this.hasActiveFilter(field)) btn.classList.add('dt-active');
                         else btn.classList.remove('dt-active');
                     });
+
+                    const resetBtn = holder.querySelector('.dt-clearfilters-btn');
+                    if (resetBtn) {
+                        if (this.hasAnyFilters) resetBtn.removeAttribute('disabled');
+                        else resetBtn.setAttribute('disabled', 'disabled');
+                    }
                 },
 
                 // =====================================================
@@ -1096,17 +1079,10 @@
 
                                     this.closeColMenu();
 
-                                    const field = fb.getAttribute('data-field');
-                                    const r = fb.getBoundingClientRect();
-
-                                    if (this.filterMenuOpen && this.activeFilterField === field) {
+                                    if (this.filterMenuOpen && this.activeFilterField === fb.getAttribute('data-field')) {
                                         this.closeFilterMenu();
                                     } else {
-                                        this.openFilterMenuAt(
-                                            field,
-                                            Math.round(r.right - 8 - 300),
-                                            Math.round(r.bottom + 8)
-                                        );
+                                        this.openFilterMenuNear(fb);
                                     }
                                     return;
                                 }
@@ -1148,46 +1124,64 @@
                         };
                     });
 
-                    // ✅ Actions column with gear (NO filter)
                     cols.push({
                         title: 'Действия',
                         field: '__actions',
                         headerSort: false,
                         frozen: true,
-                        width: 140,
-                        minWidth: 140,
-                        maxWidth: 140,
+                        width: 170,
+                        minWidth: 170,
+                        maxWidth: 170,
                         widthGrow: 0,
                         widthShrink: 0,
                         hozAlign: 'right',
                         headerHozAlign: 'right',
 
+                        // ✅ ИЗМЕНЕНО: disabled теперь зависит от hasAnyFilters
                         titleFormatter: () => {
+                            const disabled = this.hasAnyFilters ? '' : 'disabled';
                             return `
                                 <div class="dt-col-header">
                                     <span class="dt-col-title">Действия</span>
-                                    <button class="dt-colmenu-btn text-primary" title="Колонки" type="button">
-                                        <i class="uil uil-setting"></i>
-                                    </button>
+                                    <span class="dt-actions-header-btns">
+                                        <button class="dt-clearfilters-btn text-danger" type="button" title="Сбросить все фильтры" ${disabled}>
+                                            <i class="uil uil-filter-slash"></i>
+                                        </button>
+                                        <button class="dt-colmenu-btn text-primary" type="button" title="Колонки">
+                                            <i class="uil uil-setting"></i>
+                                        </button>
+                                    </span>
                                 </div>
                             `;
                         },
 
-                        headerClick: (e) => {
-                            const btn = e.target.closest('.dt-colmenu-btn');
-                            if (!btn) return;
+                        headerClick: async (e) => {
+                            const clearBtn = e.target.closest && e.target.closest('.dt-clearfilters-btn');
+                            if (clearBtn) {
+                                e.preventDefault();
+                                e.stopPropagation();
 
-                            e.preventDefault();
-                            e.stopPropagation();
+                                // ✅ ИЗМЕНЕНО: не проверяем hasAttribute('disabled') (клик теперь возможен),
+                                // а просто не делаем ничего если фильтров нет
+                                if (!this.hasAnyFilters) return;
 
-                            this.closeFilterMenu();
+                                await this.resetAllFilters();
+                                this.syncFilterIcons();
+                                return;
+                            }
 
-                            const r = btn.getBoundingClientRect();
-                            const x = Math.round(r.right - 8 - 300);
-                            const y = Math.round(r.bottom + 8);
+                            const gearBtn = e.target.closest && e.target.closest('.dt-colmenu-btn');
+                            if (gearBtn) {
+                                e.preventDefault();
+                                e.stopPropagation();
 
-                            if (this.colMenuOpen) this.closeColMenu();
-                            else this.openColMenuAt(x, y);
+                                this.closeFilterMenu();
+
+                                if (this.colMenuOpen) this.closeColMenu();
+                                else this.openColMenuNear(gearBtn);
+
+                                return;
+                            }
                         },
 
                         formatter: (cell) => {
@@ -1222,13 +1216,13 @@
                         },
                     });
 
+                    // ✅ закрытие по клику "в пустоту"
                     this.tabulator.on("tableClick", () => {
                         this.closeColMenu();
                         this.closeFilterMenu();
                     });
-
                     this.tabulator.on("headerClick", (e) => {
-                        if (!e.target.closest('.dt-colmenu-btn') && !e.target.closest('.dt-filter-btn')) {
+                        if (!e.target.closest('.dt-colmenu-btn') && !e.target.closest('.dt-filter-btn') && !e.target.closest('.dt-clearfilters-btn')) {
                             this.closeColMenu();
                             this.closeFilterMenu();
                         }
@@ -1238,9 +1232,6 @@
                     this.syncFilterIcons();
                 },
 
-                // =====================================================
-                // Sort indicator + utils
-                // =====================================================
                 syncTabulatorSortIndicator() {
                     if (!this.tabulator) return;
 
