@@ -150,11 +150,10 @@
             flex: 0 0 auto;
         }
 
-        /* ✅ ИЗМЕНЕНО: не блокируем клики pointer-events:none, чтобы кнопку можно было нажать */
+        /* оставляем кликабельной (disabled проверяем в JS) */
         #mainTabulator .dt-clearfilters-btn[disabled]{
             opacity: .45;
             cursor: default;
-            /* pointer-events: none; */
         }
 
         /* =====================================================
@@ -265,6 +264,9 @@
         {{-- ✅ Field component: text --}}
         <script src="/assets/js/components/text.js"></script>
 
+        {{-- ✅ NEW: вынесенный компонент фильтров --}}
+        <script src="/assets/js/components/tabulatorFilterMenu.js"></script>
+
         <div class="panel px-0 border-[#e0e6ed] dark:border-[#1b2e4b]">
             <div class="invoice-table overflow-x-auto px-4 pt-4">
                 <div id="mainTabulator"></div>
@@ -370,10 +372,8 @@
                 colMenuOpen: false,
                 colMenuDocHandler: null,
 
-                filterMenuEl: null,
-                filterMenuOpen: false,
-                filterMenuDocHandler: null,
-                activeFilterField: null,
+                // ✅ NEW: фильтр-меню компонентом
+                filterMenu: null,
 
                 // filters ui state: {field: {kind, ...}}
                 filters: {},
@@ -412,6 +412,9 @@
                     this.buildColumnsFromConfig();
                     this.initSortFromConfig();
 
+                    // ✅ init filter menu component
+                    this.initFilterMenuComponent();
+
                     await this.loadLookups();
 
                     await this.loadData(1);
@@ -425,6 +428,37 @@
                             this.closeFilterMenu();
                         }
                     });
+                },
+
+                initFilterMenuComponent() {
+                    if (!window.DTFilterMenu) return;
+
+                    this.filterMenu = new window.DTFilterMenu({
+                        escapeHtml: (s) => this.escapeHtml(s),
+                        escapeAttr: (s) => this.escapeAttr(s),
+
+                        getCol: (field) => this.config.columns.find(c => c.key === field) || null,
+                        inferKind: (col) => this.inferFilterKindByDbType(col),
+
+                        getState: (field) => this.filters?.[field] ?? null,
+                        setState: (field, state) => { this.filters[field] = state; },
+                        deleteState: (field) => { delete this.filters[field]; },
+
+                        onApply: async () => {
+                            // применить текущий state
+                            await this.loadData(1);
+                            this.syncFilterIcons();
+                        },
+
+                        onClearField: async () => {
+                            await this.loadData(1);
+                            this.syncFilterIcons();
+                        },
+                    });
+                },
+
+                closeFilterMenu() {
+                    if (this.filterMenu) this.filterMenu.close();
                 },
 
                 initSortFromConfig() {
@@ -728,7 +762,6 @@
                             if (col.isVisible()) col.hide();
                             else col.show();
 
-                            // ✅ меню НЕ закрываем — просто перерисуем, чтобы обновить галочки
                             this.renderColMenu();
                         });
                     });
@@ -777,245 +810,6 @@
                     }
                 },
 
-                // =====================================================
-                // ✅ Filter menu
-                // =====================================================
-                ensureFilterMenu() {
-                    if (this.filterMenuEl) return;
-
-                    const el = document.createElement('div');
-                    el.className = 'dt-menu';
-                    el.style.display = 'none';
-
-                    el.addEventListener('mousedown', (e) => e.stopPropagation());
-                    el.addEventListener('click', (e) => e.stopPropagation());
-
-                    document.body.appendChild(el);
-                    this.filterMenuEl = el;
-                },
-
-                renderFilterMenu(field) {
-                    if (!this.filterMenuEl) return;
-
-                    const col = this.config.columns.find(c => c.key === field);
-                    if (!col) return;
-
-                    const kind = this.inferFilterKindByDbType(col);
-
-                    if (!this.filters[field] || this.filters[field].kind !== kind) {
-                        if (kind === 'text') this.filters[field] = { kind, op: 'icontain', value: '' };
-                        else if (kind === 'bool') this.filters[field] = { kind, value: '' }; // 1|0|null|''
-                        else if (kind === 'datetime') this.filters[field] = { kind, op: '', value: '', from: '', to: '' };
-                        else if (kind === 'int') this.filters[field] = { kind, mode: 'cmp', op: '=', value: '', list: '' };
-                        else this.filters[field] = { kind: 'text', op: 'icontain', value: '' };
-                    }
-
-                    const state = this.filters[field];
-                    const title = col.title ?? field;
-
-                    let body = `<div class="dt-menu-title">Фильтр: ${this.escapeHtml(title)}</div>`;
-                    body += `<div class="dt-menu-form">`;
-
-                    if (kind === 'text') {
-                        body += `
-                            <div class="dt-menu-row">
-                                <div class="dt-menu-label">Операция</div>
-                                <select data-k="op">
-                                    <option value="like" ${state.op==='like'?'selected':''}>Начинается (с учётом регистра)</option>
-                                    <option value="ilike" ${state.op==='ilike'?'selected':''}>Начинается (без учёта регистра)</option>
-                                    <option value="contain" ${state.op==='contain'?'selected':''}>Содержит (с учётом регистра)</option>
-                                    <option value="icontain" ${state.op==='icontain'?'selected':''}>Содержит (без учёта регистра)</option>
-                                    <option value="=" ${state.op==='='?'selected':''}>=</option>
-                                    <option value="!=" ${state.op==='!='?'selected':''}>!=</option>
-                                </select>
-                            </div>
-                            <div class="dt-menu-row">
-                                <div class="dt-menu-label">Значение</div>
-                                <input data-k="value" type="text" value="${this.escapeAttr(state.value ?? '')}">
-                            </div>
-                        `;
-                    }
-
-                    if (kind === 'bool') {
-                        body += `
-                            <div class="dt-menu-row">
-                                <div class="dt-menu-label">Значение</div>
-                                <select data-k="value">
-                                    <option value="" ${String(state.value)===''?'selected':''}>—</option>
-                                    <option value="1" ${String(state.value)==='1'?'selected':''}>Да</option>
-                                    <option value="0" ${String(state.value)==='0'?'selected':''}>Нет</option>
-                                    <option value="null" ${String(state.value)==='null'?'selected':''}>Не определено</option>
-                                </select>
-                            </div>
-                        `;
-                    }
-
-                    if (kind === 'datetime') {
-                        body += `
-                            <div class="dt-menu-row">
-                                <div class="dt-menu-label">Текстовый фильтр (опционально)</div>
-                                <select data-k="op">
-                                    <option value="" ${(state.op||'')===''?'selected':''}>—</option>
-                                    <option value="like" ${state.op==='like'?'selected':''}>Начинается (с учётом регистра)</option>
-                                    <option value="ilike" ${state.op==='ilike'?'selected':''}>Начинается (без учёта регистра)</option>
-                                    <option value="contain" ${state.op==='contain'?'selected':''}>Содержит (с учётом регистра)</option>
-                                    <option value="icontain" ${state.op==='icontain'?'selected':''}>Содержит (без учёта регистра)</option>
-                                    <option value="=" ${state.op==='='?'selected':''}>=</option>
-                                    <option value="!=" ${state.op==='!='?'selected':''}>!=</option>
-                                </select>
-                                <input data-k="value" type="text" value="${this.escapeAttr(state.value ?? '')}" placeholder="например 2026-02">
-                            </div>
-
-                            <div class="dt-menu-row-2">
-                                <div class="dt-menu-row">
-                                    <div class="dt-menu-label">Дата от (>=)</div>
-                                    <input data-k="from" type="date" value="${this.escapeAttr(state.from ?? '')}">
-                                </div>
-                                <div class="dt-menu-row">
-                                    <div class="dt-menu-label">Дата по (<=)</div>
-                                    <input data-k="to" type="date" value="${this.escapeAttr(state.to ?? '')}">
-                                </div>
-                            </div>
-                        `;
-                    }
-
-                    if (kind === 'int') {
-                        const mode = String(state.mode || 'cmp');
-                        body += `
-                            <div class="dt-menu-row">
-                                <div class="dt-menu-label">Режим</div>
-                                <select data-k="mode">
-                                    <option value="cmp" ${mode==='cmp'?'selected':''}>Сравнение</option>
-                                    <option value="in" ${mode==='in'?'selected':''}>IN</option>
-                                    <option value="not_in" ${mode==='not_in'?'selected':''}>NOT IN</option>
-                                </select>
-                            </div>
-
-                            <div class="dt-menu-row" data-block="cmp" style="${mode==='cmp'?'':'display:none'}">
-                                <div class="dt-menu-label">Операция</div>
-                                <select data-k="op">
-                                    <option value="=" ${state.op==='='?'selected':''}>=</option>
-                                    <option value="!=" ${state.op==='!='?'selected':''}>!=</option>
-                                    <option value=">" ${state.op==='>'?'selected':''}>&gt;</option>
-                                    <option value=">=" ${state.op==='>='?'selected':''}>&gt;=</option>
-                                    <option value="<" ${state.op==='<'?'selected':''}>&lt;</option>
-                                    <option value="<=" ${state.op==='<='?'selected':''}>&lt;=</option>
-                                </select>
-                                <div class="dt-menu-label">Значение</div>
-                                <input data-k="value" type="number" value="${this.escapeAttr(state.value ?? '')}">
-                            </div>
-
-                            <div class="dt-menu-row" data-block="list" style="${(mode==='in'||mode==='not_in')?'':'display:none'}">
-                                <div class="dt-menu-label">Список значений</div>
-                                <textarea data-k="list" placeholder="1,2,3 или 1 2 3">${this.escapeHtml(state.list ?? '')}</textarea>
-                            </div>
-                        `;
-                    }
-
-                    body += `
-                        <div class="dt-menu-actions">
-                            <button class="btnx" type="button" data-action="clear">Сбросить</button>
-                            <button class="btnx primary" type="button" data-action="apply">Применить</button>
-                        </div>
-                    `;
-                    body += `</div>`;
-
-                    this.filterMenuEl.innerHTML = body;
-
-                    const el = this.filterMenuEl;
-
-                    const modeSel = el.querySelector('select[data-k="mode"]');
-                    if (modeSel) {
-                        modeSel.addEventListener('change', () => {
-                            const v = modeSel.value;
-                            this.filters[field].mode = v;
-
-                            const cmp = el.querySelector('[data-block="cmp"]');
-                            const list = el.querySelector('[data-block="list"]');
-                            if (cmp)  cmp.style.display = (v === 'cmp') ? '' : 'none';
-                            if (list) list.style.display = (v === 'in' || v === 'not_in') ? '' : 'none';
-                        });
-                    }
-
-                    el.querySelectorAll('[data-k]').forEach(inp => {
-                        const k = inp.getAttribute('data-k');
-                        if (!k) return;
-
-                        const handler = () => { this.filters[field][k] = inp.value; };
-                        inp.addEventListener('input', handler);
-                        inp.addEventListener('change', handler);
-                    });
-
-                    const btnApply = el.querySelector('[data-action="apply"]');
-                    const btnClear = el.querySelector('[data-action="clear"]');
-
-                    if (btnApply) {
-                        btnApply.addEventListener('click', async () => {
-                            this.closeFilterMenu();
-                            await this.loadData(1);
-                        });
-                    }
-
-                    if (btnClear) {
-                        btnClear.addEventListener('click', async () => {
-                            delete this.filters[field];
-                            this.closeFilterMenu();
-                            await this.loadData(1);
-                            this.syncFilterIcons();
-                        });
-                    }
-                },
-
-                openFilterMenuNear(btnEl) {
-                    this.ensureFilterMenu();
-
-                    const field = btnEl.getAttribute('data-field');
-                    this.activeFilterField = field;
-
-                    this.renderFilterMenu(field);
-
-                    const r = btnEl.getBoundingClientRect();
-                    const w = 320;
-                    const pad = 8;
-
-                    let left = Math.round(r.right - w);
-                    left = Math.max(pad, Math.min(left, window.innerWidth - w - pad));
-
-                    let top = Math.round(r.bottom + 8);
-                    top = Math.max(pad, Math.min(top, window.innerHeight - 220 - pad));
-
-                    this.filterMenuEl.style.left = left + 'px';
-                    this.filterMenuEl.style.top  = top + 'px';
-                    this.filterMenuEl.style.display = 'block';
-                    this.filterMenuOpen = true;
-
-                    if (this.filterMenuDocHandler) {
-                        document.removeEventListener('mousedown', this.filterMenuDocHandler, true);
-                    }
-
-                    setTimeout(() => {
-                        this.filterMenuDocHandler = (e) => {
-                            if (!this.filterMenuOpen) return;
-                            const inMenu = this.filterMenuEl && this.filterMenuEl.contains(e.target);
-                            const onBtn = e.target.closest && e.target.closest('.dt-filter-btn');
-                            if (!inMenu && !onBtn) this.closeFilterMenu();
-                        };
-                        document.addEventListener('mousedown', this.filterMenuDocHandler, true);
-                    }, 0);
-                },
-
-                closeFilterMenu() {
-                    this.filterMenuOpen = false;
-                    this.activeFilterField = null;
-
-                    if (this.filterMenuEl) this.filterMenuEl.style.display = 'none';
-                    if (this.filterMenuDocHandler) {
-                        document.removeEventListener('mousedown', this.filterMenuDocHandler, true);
-                        this.filterMenuDocHandler = null;
-                    }
-                },
-
-                // ✅ ИЗМЕНЕНО: дополнительно обновляем состояние кнопки "сбросить все"
                 syncFilterIcons() {
                     const holder = document.querySelector('#mainTabulator');
                     if (!holder) return;
@@ -1079,11 +873,7 @@
 
                                     this.closeColMenu();
 
-                                    if (this.filterMenuOpen && this.activeFilterField === fb.getAttribute('data-field')) {
-                                        this.closeFilterMenu();
-                                    } else {
-                                        this.openFilterMenuNear(fb);
-                                    }
+                                    if (this.filterMenu) this.filterMenu.toggleNear(fb);
                                     return;
                                 }
 
@@ -1137,7 +927,6 @@
                         hozAlign: 'right',
                         headerHozAlign: 'right',
 
-                        // ✅ ИЗМЕНЕНО: disabled теперь зависит от hasAnyFilters
                         titleFormatter: () => {
                             const disabled = this.hasAnyFilters ? '' : 'disabled';
                             return `
@@ -1160,11 +949,7 @@
                             if (clearBtn) {
                                 e.preventDefault();
                                 e.stopPropagation();
-
-                                // ✅ ИЗМЕНЕНО: не проверяем hasAttribute('disabled') (клик теперь возможен),
-                                // а просто не делаем ничего если фильтров нет
                                 if (!this.hasAnyFilters) return;
-
                                 await this.resetAllFilters();
                                 this.syncFilterIcons();
                                 return;
