@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CrudController;
+use App\Http\Controllers\DownloadController;
 use Illuminate\Support\Facades\Route;
 
 foreach (config('entities') as $entity => $items) {
@@ -9,6 +10,14 @@ foreach (config('entities') as $entity => $items) {
     Route::get('/' . $entity . '/{id}/edit', [CrudController::class, 'edit']);
     Route::get('/' . $entity . '/create', [CrudController::class, 'create']);
 };
+
+Route::get('/download/image/{entity}/{id}/{field}/{variant}/', [DownloadController::class, 'image'])
+    ->where([
+        'entity' => '[A-Za-z0-9_\-]+',
+        'id' => '[0-9]+',
+        'field'   => '[A-Za-z0-9_\-]+',
+        'variant' => '[A-Za-z0-9_\-]+',
+    ]);
 
 
 Route::view('/auth/boxed-lockscreen', 'auth.boxed-lockscreen');
