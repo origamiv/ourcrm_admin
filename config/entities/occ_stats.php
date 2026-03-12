@@ -40,8 +40,9 @@ return [
     |--------------------------------------------------------------------------
     */
     'column_groups' => [
-        ['id' => 1, 'name' => 'Продажа'],
-        ['id' => 2, 'name' => 'Регистрация'],
+        ['id' => 1, 'name' => 'Продажа', 'headerHozAlign' => 'center'],
+        ['id' => 2, 'name' => 'Регистрация', 'headerHozAlign' => 'center'],
+        ['id' => 3, 'name' => '', 'headerHozAlign' => 'center'],
     ],
 
     /*
@@ -129,6 +130,7 @@ return [
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
+            'column_group' => 3,
         ],
         'geo' => [
             'name' => 'Гео',
@@ -137,6 +139,7 @@ return [
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
+            'column_group' => 3,
         ],
         'sale_amount' => [
             'name' => 'Сумма продажи',
@@ -145,6 +148,7 @@ return [
             'control' => 'number',
             'db_type' => 'numeric',
             'is_lookup' => false,
+            'column_group' => 3,
         ],
         'sub_id' => [
             'name' => 'Sub ID',
@@ -153,6 +157,7 @@ return [
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
+            'column_group' => 3,
         ],
         'fd' => [
             'name' => 'FD',
@@ -161,6 +166,7 @@ return [
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
+            'column_group' => 3,
         ],
         'rd' => [
             'name' => 'RD',
@@ -169,6 +175,7 @@ return [
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
+            'column_group' => 3,
         ],
         'user_id' => [
             'name' => 'User ID',
@@ -177,6 +184,7 @@ return [
             'control' => 'number',
             'db_type' => 'bigint',
             'is_lookup' => false,
+            'column_group' => 3,
         ],
         'click_id' => [
             'name' => 'Click ID',
@@ -185,6 +193,7 @@ return [
             'control' => 'number',
             'db_type' => 'bigint',
             'is_lookup' => false,
+            'column_group' => 3,
         ],
         'lead_id' => [
             'name' => 'Lead ID',
@@ -193,6 +202,7 @@ return [
             'control' => 'number',
             'db_type' => 'bigint',
             'is_lookup' => false,
+            'column_group' => 3,
         ],
         'conversion_id' => [
             'name' => 'Conversion ID',
@@ -201,6 +211,7 @@ return [
             'control' => 'number',
             'db_type' => 'bigint',
             'is_lookup' => false,
+            'column_group' => 3,
         ],
         'created_at' => [
             'name' => 'Создано',
@@ -213,6 +224,7 @@ return [
                 'outputFormat' => 'DD.MM.YY HH:mm',
             ],
             'is_lookup' => false,
+            'column_group' => 3,
         ],
         'updated_at' => [
             'name' => 'Обновлено',
@@ -225,6 +237,7 @@ return [
                 'outputFormat' => 'DD.MM.YY HH:mm',
             ],
             'is_lookup' => false,
+            'column_group' => 3,
         ],
     ],
 
