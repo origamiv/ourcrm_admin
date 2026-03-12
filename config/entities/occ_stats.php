@@ -42,7 +42,7 @@ return [
     'fields' => [
         'id' => [
             'name' => 'ID',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,show,edit',
             'is_filter_need' => true,
             'control' => 'number',
             'db_type' => 'bigint',
@@ -50,47 +50,67 @@ return [
         ],
         'report_date' => [
             'name' => 'Дата отчета',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,show,edit',
             'is_filter_need' => true,
             'control' => 'text',
             'db_type' => 'date',
+            'formatter' => 'datetime',
+            'formatter_options' => [
+                'outputFormat' => 'DD.MM.YY',
+            ],
             'is_lookup' => false,
         ],
         'sale_date' => [
             'name' => 'Дата продажи',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,show,edit',
             'is_filter_need' => true,
             'control' => 'text',
             'db_type' => 'date',
+            'formatter' => 'datetime',
+            'formatter_options' => [
+                'outputFormat' => 'DD.MM.YY',
+            ],
             'is_lookup' => false,
         ],
         'sale_time' => [
             'name' => 'Время продажи',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,show,edit',
             'is_filter_need' => false,
             'control' => 'text',
             'db_type' => 'time',
+            'formatter' => 'datetime',
+            'formatter_options' => [
+                'outputFormat' => 'HH:mm',
+            ],
             'is_lookup' => false,
         ],
         'registration_date' => [
             'name' => 'Дата регистрации',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,show,edit',
             'is_filter_need' => true,
             'control' => 'text',
             'db_type' => 'date',
+            'formatter' => 'datetime',
+            'formatter_options' => [
+                'outputFormat' => 'DD.MM.YY',
+            ],
             'is_lookup' => false,
         ],
         'registration_time' => [
             'name' => 'Время регистрации',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,show,edit',
             'is_filter_need' => false,
             'control' => 'text',
             'db_type' => 'time',
+            'formatter' => 'datetime',
+            'formatter_options' => [
+                'outputFormat' => 'HH:mm',
+            ],
             'is_lookup' => false,
         ],
         'offer' => [
             'name' => 'Оффер',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,show,edit',
             'is_filter_need' => true,
             'control' => 'text',
             'db_type' => 'string',
@@ -98,7 +118,7 @@ return [
         ],
         'geo' => [
             'name' => 'Гео',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,show,edit',
             'is_filter_need' => true,
             'control' => 'text',
             'db_type' => 'string',
@@ -106,7 +126,7 @@ return [
         ],
         'sale_amount' => [
             'name' => 'Сумма продажи',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,show,edit',
             'is_filter_need' => false,
             'control' => 'number',
             'db_type' => 'numeric',
@@ -122,7 +142,7 @@ return [
         ],
         'fd' => [
             'name' => 'FD',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,show,edit',
             'is_filter_need' => true,
             'control' => 'text',
             'db_type' => 'string',
@@ -130,7 +150,7 @@ return [
         ],
         'rd' => [
             'name' => 'RD',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,show,edit',
             'is_filter_need' => true,
             'control' => 'text',
             'db_type' => 'string',
@@ -174,6 +194,10 @@ return [
             'is_filter_need' => false,
             'control' => 'text',
             'db_type' => 'timestamp',
+            'formatter' => 'datetime',
+            'formatter_options' => [
+                'outputFormat' => 'DD.MM.YY HH:mm',
+            ],
             'is_lookup' => false,
         ],
         'updated_at' => [
@@ -182,11 +206,19 @@ return [
             'is_filter_need' => false,
             'control' => 'text',
             'db_type' => 'timestamp',
+            'formatter' => 'datetime',
+            'formatter_options' => [
+                'outputFormat' => 'DD.MM.YY HH:mm',
+            ],
             'is_lookup' => false,
         ],
     ],
 
     'order' => [
         'report_date' => 'desc',
+    ],
+
+    'group' => [
+        'field' => 'report_date',
     ],
 ];

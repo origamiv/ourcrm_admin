@@ -5,6 +5,7 @@
     ===================================================== --}}
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -792,6 +793,32 @@
                                     return this.lookupMaps[col.key]?.[value] ?? '—';
                                 }
 
+                                // ✅ Форматирование даты/времени через Luxon, если задан formatter=datetime
+                                if (col.formatter === 'datetime' && value) {
+                                    try {
+                                        const outputFormat = col.options?.outputFormat || 'DD.MM.YY HH:mm';
+                                        // Tabulator/Luxon format mapping: DD.MM.YY -> dd.MM.yy, HH:mm -> HH:mm
+                                        const luxonFormat = outputFormat
+                                            .replace('DD', 'dd')
+                                            .replace('MM', 'MM')
+                                            .replace('YY', 'yy')
+                                            .replace('YYYY', 'yyyy');
+
+                                        const dt = luxon.DateTime.fromISO(value);
+                                        if (dt.isValid) {
+                                            return dt.toFormat(luxonFormat);
+                                        }
+
+                                        // Если не ISO, пробуем как SQL date/time
+                                        const dt2 = luxon.DateTime.fromSQL(value);
+                                        if (dt2.isValid) {
+                                            return dt2.toFormat(luxonFormat);
+                                        }
+                                    } catch (e) {
+                                        console.error('Date format error', e);
+                                    }
+                                }
+
                                 const control = col.control ?? 'text';
                                 const cmp = (window.FieldComponents && window.FieldComponents[control])
                                     ? window.FieldComponents[control]
@@ -886,6 +913,8 @@
                         }
                     });
 
+                    const groupConfig = window.CONFIG.group ?? null;
+
                     this.tabulator = new Tabulator('#mainTabulator', {
                         data: this.items,
                         layout: "fitDataTable",
@@ -898,6 +927,37 @@
                         columnDefaults: {
                             minWidth: 140,
                             resizable: true
+                        },
+                        groupBy: groupConfig ? groupConfig.field : false,
+                        groupHeader: (value, count, data, group) => {
+                            // Если есть форматтер для этого поля, используем его
+                            const col = this.config.columns.find(c => c.key === groupConfig.field);
+                            let displayValue = value;
+
+                            if (col && col.formatter === 'datetime' && value) {
+                                try {
+                                    const outputFormat = col.options?.outputFormat || 'DD.MM.YY';
+                                    const luxonFormat = outputFormat
+                                        .replace('DD', 'dd')
+                                        .replace('MM', 'MM')
+                                        .replace('YY', 'yy')
+                                        .replace('YYYY', 'yyyy');
+
+                                    const dt = luxon.DateTime.fromISO(value);
+                                    if (dt.isValid) {
+                                        displayValue = dt.toFormat(luxonFormat);
+                                    } else {
+                                        const dt2 = luxon.DateTime.fromSQL(value);
+                                        if (dt2.isValid) {
+                                            displayValue = dt2.toFormat(luxonFormat);
+                                        }
+                                    }
+                                } catch (e) {
+                                    console.error('Group header date format error', e);
+                                }
+                            }
+
+                            return `<span>${displayValue}</span> <span style='color:#d00; margin-left:10px;'>(${count} записей)</span>`;
                         },
                     });
 
