@@ -142,6 +142,8 @@ return [
             'field_mode' => 'index,show',
             'is_filter_need' => false,
             'control' => 'text',
+            'modifier' => 'link',
+            'template'=>'/offers/{id}/show',
             'formatter' => null,
             'db_type' => 'string',
             'is_lookup' => false,

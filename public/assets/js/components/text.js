@@ -29,6 +29,12 @@
 
         // ===== TABLE (mode=index) =====
         index({value}) {
+            // Обработка модификатора link
+            if ((config.modifier != null) && (config.modifier == 'link')) {
+                let href = config.template ? config.template.replace(/{(\w+)}/g, (_, f) => row[f] ?? '') : value;
+                return `<a href="${escapeHtml(href)}">${escapeHtml(value)}</a>`;
+            }
+
             if (value === null || value === undefined || value === '') return '—';
             return escapeHtml(value);
         },
@@ -62,6 +68,12 @@
                 }
                 return '<img src=\'/download/image/'+entity+'/'+row['id']+'/'+name+'/icons\' width="'+width+'" height="'+height+'" title="' + value + '"  >';
                 //return '<img src="' + path + modifierFieldValue + '.png" width="'+width+'" height="'+height+'" title="' + value + '" >';
+            }
+
+            // Обработка модификатора link
+            if ((config.modifier != null) && (config.modifier == 'link')) {
+                let href = config.template ? config.template.replace(/{(\w+)}/g, (_, f) => row[f] ?? '') : value;
+                return `<a href="${escapeHtml(href)}">${escapeHtml(value)}</a>`;
             }
 
             if (value === null || value === undefined || value === '') return '—';
