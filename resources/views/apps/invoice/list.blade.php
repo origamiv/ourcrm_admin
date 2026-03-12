@@ -486,8 +486,9 @@
 
                 buildColumnsFromConfig() {
                     const fields = window.CONFIG.fields;
+                    const groups = window.CONFIG.column_groups || [];
 
-                    this.config.columns = Object.entries(fields)
+                    const flatColumns = Object.entries(fields)
                         .filter(([_, field]) => field.field_mode?.includes('index'))
                         .map(([key, field]) => ({
                             key,
@@ -499,8 +500,11 @@
                             options: field.formatter_options ?? null,
                             is_lookup: field.is_lookup ?? false,
                             lookup_id: field.lookup_id,
-                            lookup_name: field.lookup_name
+                            lookup_name: field.lookup_name,
+                            column_group: field.column_group ?? null
                         }));
+
+                    this.config.columns = flatColumns;
                 },
 
                 async loadLookups() {
@@ -752,7 +756,7 @@
                     const entity = window.CONFIG.common.shortname;
                     const primaryKey = this.config.primaryKey;
 
-                    const cols = this.config.columns.map((col) => {
+                    const buildColDef = (col) => {
                         return {
                             title: col.title,
                             field: col.key,
@@ -843,7 +847,50 @@
                                 return String(value);
                             }
                         };
-                    });
+                    };
+
+                    const columnGroups = window.CONFIG.column_groups || [];
+                    let cols = [];
+
+                    if (columnGroups.length > 0) {
+                        // Группируем колонки
+                        const groupMap = {};
+                        columnGroups.forEach(g => {
+                            groupMap[g.id] = {
+                                title: g.name,
+                                columns: []
+                            };
+                        });
+
+                        this.config.columns.forEach(col => {
+                            if (col.column_group && groupMap[col.column_group]) {
+                                groupMap[col.column_group].columns.push(buildColDef(col));
+                            } else {
+                                cols.push(buildColDef(col));
+                            }
+                        });
+
+                        // Добавляем группы в общий список колонок (в конец или по порядку?)
+                        // Для простоты добавим их туда, где была первая колонка группы, или просто в конец.
+                        // Но лучше сохранить порядок из конфига.
+
+                        // Пересоберем cols с учетом групп
+                        cols = [];
+                        const processedGroups = new Set();
+
+                        this.config.columns.forEach(col => {
+                            if (col.column_group && groupMap[col.column_group]) {
+                                if (!processedGroups.has(col.column_group)) {
+                                    cols.push(groupMap[col.column_group]);
+                                    processedGroups.add(col.column_group);
+                                }
+                            } else {
+                                cols.push(buildColDef(col));
+                            }
+                        });
+                    } else {
+                        cols = this.config.columns.map(buildColDef);
+                    }
 
                     cols.push({
                         title: 'Действия',

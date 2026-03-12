@@ -39,6 +39,16 @@ return [
     | Fields — поля согласно новым требованиям
     |--------------------------------------------------------------------------
     */
+    'column_groups' => [
+        ['id' => 1, 'name' => 'Продажа'],
+        ['id' => 2, 'name' => 'Регистрация'],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Fields — поля согласно новым требованиям
+    |--------------------------------------------------------------------------
+    */
     'fields' => [
         'id' => [
             'name' => 'ID',
@@ -61,7 +71,7 @@ return [
             'is_lookup' => false,
         ],
         'sale_date' => [
-            'name' => 'Дата продажи',
+            'name' => 'Дата',
             'field_mode' => 'index,show,edit',
             'is_filter_need' => true,
             'control' => 'text',
@@ -71,9 +81,10 @@ return [
                 'outputFormat' => 'DD.MM.YY',
             ],
             'is_lookup' => false,
+            'column_group' => 1,
         ],
         'sale_time' => [
-            'name' => 'Время продажи',
+            'name' => 'Время',
             'field_mode' => 'index,show,edit',
             'is_filter_need' => false,
             'control' => 'text',
@@ -83,9 +94,10 @@ return [
                 'outputFormat' => 'HH:mm',
             ],
             'is_lookup' => false,
+            'column_group' => 1,
         ],
         'registration_date' => [
-            'name' => 'Дата регистрации',
+            'name' => 'Дата',
             'field_mode' => 'index,show,edit',
             'is_filter_need' => true,
             'control' => 'text',
@@ -95,9 +107,10 @@ return [
                 'outputFormat' => 'DD.MM.YY',
             ],
             'is_lookup' => false,
+            'column_group' => 2,
         ],
         'registration_time' => [
-            'name' => 'Время регистрации',
+            'name' => 'Время',
             'field_mode' => 'index,show,edit',
             'is_filter_need' => false,
             'control' => 'text',
@@ -107,6 +120,7 @@ return [
                 'outputFormat' => 'HH:mm',
             ],
             'is_lookup' => false,
+            'column_group' => 2,
         ],
         'offer' => [
             'name' => 'Оффер',
