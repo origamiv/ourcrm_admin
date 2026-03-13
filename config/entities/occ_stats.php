@@ -158,6 +158,7 @@ return [
             'db_type' => 'string',
             'is_lookup' => false,
             'column_group' => 3,
+            'modifier' => 'copy',
         ],
         'fd' => [
             'name' => 'FD',

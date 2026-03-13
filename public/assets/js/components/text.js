@@ -28,56 +28,84 @@
     window.FieldComponents.text = {
 
         // ===== TABLE (mode=index) =====
-        index({value}) {
+        index(props) {
+            const {value, config = {}, row = {}} = props;
+            if (value === null || value === undefined || value === '') return '—';
+
             // Обработка модификатора link
-            if ((config.modifier != null) && (config.modifier == 'link')) {
+            if (config.modifier === 'link') {
                 let href = config.template ? config.template.replace(/{(\w+)}/g, (_, f) => row[f] ?? '') : value;
-                return `<a href="${escapeHtml(href)}">${escapeHtml(value)}</a>`;
+                return `<a href="${escapeHtml(href)}" class="text-primary hover:underline">${escapeHtml(value)}</a>`;
             }
 
-            if (value === null || value === undefined || value === '') return '—';
+            // Обработка модификатора copy
+            if (config.modifier === 'copy') {
+                return `могло
+                    <div class="flex items-center gap-2 group">
+                        <span>${escapeHtml(value)}</span>
+                        <button type="button" class="text-gray-400 hover:text-primary transition-colors" onclick="FieldComponents.text.copyToClipboard(this, '${escapeHtml(value)}')">
+                            <i class="uil uil-copy text-base"></i>
+                        </button>
+                    </div>
+                `;
+            }
+
             return escapeHtml(value);
         },
 
         // ===== SHOW (mode=show) =====
-        show({entity, name, value, config = {}, row = {}}) {
-            let modifierFieldValue = null;
-            //console.log(entity);
-            if (config.modifier_field != null) {
-                let fieldName = config.modifier_field;
-                if (row[fieldName] != null) {
-                    modifierFieldValue = row[fieldName];
-                }
+        show(props) {
+            const {entity, name, value, config = {}, row = {}} = props;
+            if (value === null || value === undefined || value === '') return '—';
+
+            let modifierFieldValue = value;
+            if (config.modifier_field != null && row[config.modifier_field] != null) {
+                modifierFieldValue = row[config.modifier_field];
             }
 
-            if ((value == null) || (value == undefined) || (value == '')) {value = 'default';}
-            if (modifierFieldValue == null) {modifierFieldValue = value;}
-
-            if ((config.modifier != null) && (config.modifier == 'flag')) {
-                let width="24px";
-                let height="24px";
-                return '<img src=\'/download/image/'+entity+'/'+row['id']+'/'+name+'/flags\' width="'+width+'" title="' + value + '" >';
-                //return '<img src=\'assets/images/flags/' + modifierFieldValue + '.svg\' title="' + value + '" >';
+            if (config.modifier === 'flag') {
+                return `<img src="/download/image/${entity}/${row['id']}/${name}/flags" width="24" height="24" title="${escapeHtml(value)}" class="inline-block">`;
             }
-            if ((config.modifier != null) && (config.modifier == 'icon')) {
-                let path = 'assets/images/icons/';
-                let width="24px";
-                let height="24px";
-                if ((config.icon_path != null)) {
-                    path = config.icon_path;
-                }
-                return '<img src=\'/download/image/'+entity+'/'+row['id']+'/'+name+'/icons\' width="'+width+'" height="'+height+'" title="' + value + '"  >';
-                //return '<img src="' + path + modifierFieldValue + '.png" width="'+width+'" height="'+height+'" title="' + value + '" >';
+
+            if (config.modifier === 'icon') {
+                let width = config.width || "24px";
+                let height = config.height || "24px";
+                return `<img src="/download/image/${entity}/${row['id']}/${name}/icons" width="${width}" height="${height}" title="${escapeHtml(value)}" class="inline-block">`;
             }
 
             // Обработка модификатора link
-            if ((config.modifier != null) && (config.modifier == 'link')) {
+            if (config.modifier === 'link') {
                 let href = config.template ? config.template.replace(/{(\w+)}/g, (_, f) => row[f] ?? '') : value;
-                return `<a href="${escapeHtml(href)}">${escapeHtml(value)}</a>`;
+                return `<a href="${escapeHtml(href)}" class="text-primary hover:underline">${escapeHtml(value)}</a>`;
             }
 
-            if (value === null || value === undefined || value === '') return '—';
+            // Обработка модификатора copy
+            if (config.modifier === 'copy') {
+                return `
+                    <div class="flex items-center gap-2">
+                        <span>${escapeHtml(value)}</span>
+                        <button type="button" class="text-gray-400 hover:text-primary transition-colors" onclick="FieldComponents.text.copyToClipboard(this, '${escapeHtml(value)}')">
+                            <i class="uil uil-copy text-base"></i>
+                        </button>
+                    </div>
+                `;
+            }
+
             return escapeHtml(value);
+        },
+
+        copyToClipboard(btn, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalColor = btn.style.color;
+                btn.classList.remove('text-gray-400');
+                btn.classList.add('text-success');
+                setTimeout(() => {
+                    btn.classList.remove('text-success');
+                    btn.classList.add('text-gray-400');
+                }, 2000);
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
+            });
         },
 
         // ===== EDIT (mode=edit) =====
