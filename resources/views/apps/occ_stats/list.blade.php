@@ -220,9 +220,7 @@
                 aggData: [],
                 aggTitle: window.CONFIG.aggregation?.title || 'Агрегация',
                 tabulator: null,
-                filters: {
-                    tier: { kind: 'text', op: '=', value: '2' }
-                },
+                filters: {},
                 sortBy: 'id',
                 sortDir: 'desc',
                 page: 1,
@@ -288,8 +286,14 @@
                             ? '{{ config('app.api_url') }}' + window.CONFIG.aggregation.api
                             : '{{ config('app.api_url') }}' + window.CONFIG.common.api + '/agg';
 
+                        const filters = this.buildApiFilterArray();
+                        // Принудительно добавляем фильтр по tier=2 для верхней таблицы, если его нет
+                        if (!filters.find(f => f.field === 'tier')) {
+                            filters.push({ field: 'tier', op: '=', val: '2' });
+                        }
+
                         const payload = {
-                            filter: this.buildApiFilterArray()
+                            filter: filters
                         };
 
                         if (window.CONFIG.aggregation.group_by) {
