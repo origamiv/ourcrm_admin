@@ -196,6 +196,15 @@ return [
             'is_lookup' => false,
             'column_group' => 3,
         ],
+        'tier' => [
+            'name' => 'Tier',
+            'field_mode' => 'index,show,edit',
+            'is_filter_need' => true,
+            'control' => 'number',
+            'db_type' => 'integer',
+            'is_lookup' => false,
+            'column_group' => 3,
+        ],
         'lead_id' => [
             'name' => 'Lead ID',
             'field_mode' => 'index,show',
@@ -256,7 +265,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'aggregation' => [
-        'title' => 'Агрегация по офферам',
+        'title' => 'Агрегация по офферам Tier 2',
         'api' => '/api/v1/stat-okk/agg',
         'group_by' => ['offer'],
         'columns' => [

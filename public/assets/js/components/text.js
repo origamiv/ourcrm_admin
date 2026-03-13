@@ -40,7 +40,7 @@
 
             // Обработка модификатора copy
             if (config.modifier === 'copy') {
-                return `могло
+                return `
                     <div class="flex items-center gap-2 group">
                         <span>${escapeHtml(value)}</span>
                         <button type="button" class="text-gray-400 hover:text-primary transition-colors" onclick="FieldComponents.text.copyToClipboard(this, '${escapeHtml(value)}')">
