@@ -257,6 +257,7 @@ return [
     'aggregation' => [
         'title' => 'Агрегация по офферам',
         'api' => '/api/v1/stat-okk/agg',
+        'group_by' => ['offer'],
         'columns' => [
             ['title' => 'Оффер', 'field' => 'offer', 'width' => 250],
             ['title' => 'Сумма продажи', 'field' => 'sale_amount', 'hozAlign' => 'right'],

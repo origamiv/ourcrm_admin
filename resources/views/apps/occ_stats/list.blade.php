@@ -285,9 +285,17 @@
                             ? '{{ config('app.api_url') }}' + window.CONFIG.aggregation.api
                             : '{{ config('app.api_url') }}' + window.CONFIG.common.api + '/agg';
 
+                        const payload = {
+                            filter: this.buildApiFilterArray()
+                        };
+
+                        if (window.CONFIG.aggregation.group_by) {
+                            payload.group_by = window.CONFIG.aggregation.group_by;
+                        }
+
                         const res = await axios.post(
                             apiUrl,
-                            { filter: this.buildApiFilterArray() },
+                            payload,
                             {
                                 headers: {
                                     'Accept': 'application/json',
