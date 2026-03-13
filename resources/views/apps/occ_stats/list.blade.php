@@ -46,6 +46,93 @@
         /* ===== Tabulator base ===== */
         #mainTabulator { width: 100%; }
 
+        .dt-menu {
+            position: fixed;
+            z-index: 9999;
+            background: #fff;
+            border: 1px solid #e0e6ed;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            padding: 12px;
+            width: 320px;
+        }
+        .dark .dt-menu {
+            background: #1b2e4b;
+            border-color: #253b5c;
+            color: #e0e6ed;
+        }
+        .dt-menu-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        .dt-menu-row { margin-bottom: 10px; }
+        .dt-menu-label { font-size: 12px; color: #888; margin-bottom: 4px; }
+        .dt-menu-form input, .dt-menu-form select, .dt-menu-form textarea {
+            width: 100%;
+            border: 1px solid #e0e6ed;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 13px;
+            background: #fff;
+        }
+        .dark .dt-menu-form input, .dark .dt-menu-form select, .dark .dt-menu-form textarea {
+            background: #0e1726;
+            border-color: #253b5c;
+            color: #e0e6ed;
+        }
+        .dt-menu-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .dt-menu-actions .btnx {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            border: 1px solid #e0e6ed;
+            background: #fff;
+        }
+        .dt-menu-actions .btnx.primary {
+            background: #4361ee;
+            color: #fff;
+            border-color: #4361ee;
+        }
+        .dt-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .dt-menu-item:hover { background: rgba(0,0,0,0.05); }
+        .dark .dt-menu-item:hover { background: rgba(255,255,255,0.05); }
+        .dt-menu-mark { width: 16px; color: #4361ee; font-weight: bold; }
+
+        .dt-col-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .dt-filter-btn, .dt-colmenu-btn, .dt-clearfilters-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            color: #888;
+        }
+        .dt-filter-btn:hover, .dt-colmenu-btn:hover, .dt-clearfilters-btn:hover {
+            background: rgba(0,0,0,0.05);
+        }
+        .dt-filter-btn.dt-active {
+            color: #4361ee;
+        }
+
         .dark .tabulator { background: transparent; }
         .tabulator .tabulator-header .tabulator-col { user-select: none; }
         .tabulator .tabulator-cell { vertical-align: middle; }
@@ -176,7 +263,7 @@
                 </table>
             </div>
 
-            <div class="invoice-table overflow-x-auto px-4 pt-4">
+            <div class="invoice-table px-4 pt-4">
                 <div id="mainTabulator"></div>
             </div>
 
@@ -483,6 +570,30 @@
                             return;
                         }
 
+                        if (f.kind === 'int') {
+                            const op = String(f.op || '=');
+                            const vRaw = (f.value ?? '');
+                            if (vRaw === '' || vRaw === null || vRaw === undefined) {
+                                // Если значение пустое, но это IN/NOT IN, проверяем список
+                                if (op !== 'in' && op !== 'not in') return;
+                            }
+
+                            if (op === 'in' || op === 'not in') {
+                                const raw = String(f.list ?? '').trim();
+                                if (!raw) return;
+                                const parts = raw.split(/[\s,;]+/g).map(s => s.trim()).filter(Boolean);
+                                const nums = parts.map(x => Number(x)).filter(n => !Number.isNaN(n));
+                                if (nums.length === 0) return;
+                                push(field, op, nums);
+                                return;
+                            }
+
+                            const v = Number(vRaw);
+                            if (Number.isNaN(v)) return;
+                            push(field, op, v);
+                            return;
+                        }
+
                         if (f.kind === 'bool') {
                             if (f.value === '' || f.value === null || f.value === undefined) return;
 
@@ -503,35 +614,6 @@
                             if (to)   push(field, '<=', to);
                             return;
                         }
-
-                        if (f.kind === 'int') {
-                            const mode = String(f.mode || 'cmp');
-
-                            if (mode === 'cmp') {
-                                const op = String(f.op || '=');
-                                const vRaw = (f.value ?? '');
-                                if (vRaw === '' || vRaw === null || vRaw === undefined) return;
-                                const v = Number(vRaw);
-                                if (Number.isNaN(v)) return;
-                                push(field, op, v);
-                                return;
-                            }
-
-                            const raw = String(f.list ?? '').trim();
-                            if (!raw) return;
-
-                            const parts = raw
-                                .split(/[\s,;]+/g)
-                                .map(s => s.trim())
-                                .filter(Boolean);
-
-                            const nums = parts.map(x => Number(x)).filter(n => !Number.isNaN(n));
-                            if (nums.length === 0) return;
-
-                            if (mode === 'in') push(field, 'in', nums);
-                            if (mode === 'not_in') push(field, 'not in', nums);
-                            return;
-                        }
                     });
 
                     return arr;
@@ -542,7 +624,7 @@
 
                     if (t.includes('bool')) return 'bool';
                     if (t.includes('timestamp') || t.includes('datetime') || t === 'date' || t === 'time') return 'datetime';
-                    if (t.includes('int') || t.includes('bigint') || t.includes('smallint')) return 'int';
+                    if (t.includes('int') || t.includes('bigint') || t.includes('smallint') || t.includes('integer') || t.includes('numeric')) return 'int';
 
                     return 'text';
                 },
@@ -565,11 +647,11 @@
                         );
                     }
 
-                    if (f.kind === 'int') {
-                        const mode = String(f.mode || 'cmp');
-                        if (mode === 'cmp') return !(f.value === '' || f.value === null || f.value === undefined);
-                        if (mode === 'in' || mode === 'not_in') return String(f.list ?? '').trim().length > 0;
-                    }
+                        if (f.kind === 'int') {
+                            const op = String(f.op || '=');
+                            if (op === 'in' || op === 'not_in') return String(f.list ?? '').trim().length > 0;
+                            return !(f.value === '' || f.value === null || f.value === undefined);
+                        }
 
                     return false;
                 },
@@ -596,6 +678,8 @@
                             order: [{ field: this.sortBy, direction: (this.sortDir || 'desc') }],
                             filter: this.buildApiFilterArray(),
                         };
+
+                        console.log('Loading data with payload:', JSON.stringify(payload, null, 2));
 
                         const response = await fetch(this.config.api.list, {
                             method: 'POST',
