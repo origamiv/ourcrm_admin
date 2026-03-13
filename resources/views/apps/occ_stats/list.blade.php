@@ -165,7 +165,6 @@
                     <thead>
                         <tr>
                             <th>Оффер</th>
-                            <th>Tier</th>
                             <th class="text-right">Сумма продажи</th>
                             <th class="text-right">Кол-во депозитов</th>
                             <th class="text-right">Сумма выплаты</th>
@@ -336,7 +335,6 @@
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                             <td>${this.escapeHtml(row.offer || row.name || '—')}</td>
-                            <td>${row.tier || '—'}</td>
                             <td class="text-right">${row.sale_amount || row.sum_sale || 0}</td>
                             <td class="text-right">${row.deposits_count || row.count_deposits || 0}</td>
                             <td class="text-right">${row.payout_amount || row.sum_payout || 0}</td>
