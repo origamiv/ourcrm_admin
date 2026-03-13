@@ -18,7 +18,12 @@ class CrudController extends BaseController
         $paths = explode('/', $request->getRequestUri());
         $entity = $paths[1];
 
-        return view('apps.invoice.list', [
+        $view = 'apps.invoice.list';
+        if (view()->exists('apps.' . $entity . '.list')) {
+            $view = 'apps.' . $entity . '.list';
+        }
+
+        return view($view, [
             'config' => config('entities.' . $entity),
         ]);
     }

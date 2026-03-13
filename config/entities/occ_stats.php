@@ -248,4 +248,20 @@ return [
     'group' => [
         'field' => 'report_date',
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Aggregation — верхняя таблица для отчета ОКК
+    |--------------------------------------------------------------------------
+    */
+    'aggregation' => [
+        'title' => 'Агрегация по офферам',
+        'api' => '/api/v1/stat-okk/agg',
+        'columns' => [
+            ['title' => 'Оффер', 'field' => 'offer', 'width' => 250],
+            ['title' => 'Сумма продажи', 'field' => 'sale_amount', 'hozAlign' => 'right'],
+            ['title' => 'Кол-во депозитов', 'field' => 'deposits_count', 'hozAlign' => 'right'],
+            ['title' => 'Сумма выплаты', 'field' => 'payout_amount', 'hozAlign' => 'right'],
+        ],
+    ],
 ];
