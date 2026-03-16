@@ -20,16 +20,21 @@ foreach (config('entities') as $entity => $items) {
     Route::get('/' . $entity . '/create', [CrudController::class, 'create']);
 };
 
-// Wildcard routes for dot-notation subdirectory entities (e.g., main.roles)
-// Parameter named {module} to match controller method signatures directly
-Route::get('/{module}/{id}/show', [CrudController::class, 'show'])
-    ->where(['module' => '[A-Za-z0-9_]+\.[A-Za-z0-9_.]+', 'id' => '[0-9]+']);
-Route::get('/{module}/{id}/edit', [CrudController::class, 'edit'])
-    ->where(['module' => '[A-Za-z0-9_]+\.[A-Za-z0-9_.]+', 'id' => '[0-9]+']);
-Route::get('/{module}/create', [CrudController::class, 'create'])
-    ->where('module', '[A-Za-z0-9_]+\.[A-Za-z0-9_.]+');
-Route::get('/{module}', [CrudController::class, 'index'])
-    ->where('module', '[A-Za-z0-9_]+\.[A-Za-z0-9_.]+');
+// Explicit routes for subdirectory entities (e.g., config/entities/main/roles.php → main.roles)
+$entitiesDir = config_path('entities');
+foreach (scandir($entitiesDir) as $subDir) {
+    if ($subDir === '.' || $subDir === '..') continue;
+    $subDirPath = $entitiesDir . '/' . $subDir;
+    if (!is_dir($subDirPath)) continue;
+    foreach (scandir($subDirPath) as $file) {
+        if (substr($file, -4) !== '.php') continue;
+        $entity = $subDir . '.' . substr($file, 0, -4);
+        Route::get('/' . $entity, [CrudController::class, 'index']);
+        Route::get('/' . $entity . '/{id}/show', [CrudController::class, 'show']);
+        Route::get('/' . $entity . '/{id}/edit', [CrudController::class, 'edit']);
+        Route::get('/' . $entity . '/create', [CrudController::class, 'create']);
+    }
+}
 
 Route::get('/download/image/{entity}/{id}/{field}/{variant}/', [DownloadController::class, 'image'])
     ->where([
