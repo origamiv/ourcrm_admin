@@ -46,95 +46,184 @@
 
     <div x-data="dynamicForm" :class="{ 'form-show': isShow }">
 
-        <div class="panel px-6 py-6 max-w-4xl">
+        {{-- =====================================================
+            МОБИЛЬНАЯ КАРТОЧКА (< md)
+        ===================================================== --}}
+        <div class="md:hidden">
+            <div class="panel p-0 overflow-hidden">
 
-            <div class="text-2xl font-semibold mb-6"
-                 x-text="CONFIG.common.name">
-            </div>
-
-            <form class="space-y-6" @submit.prevent="submit" x-show="!loading">
-
-                <template x-for="field in formFields" :key="field.key">
-                    <div class="sm:flex justify-between items-start gap-5 md:gap-20">
-
-                        <label class="font-semibold w-48 pt-2"
-                               x-text="field.name">
-                        </label>
-
-                        <div class="w-full">
-
-                            {{-- LOOKUP --}}
-                            <template x-if="field.is_lookup">
-                                <select
-                                    class="form-select w-full"
-                                    :class="{ 'field-error': errors[field.key] }"
-                                    x-model.number="form[field.key]"
-                                    :disabled="isShow"
-                                >
-                                    <option value="">—</option>
-
-                                    <template x-for="item in lookups[field.key] ?? []"
-                                              :key="item[field.lookup_id]">
-                                        <option
-                                            :value="item[field.lookup_id]"
-                                            x-text="item[field.lookup_name]"
-                                        ></option>
-                                    </template>
-                                </select>
-                            </template>
-
-                            {{-- TEXT / NUMBER --}}
-                            <template x-if="!field.is_lookup && ['text','number'].includes(field.control)">
-                                <input
-                                    :type="field.control"
-                                    class="form-input w-full"
-                                    :class="{ 'field-error': errors[field.key] }"
-                                    x-model="form[field.key]"
-                                    :disabled="isShow"
-                                />
-                            </template>
-
-                            {{-- TEXTAREA --}}
-                            <template x-if="!field.is_lookup && field.control === 'textarea'">
-                                <textarea
-                                    class="form-textarea w-full"
-                                    :class="{ 'field-error': errors[field.key] }"
-                                    x-model="form[field.key]"
-                                    :disabled="isShow"></textarea>
-                            </template>
-
-                            {{-- ERROR TEXT --}}
-                            <template x-if="errors[field.key]">
-                                <div class="field-error-text"
-                                     x-text="errors[field.key][0]">
-                                </div>
-                            </template>
-
-                        </div>
+                {{-- Заголовок --}}
+                <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-[#1b2e4b]">
+                    <div>
+                        <div class="font-semibold text-base" x-text="CONFIG.common.name"></div>
+                        <div class="text-xs text-gray-400 mt-0.5"
+                             x-text="isShow ? 'Просмотр' : 'Редактирование'"></div>
                     </div>
-                </template>
-
-                <div class="flex justify-end gap-3 pt-6">
-                    <button type="button"
-                            class="btn btn-outline-secondary"
-                            @click="cancel">
-                        Back
-                    </button>
-
-                    <button type="submit"
-                            class="btn btn-primary"
-                            x-show="!isShow">
-                        Save
+                    <button type="button" @click="cancel()"
+                            class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-xl leading-none">
+                        <i class="uil uil-arrow-left"></i>
                     </button>
                 </div>
 
-            </form>
+                {{-- Поля --}}
+                <form @submit.prevent="submit()" x-show="!loading">
+                    <dl class="divide-y divide-gray-100 dark:divide-[#1b2e4b]">
+                        <template x-for="field in formFields" :key="field.key">
+                            <div class="px-4 py-3">
+                                <dt class="text-xs text-gray-500 dark:text-gray-400 mb-1"
+                                    x-text="field.name"></dt>
+                                <dd>
+                                    {{-- LOOKUP --}}
+                                    <template x-if="field.is_lookup">
+                                        <select class="form-select w-full"
+                                                :class="{ 'field-error': errors[field.key] }"
+                                                x-model.number="form[field.key]"
+                                                :disabled="isShow">
+                                            <option value="">—</option>
+                                            <template x-for="item in lookups[field.key] ?? []"
+                                                      :key="item[field.lookup_id]">
+                                                <option :value="item[field.lookup_id]"
+                                                        x-text="item[field.lookup_name]"></option>
+                                            </template>
+                                        </select>
+                                    </template>
+                                    {{-- TEXT / NUMBER --}}
+                                    <template x-if="!field.is_lookup && ['text','number'].includes(field.control)">
+                                        <input :type="field.control"
+                                               class="form-input w-full"
+                                               :class="{ 'field-error': errors[field.key] }"
+                                               x-model="form[field.key]"
+                                               :disabled="isShow" />
+                                    </template>
+                                    {{-- TEXTAREA --}}
+                                    <template x-if="!field.is_lookup && field.control === 'textarea'">
+                                        <textarea class="form-textarea w-full"
+                                                  :class="{ 'field-error': errors[field.key] }"
+                                                  x-model="form[field.key]"
+                                                  :disabled="isShow"></textarea>
+                                    </template>
+                                    {{-- ERROR TEXT --}}
+                                    <template x-if="errors[field.key]">
+                                        <div class="field-error-text" x-text="errors[field.key][0]"></div>
+                                    </template>
+                                </dd>
+                            </div>
+                        </template>
+                    </dl>
 
-            <div x-show="loading" class="text-center py-10 text-white-dark">
-                Loading...
+                    {{-- Кнопки --}}
+                    <div class="flex gap-2 px-4 py-3 border-t border-gray-100 dark:border-[#1b2e4b]">
+                        <button type="button" class="btn btn-outline-secondary flex-1" @click="cancel()">
+                            Назад
+                        </button>
+                        <button type="submit" class="btn btn-primary flex-1" x-show="!isShow">
+                            Сохранить
+                        </button>
+                    </div>
+                </form>
+
+                <div x-show="loading" class="py-10 text-center text-gray-400">
+                    Загрузка...
+                </div>
+
             </div>
-
         </div>
+
+        {{-- =====================================================
+            ДЕСКТОПНАЯ ФОРМА (>= md)
+        ===================================================== --}}
+        <div class="hidden md:block">
+            <div class="panel px-6 py-6 max-w-4xl">
+
+                <div class="text-2xl font-semibold mb-6"
+                     x-text="CONFIG.common.name">
+                </div>
+
+                <form class="space-y-6" @submit.prevent="submit" x-show="!loading">
+
+                    <template x-for="field in formFields" :key="field.key">
+                        <div class="sm:flex justify-between items-start gap-5 md:gap-20">
+
+                            <label class="font-semibold w-48 pt-2"
+                                   x-text="field.name">
+                            </label>
+
+                            <div class="w-full">
+
+                                {{-- LOOKUP --}}
+                                <template x-if="field.is_lookup">
+                                    <select
+                                        class="form-select w-full"
+                                        :class="{ 'field-error': errors[field.key] }"
+                                        x-model.number="form[field.key]"
+                                        :disabled="isShow"
+                                    >
+                                        <option value="">—</option>
+
+                                        <template x-for="item in lookups[field.key] ?? []"
+                                                  :key="item[field.lookup_id]">
+                                            <option
+                                                :value="item[field.lookup_id]"
+                                                x-text="item[field.lookup_name]"
+                                            ></option>
+                                        </template>
+                                    </select>
+                                </template>
+
+                                {{-- TEXT / NUMBER --}}
+                                <template x-if="!field.is_lookup && ['text','number'].includes(field.control)">
+                                    <input
+                                        :type="field.control"
+                                        class="form-input w-full"
+                                        :class="{ 'field-error': errors[field.key] }"
+                                        x-model="form[field.key]"
+                                        :disabled="isShow"
+                                    />
+                                </template>
+
+                                {{-- TEXTAREA --}}
+                                <template x-if="!field.is_lookup && field.control === 'textarea'">
+                                    <textarea
+                                        class="form-textarea w-full"
+                                        :class="{ 'field-error': errors[field.key] }"
+                                        x-model="form[field.key]"
+                                        :disabled="isShow"></textarea>
+                                </template>
+
+                                {{-- ERROR TEXT --}}
+                                <template x-if="errors[field.key]">
+                                    <div class="field-error-text"
+                                         x-text="errors[field.key][0]">
+                                    </div>
+                                </template>
+
+                            </div>
+                        </div>
+                    </template>
+
+                    <div class="flex justify-end gap-3 pt-6">
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                @click="cancel">
+                            Back
+                        </button>
+
+                        <button type="submit"
+                                class="btn btn-primary"
+                                x-show="!isShow">
+                            Save
+                        </button>
+                    </div>
+
+                </form>
+
+                <div x-show="loading" class="text-center py-10 text-white-dark">
+                    Loading...
+                </div>
+
+            </div>
+        </div>
+
     </div>
 
     {{-- =====================================================
