@@ -283,7 +283,10 @@
     ===================================================== --}}
     <div x-data="dataTable" x-init="init()">
 
-        <div class="panel px-0 border-[#e0e6ed] dark:border-[#1b2e4b]">
+        {{-- Mobile card layout (shown on screens < md) --}}
+        <x-crud.mobile-cards />
+
+        <div class="hidden md:block panel px-0 border-[#e0e6ed] dark:border-[#1b2e4b]">
             <div class="invoice-table overflow-x-auto px-4 pt-4">
                 <div id="mainTabulator"></div>
             </div>
@@ -364,6 +367,9 @@
                 columnsMenu: null,
                 deleteModal: null,
 
+                // ✅ mobile card config (auto-detected from CONFIG)
+                cardConfig: null,
+
                 // filters ui state: {field: {kind, ...}}
                 filters: {},
 
@@ -399,6 +405,7 @@
 
                 async init() {
                     this.buildColumnsFromConfig();
+                    this.buildCardConfig();
                     this.initSortFromConfig();
 
                     this.initComponents();
@@ -510,6 +517,84 @@
                         }));
 
                     this.config.columns = flatColumns;
+                },
+
+                // =====================================================
+                // Mobile card config (auto-detected from window.CONFIG)
+                // =====================================================
+                buildCardConfig() {
+                    const entries = Object.entries(window.CONFIG.fields)
+                        .filter(([, f]) => !f.field_mode || f.field_mode.includes('index'));
+
+                    // Primary display field: prefer common name keys, otherwise first field
+                    const NAME_KEYS = ['name', 'title', 'subject', 'fio', 'fullname', 'caption'];
+                    const nameEntry = entries.find(([k]) => NAME_KEYS.includes(k)) ?? entries[0];
+
+                    // Status field: bool type or named status/state/active
+                    const STATUS_KEYS = ['status', 'state', 'active', 'enabled', 'is_active'];
+                    const statusEntry = entries.find(([k, f]) =>
+                        STATUS_KEYS.includes(k) ||
+                        String(f.db_type ?? '').toLowerCase().includes('bool')
+                    );
+
+                    // Additional header fields: up to 2, excluding name, status, id
+                    const excluded = new Set([nameEntry?.[0], statusEntry?.[0], 'id'].filter(Boolean));
+                    const headerFields = entries
+                        .filter(([k]) => !excluded.has(k))
+                        .slice(0, 2)
+                        .map(([k]) => k);
+
+                    // All fields for the card body (excluding id)
+                    const allFields = entries
+                        .filter(([k]) => k !== 'id')
+                        .map(([k, f]) => ({ key: k, label: f.name ?? k }));
+
+                    this.cardConfig = {
+                        nameField: nameEntry?.[0] ?? 'id',
+                        statusField: statusEntry?.[0] ?? null,
+                        headerFields,
+                        allFields,
+                    };
+                },
+
+                // Render status as a coloured icon
+                statusIcon(val) {
+                    const v = String(val ?? '').toLowerCase();
+                    if (val === true || val === 1 || v === '1' || v === 'active' || v === 'yes' || v === 'true')
+                        return '<span class="text-success font-bold text-base leading-none">✓</span>';
+                    if (val === false || val === 0 || v === '0' || v === 'inactive' || v === 'no' || v === 'false')
+                        return '<span class="text-danger font-bold text-base leading-none">✗</span>';
+                    if (v === '' || val === null || val === undefined)
+                        return '<span class="text-gray-400 font-bold text-base leading-none">·</span>';
+                    return '<span class="text-warning font-bold text-base leading-none">⚠</span>';
+                },
+
+                // Format a single cell value for card display (datetime + lookup aware)
+                formatCardValue(row, key) {
+                    const value = row[key];
+                    if (value === null || value === undefined || value === '') return null;
+
+                    // Lookup field
+                    if (this.lookupMaps[key] !== undefined) {
+                        return this.lookupMaps[key][value] ?? String(value);
+                    }
+
+                    // Datetime formatting with Luxon
+                    const col = this.config.columns.find(c => c.key === key);
+                    if (col?.formatter === 'datetime' && value && window.luxon) {
+                        try {
+                            const outputFormat = col.options?.outputFormat || 'DD.MM.YY HH:mm';
+                            const luxonFormat = outputFormat
+                                .replace('DD', 'dd').replace('MM', 'MM')
+                                .replace('YYYY', 'yyyy').replace('YY', 'yy');
+                            const dt = luxon.DateTime.fromISO(value);
+                            if (dt.isValid) return dt.toFormat(luxonFormat);
+                            const dt2 = luxon.DateTime.fromSQL(value);
+                            if (dt2.isValid) return dt2.toFormat(luxonFormat);
+                        } catch (e) { /* fall through */ }
+                    }
+
+                    return String(value);
                 },
 
                 async loadLookups() {
