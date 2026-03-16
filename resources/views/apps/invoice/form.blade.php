@@ -7,6 +7,11 @@
         window.CONFIG     = @json($config);
         window.FORM_MODE  = @json($mode);   // create | edit | show
         window.ENTITY_ID  = @json($id ?? null);
+
+        window.resolveUrl = function(path) {
+            if (!path || /^https?:\/\//.test(path)) return path;
+            return '{{ config('app.api_url') }}' + path;
+        };
     </script>
 
     {{-- =====================================================
@@ -170,7 +175,7 @@
                 get formFields() {
                     return Object.entries(this.CONFIG.fields)
                         .filter(([_, field]) =>
-                            field.field_mode?.split(',').includes(this.mode)
+                            !field.field_mode || field.field_mode.split(',').includes(this.mode)
                         )
                         .map(([key, field]) => ({ key, ...field }));
                 },
@@ -186,18 +191,23 @@
                     if (!token) return;
 
                     for (const field of this.formFields.filter(f => f.is_lookup && f.lookup_api)) {
-                        const res = await axios.post(
-                            `{{ config('app.api_url') }}${field.lookup_api}/list`,
-                            { page: 1, perpage: 100 },
-                            {
-                                headers: {
-                                    'Accept': 'application/json',
-                                    'Authorization': `Bearer ${token}`
+                        try {
+                            const res = await axios.post(
+                                `${resolveUrl(field.lookup_api)}/list`,
+                                { page: 1, perpage: 100 },
+                                {
+                                    headers: {
+                                        'Accept': 'application/json',
+                                        'Authorization': `Bearer ${token}`
+                                    }
                                 }
-                            }
-                        );
+                            );
 
-                        this.lookups[field.key] = res.data?.data ?? [];
+                            this.lookups[field.key] = res.data?.data ?? [];
+                        } catch (e) {
+                            console.warn(`loadLookups: не удалось загрузить справочник "${field.key}"`, e);
+                            this.lookups[field.key] = [];
+                        }
                     }
                 },
 
@@ -209,7 +219,7 @@
 
                     try {
                         const res = await axios.get(
-                            `{{ config('app.api_url') }}${this.CONFIG.common.api}/${this.entityId}`,
+                            `${resolveUrl(this.CONFIG.common.api)}/${this.entityId}`,
                             {
                                 headers: {
                                     'Accept': 'application/json',
@@ -239,7 +249,7 @@
                     let url;
                     let method;
 
-                    const base = `{{ config('app.api_url') }}${this.CONFIG.common.api}`;
+                    const base = resolveUrl(this.CONFIG.common.api);
 
                     if (this.mode === 'create') {
                         url = `${base}/create`;

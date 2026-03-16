@@ -24,10 +24,15 @@
     <script>
         window.CONFIG = @json($config);
 
+        window.resolveUrl = function(path) {
+            if (!path || /^https?:\/\//.test(path)) return path;
+            return '{{ config('app.api_url') }}' + path;
+        };
+
         window.TABLE_CONFIG = {
             api: {
-                list:   '{{ config('app.api_url') }}' + window.CONFIG.common.api + '/list',
-                delete: '{{ config('app.api_url') }}' + window.CONFIG.common.api
+                list:   resolveUrl(window.CONFIG.common.api) + '/list',
+                delete: resolveUrl(window.CONFIG.common.api)
             },
             primaryKey: 'id',
             perPage: 20,
@@ -489,7 +494,7 @@
                     const groups = window.CONFIG.column_groups || [];
 
                     const flatColumns = Object.entries(fields)
-                        .filter(([_, field]) => field.field_mode?.includes('index'))
+                        .filter(([_, field]) => !field.field_mode || field.field_mode.includes('index'))
                         .map(([key, field]) => ({
                             key,
                             title: field.name,
@@ -515,24 +520,30 @@
                         .filter(([_, f]) => f.is_lookup);
 
                     for (const [key, field] of lookupFields) {
-                        const res = await axios.post(
-                            `{{ config('app.api_url') }}${field.lookup_api}/list`,
-                            { page: 1, perpage: 100 },
-                            {
-                                headers: {
-                                    'Accept': 'application/json',
-                                    'Authorization': `Bearer ${token}`
+                        try {
+                            const res = await axios.post(
+                                `${resolveUrl(field.lookup_api)}/list`,
+                                { page: 1, perpage: 100 },
+                                {
+                                    headers: {
+                                        'Accept': 'application/json',
+                                        'Authorization': `Bearer ${token}`
+                                    }
                                 }
-                            }
-                        );
+                            );
 
-                        const list = res.data?.data ?? [];
-                        this.lookups[key] = list;
+                            const list = res.data?.data ?? [];
+                            this.lookups[key] = list;
 
-                        this.lookupMaps[key] = {};
-                        list.forEach(item => {
-                            this.lookupMaps[key][item[field.lookup_id]] = item[field.lookup_name];
-                        });
+                            this.lookupMaps[key] = {};
+                            list.forEach(item => {
+                                this.lookupMaps[key][item[field.lookup_id]] = item[field.lookup_name];
+                            });
+                        } catch (e) {
+                            console.warn(`loadLookups: не удалось загрузить справочник "${key}"`, e);
+                            this.lookups[key] = [];
+                            this.lookupMaps[key] = {};
+                        }
                     }
                 },
 
