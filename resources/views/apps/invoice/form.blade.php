@@ -87,20 +87,37 @@
                                             </template>
                                         </select>
                                     </template>
-                                    {{-- TEXT / NUMBER --}}
-                                    <template x-if="!field.is_lookup && ['text','number'].includes(field.control)">
-                                        <input :type="field.control"
-                                               class="form-input w-full"
-                                               :class="{ 'field-error': errors[field.key] }"
-                                               x-model="form[field.key]"
-                                               :disabled="isShow" />
-                                    </template>
-                                    {{-- TEXTAREA --}}
-                                    <template x-if="!field.is_lookup && field.control === 'textarea'">
+                                    {{-- TEXTAREA / JSON --}}
+                                    <template x-if="!field.is_lookup && ['textarea','json'].includes(field.control)">
                                         <textarea class="form-textarea w-full"
                                                   :class="{ 'field-error': errors[field.key] }"
                                                   x-model="form[field.key]"
                                                   :disabled="isShow"></textarea>
+                                    </template>
+                                    {{-- CHECKBOX --}}
+                                    <template x-if="!field.is_lookup && field.control === 'checkbox'">
+                                        <input type="checkbox"
+                                               class="w-5 h-5 rounded"
+                                               x-model="form[field.key]"
+                                               :disabled="isShow" />
+                                    </template>
+                                    {{-- STATUS (0/1 select) --}}
+                                    <template x-if="!field.is_lookup && field.control === 'status'">
+                                        <select class="form-select w-full"
+                                                :class="{ 'field-error': errors[field.key] }"
+                                                x-model.number="form[field.key]"
+                                                :disabled="isShow">
+                                            <option value="0">Неактивен</option>
+                                            <option value="1">Активен</option>
+                                        </select>
+                                    </template>
+                                    {{-- FALLBACK: text / number / integer / string / email / etc. --}}
+                                    <template x-if="!field.is_lookup && !['textarea','json','checkbox','status'].includes(field.control)">
+                                        <input :type="['number','integer'].includes(field.control) ? 'number' : 'text'"
+                                               class="form-input w-full"
+                                               :class="{ 'field-error': errors[field.key] }"
+                                               x-model="form[field.key]"
+                                               :disabled="isShow" />
                                     </template>
                                     {{-- ERROR TEXT --}}
                                     <template x-if="errors[field.key]">
@@ -170,24 +187,42 @@
                                     </select>
                                 </template>
 
-                                {{-- TEXT / NUMBER --}}
-                                <template x-if="!field.is_lookup && ['text','number'].includes(field.control)">
-                                    <input
-                                        :type="field.control"
-                                        class="form-input w-full"
-                                        :class="{ 'field-error': errors[field.key] }"
-                                        x-model="form[field.key]"
-                                        :disabled="isShow"
-                                    />
-                                </template>
-
-                                {{-- TEXTAREA --}}
-                                <template x-if="!field.is_lookup && field.control === 'textarea'">
+                                {{-- TEXTAREA / JSON --}}
+                                <template x-if="!field.is_lookup && ['textarea','json'].includes(field.control)">
                                     <textarea
                                         class="form-textarea w-full"
                                         :class="{ 'field-error': errors[field.key] }"
                                         x-model="form[field.key]"
                                         :disabled="isShow"></textarea>
+                                </template>
+
+                                {{-- CHECKBOX --}}
+                                <template x-if="!field.is_lookup && field.control === 'checkbox'">
+                                    <input type="checkbox"
+                                           class="w-5 h-5 rounded"
+                                           x-model="form[field.key]"
+                                           :disabled="isShow" />
+                                </template>
+
+                                {{-- STATUS (0/1 select) --}}
+                                <template x-if="!field.is_lookup && field.control === 'status'">
+                                    <select class="form-select w-full"
+                                            :class="{ 'field-error': errors[field.key] }"
+                                            x-model.number="form[field.key]"
+                                            :disabled="isShow">
+                                        <option value="0">Неактивен</option>
+                                        <option value="1">Активен</option>
+                                    </select>
+                                </template>
+
+                                {{-- FALLBACK: text / number / integer / string / email / etc. --}}
+                                <template x-if="!field.is_lookup && !['textarea','json','checkbox','status'].includes(field.control)">
+                                    <input :type="['number','integer'].includes(field.control) ? 'number' : 'text'"
+                                           class="form-input w-full"
+                                           :class="{ 'field-error': errors[field.key] }"
+                                           x-model="form[field.key]"
+                                           :disabled="isShow"
+                                    />
                                 </template>
 
                                 {{-- ERROR TEXT --}}
