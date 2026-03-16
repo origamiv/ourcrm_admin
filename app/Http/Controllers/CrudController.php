@@ -23,6 +23,15 @@ class CrudController extends BaseController
             return include $configPath;
         }
 
+        // Handle dot notation: "main.roles" → entities/main/roles.php
+        if (strpos($module, '.') !== false) {
+            [$parentModule, $subChapter] = explode('.', $module, 2);
+            $configPath = config_path("entities/{$parentModule}/{$subChapter}.php");
+            if (file_exists($configPath)) {
+                return include $configPath;
+            }
+        }
+
         return config('entities.' . $module);
     }
 

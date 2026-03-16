@@ -20,6 +20,16 @@ foreach (config('entities') as $entity => $items) {
     Route::get('/' . $entity . '/create', [CrudController::class, 'create']);
 };
 
+// Wildcard routes for dot-notation subdirectory entities (e.g., main.roles)
+Route::get('/{entity}/{id}/show', [CrudController::class, 'show'])
+    ->where(['entity' => '[A-Za-z0-9_]+\.[A-Za-z0-9_.]+', 'id' => '[0-9]+']);
+Route::get('/{entity}/{id}/edit', [CrudController::class, 'edit'])
+    ->where(['entity' => '[A-Za-z0-9_]+\.[A-Za-z0-9_.]+', 'id' => '[0-9]+']);
+Route::get('/{entity}/create', [CrudController::class, 'create'])
+    ->where('entity', '[A-Za-z0-9_]+\.[A-Za-z0-9_.]+');
+Route::get('/{entity}', [CrudController::class, 'index'])
+    ->where('entity', '[A-Za-z0-9_]+\.[A-Za-z0-9_.]+');
+
 Route::get('/download/image/{entity}/{id}/{field}/{variant}/', [DownloadController::class, 'image'])
     ->where([
         'entity' => '[A-Za-z0-9_\-]+',
