@@ -111,8 +111,13 @@
                                             <option value="1">Активен</option>
                                         </select>
                                     </template>
+                                    {{-- SHOW MODE with modifier: render via FieldComponents --}}
+                                    <template x-if="!field.is_lookup && !['textarea','json','checkbox','status'].includes(field.control) && isShow && field.modifier">
+                                        <div class="py-1 text-gray-800 dark:text-gray-200"
+                                             x-html="renderFieldValue(field)"></div>
+                                    </template>
                                     {{-- FALLBACK: text / number / integer / string / email / etc. --}}
-                                    <template x-if="!field.is_lookup && !['textarea','json','checkbox','status'].includes(field.control)">
+                                    <template x-if="!field.is_lookup && !['textarea','json','checkbox','status'].includes(field.control) && (!isShow || !field.modifier)">
                                         <input :type="['number','integer'].includes(field.control) ? 'number' : 'text'"
                                                class="form-input w-full"
                                                :class="{ 'field-error': errors[field.key] }"
@@ -215,8 +220,13 @@
                                     </select>
                                 </template>
 
+                                {{-- SHOW MODE with modifier: render via FieldComponents --}}
+                                <template x-if="!field.is_lookup && !['textarea','json','checkbox','status'].includes(field.control) && isShow && field.modifier">
+                                    <div class="py-1 text-gray-800 dark:text-gray-200"
+                                         x-html="renderFieldValue(field)"></div>
+                                </template>
                                 {{-- FALLBACK: text / number / integer / string / email / etc. --}}
-                                <template x-if="!field.is_lookup && !['textarea','json','checkbox','status'].includes(field.control)">
+                                <template x-if="!field.is_lookup && !['textarea','json','checkbox','status'].includes(field.control) && (!isShow || !field.modifier)">
                                     <input :type="['number','integer'].includes(field.control) ? 'number' : 'text'"
                                            class="form-input w-full"
                                            :class="{ 'field-error': errors[field.key] }"
@@ -265,6 +275,8 @@
         LOGIC
     ===================================================== --}}
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+    <script src="/assets/js/components/text.js"></script>
 
     <script>
         document.addEventListener('alpine:init', () => {
@@ -405,7 +417,28 @@
 
                 cancel() {
                     history.back();
-                }
+                },
+
+                renderFieldValue(field) {
+                    const value = this.form[field.key];
+                    const entity = this.CONFIG.common.shortname ?? '';
+                    const control = field.control ?? 'text';
+                    const cmp = (window.FieldComponents && window.FieldComponents[control])
+                        ? window.FieldComponents[control]
+                        : window.FieldComponents?.text;
+
+                    if (cmp?.show) {
+                        return cmp.show({
+                            entity: entity,
+                            name: field.key,
+                            value: value,
+                            config: field,
+                            row: this.form
+                        });
+                    }
+                    const v = (value === null || value === undefined) ? '' : String(value);
+                    return v || '—';
+                },
 
             }));
         });

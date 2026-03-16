@@ -91,6 +91,52 @@
                 `;
             }
 
+            // time_ago: relative time using Luxon
+            if (config.modifier === 'time_ago') {
+                if (window.luxon) {
+                    try {
+                        let dt = luxon.DateTime.fromISO(value);
+                        if (!dt.isValid) dt = luxon.DateTime.fromSQL(value);
+                        if (dt.isValid) {
+                            return `<span title="${escapeHtml(value)}">${escapeHtml(dt.toRelative())}</span>`;
+                        }
+                    } catch(e) {}
+                }
+                return escapeHtml(value);
+            }
+
+            // time: formatted datetime using Luxon
+            if (config.modifier === 'time') {
+                if (window.luxon) {
+                    try {
+                        const outputFormat = config.options?.outputFormat || 'dd.MM.yy HH:mm';
+                        let dt = luxon.DateTime.fromISO(value);
+                        if (!dt.isValid) dt = luxon.DateTime.fromSQL(value);
+                        if (dt.isValid) return escapeHtml(dt.toFormat(outputFormat));
+                    } catch(e) {}
+                }
+                return escapeHtml(value);
+            }
+
+            // pre: preformatted text
+            if (config.modifier === 'pre') {
+                return `<pre class="whitespace-pre-wrap font-mono text-sm bg-gray-50 dark:bg-gray-800 p-2 rounded">${escapeHtml(value)}</pre>`;
+            }
+
+            // tasks: JSON array of task IDs rendered as links
+            if (config.modifier === 'tasks') {
+                try {
+                    const ids = Array.isArray(value) ? value : JSON.parse(value);
+                    if (Array.isArray(ids) && ids.length > 0) {
+                        const links = ids.map(id =>
+                            `<a href="/web/tasks/task/${escapeHtml(String(id))}" class="text-primary hover:underline">#${escapeHtml(String(id))}</a>`
+                        ).join(', ');
+                        return `<span>${links}</span>`;
+                    }
+                } catch(e) {}
+                return escapeHtml(value);
+            }
+
             return escapeHtml(value);
         },
 
