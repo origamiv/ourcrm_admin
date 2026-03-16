@@ -13,27 +13,55 @@ class CrudController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function index(Request $request)
+    private function getConfig($module, $chapter = null)
     {
-        $paths = explode('/', $request->getRequestUri());
-        $entity = $paths[1];
+        if ($chapter) {
+            $configPath = config_path("entities/{$module}/{$chapter}.php");
+            if (!file_exists($configPath)) {
+                return null;
+            }
+            return include $configPath;
+        }
+
+        return config('entities.' . $module);
+    }
+
+    public function index(Request $request, $module = null, $chapter = null)
+    {
+        if (!$module) {
+            $paths = explode('/', $request->getRequestUri());
+            $module = $paths[1];
+        }
+
+        $config = $this->getConfig($module, $chapter);
+
+        if (!$config) {
+            return response()->view('pages.error404', [], 404);
+        }
 
         $view = 'apps.invoice.list';
-        if (view()->exists('apps.' . $entity . '.list')) {
-            $view = 'apps.' . $entity . '.list';
+        $entityName = $chapter ?: $module;
+        if (view()->exists('apps.' . $entityName . '.list')) {
+            $view = 'apps.' . $entityName . '.list';
         }
 
         return view($view, [
-            'config' => config('entities.' . $entity),
+            'config' => $config,
         ]);
     }
 
-    public function show($id, Request $request)
+    public function show($id, Request $request, $module = null, $chapter = null)
     {
-        $paths  = explode('/', $request->getRequestUri());
-        $entity = $paths[1];
+        if (!$module) {
+            $paths = explode('/', $request->getRequestUri());
+            $module = $paths[1];
+        }
 
-        $config = config('entities.' . $entity);
+        $config = $this->getConfig($module, $chapter);
+
+        if (!$config) {
+            return response()->view('pages.error404', [], 404);
+        }
 
         return view('apps.invoice.form', [
             'config' => $config,
@@ -42,12 +70,18 @@ class CrudController extends BaseController
         ]);
     }
 
-    public function edit($id, Request $request)
+    public function edit($id, Request $request, $module = null, $chapter = null)
     {
-        $paths  = explode('/', $request->getRequestUri());
-        $entity = $paths[1];
+        if (!$module) {
+            $paths = explode('/', $request->getRequestUri());
+            $module = $paths[1];
+        }
 
-        $config = config('entities.' . $entity);
+        $config = $this->getConfig($module, $chapter);
+
+        if (!$config) {
+            return response()->view('pages.error404', [], 404);
+        }
 
         return view('apps.invoice.form', [
             'config' => $config,
@@ -55,12 +89,19 @@ class CrudController extends BaseController
             'mode' => 'edit'
         ]);
     }
-    public function create(Request $request)
-    {
-        $paths  = explode('/', $request->getRequestUri());
-        $entity = $paths[1];
 
-        $config = config('entities.' . $entity);
+    public function create(Request $request, $module = null, $chapter = null)
+    {
+        if (!$module) {
+            $paths = explode('/', $request->getRequestUri());
+            $module = $paths[1];
+        }
+
+        $config = $this->getConfig($module, $chapter);
+
+        if (!$config) {
+            return response()->view('pages.error404', [], 404);
+        }
 
         return view('apps.invoice.form', [
             'config' => $config,

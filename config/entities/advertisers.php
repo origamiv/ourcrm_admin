@@ -35,7 +35,7 @@ return [
         'page' => '/advertisers',
 
         // API endpoint
-        'api' => '/api/v1/advertisers',
+        'api' => '/api/advertisers',
 
         // Eloquent / Domain модель
         'model' => 'App\\Models\\Advertiser',
@@ -114,7 +114,7 @@ return [
 //            'formatter' => null,
 //            'db_type' => 'integer',
 //            'is_lookup' => true,
-//            'lookup_api' => '/api/v1/offers',
+//            'lookup_api' => '/api/offers',
 //            'lookup_id' => 'id',
 //            'lookup_name' => 'name',
 //        ],

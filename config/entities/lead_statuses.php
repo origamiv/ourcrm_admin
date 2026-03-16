@@ -35,7 +35,7 @@ return [
         'page' => '/lead_statuses',
 
         // API endpoint
-        'api' => '/api/v1/lead_statuses',
+        'api' => '/api/lead_statuses',
 
         // Eloquent модель
         'model' => 'App\\Models\\LeadStatus',

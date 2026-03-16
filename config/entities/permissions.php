@@ -35,7 +35,7 @@ return [
         'page' => '/permissions',
 
         // API endpoint
-        'api' => '/api/v1/permissions',
+        'api' => '/api/permissions',
 
         // Eloquent модель
         'model' => 'Spatie\\Permission\\Models\\Permission',

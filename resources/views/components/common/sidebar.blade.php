@@ -142,30 +142,10 @@
             },
 
             async loadMenus() {
-                const token = localStorage.getItem('access_token');
-
-                if (!token) {
-                    console.warn('No access token found');
-                    return;
-                }
-
-                const response = await fetch(
-                    '{{ config('app.api_url') }}/api/v1/menus/list',
-                    {
-                        method: 'POST',
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        },
-                        body: JSON.stringify({ page: 1, perpage: 0 })
-                    }
-                );
-
-                const json = await response.json();
+                const json = @json(json_decode(file_get_contents(config_path('menu.json')), true));
 
                 let apiMenus = (json.data || [])
-                    .filter(item => item.status);
+                    .filter(item => item.status || item.status === null);
 
                 // Добавляем кастомный пункт "Отчеты" и подпункт "Статистика ОКК"
                 const customMenus = [

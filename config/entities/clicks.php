@@ -35,7 +35,7 @@ return [
         'page' => '/clicks',
 
         // API endpoint
-        'api' => '/api/v1/clicks',
+        'api' => '/api/clicks',
 
         // Eloquent модель
         'model' => 'App\\Models\\Click',

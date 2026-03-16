@@ -35,7 +35,7 @@ return [
         'page' => '/users',
 
         // API endpoint
-        'api' => '/api/v1/users',
+        'api' => '/api/users',
 
         // Eloquent модель
         'model' => 'App\\Models\\User',

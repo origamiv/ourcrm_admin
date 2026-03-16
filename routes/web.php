@@ -4,6 +4,15 @@ use App\Http\Controllers\CrudController;
 use App\Http\Controllers\DownloadController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/web', [CrudController::class, 'index']);
+
+Route::prefix('web/{module}')->group(function () {
+    Route::get('/{chapter}', [CrudController::class, 'index']);
+    Route::get('/{chapter}/{id}/show', [CrudController::class, 'show']);
+    Route::get('/{chapter}/{id}/edit', [CrudController::class, 'edit']);
+    Route::get('/{chapter}/create', [CrudController::class, 'create']);
+});
+
 foreach (config('entities') as $entity => $items) {
     Route::get('/' . $entity, [CrudController::class, 'index']);
     Route::get('/' . $entity . '/{id}/show', [CrudController::class, 'show']);

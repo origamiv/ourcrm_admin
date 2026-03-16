@@ -132,7 +132,7 @@
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
-                                email: this.email,
+                                username: this.email,
                                 password: this.password
                             })
                         });

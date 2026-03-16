@@ -35,7 +35,7 @@ return [
         'page' => '/caps',
 
         // API endpoint
-        'api' => '/api/v1/caps',
+        'api' => '/api/caps',
 
         // Eloquent модель
         'model' => 'App\\Models\\Cap',
@@ -110,7 +110,7 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup_api' => '/api/v1/products',
+            'lookup_api' => '/api/products',
             'lookup_id' => 'id',
             'lookup_name' => 'name',
         ],
@@ -123,7 +123,7 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup_api' => '/api/v1/geo',
+            'lookup_api' => '/api/geo',
             'lookup_id' => 'id',
             'lookup_name' => 'name',
         ],
@@ -136,7 +136,7 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup_api' => '/api/v1/users',
+            'lookup_api' => '/api/users',
             'lookup_id' => 'id',
             'lookup_name' => 'name',
         ],
@@ -149,7 +149,7 @@ return [
             'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup_api' => '/api/v1/intervals',
+            'lookup_api' => '/api/intervals',
             'lookup_id' => 'id',
             'lookup_name' => 'name',
         ],

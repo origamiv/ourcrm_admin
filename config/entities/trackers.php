@@ -35,7 +35,7 @@ return [
         'page' => '/trackers',
 
         // API endpoint
-        'api' => '/api/v1/trackers',
+        'api' => '/api/trackers',
 
         // Eloquent модель
         'model' => 'App\\Models\\Tracker',

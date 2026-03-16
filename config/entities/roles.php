@@ -35,7 +35,7 @@ return [
         'page' => '/roles',
 
         // API endpoint
-        'api' => '/api/v1/roles',
+        'api' => '/api/roles',
 
         // Eloquent модель
         'model' => 'Spatie\\Permission\\Models\\Role',

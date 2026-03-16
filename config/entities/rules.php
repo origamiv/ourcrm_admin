@@ -35,7 +35,7 @@ return [
         'page' => '/rules',
 
         // API endpoint
-        'api' => '/api/v1/rules',
+        'api' => '/api/rules',
 
         // Eloquent модель
         'model' => 'App\\Models\\Rule',

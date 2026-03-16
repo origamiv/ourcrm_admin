@@ -35,7 +35,7 @@ return [
         'page' => '/groups',
 
         // API endpoint
-        'api' => '/api/v1/groups',
+        'api' => '/api/groups',
 
         // Eloquent модель
         'model' => 'App\\Models\\Group',

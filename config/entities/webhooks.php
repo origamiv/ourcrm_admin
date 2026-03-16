@@ -35,7 +35,7 @@ return [
         'page' => '/webhooks',
 
         // API endpoint
-        'api' => '/api/v1/webhooks',
+        'api' => '/api/webhooks',
 
         // Eloquent модель
         'model' => 'App\\Models\\Webhook',

@@ -10,7 +10,7 @@ return [
         'is_api' => 2,
         'level' => 1,
         'page' => '/products',
-        'api' => '/api/v1/products',
+        'api' => '/api/products',
         'model' => 'App\\Models\\Product',
         'icon' => 'uil uil-box',
         'resource' => 'products',

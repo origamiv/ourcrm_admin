@@ -35,7 +35,7 @@ return [
         'page' => '/intervals',
 
         // API endpoint
-        'api' => '/api/v1/intervals',
+        'api' => '/api/intervals',
 
         // Eloquent модель
         'model' => 'App\\Models\\Interval',

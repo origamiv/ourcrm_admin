@@ -35,7 +35,7 @@ return [
         'page' => '/streams',
 
         // API endpoint
-        'api' => '/api/v1/streams',
+        'api' => '/api/streams',
 
         // Eloquent модель
         'model' => 'App\\Models\\Stream',
@@ -134,7 +134,7 @@ return [
 //            'formatter' => 'lookup',
 //            'db_type' => 'integer',
 //            'is_lookup' => true,
-//            'lookup_api' => '/api/v1/campaigns',
+//            'lookup_api' => '/api/campaigns',
 //            'lookup_id' => 'id',
 //            'lookup_name' => 'name',
 //        ],

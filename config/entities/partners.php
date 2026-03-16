@@ -35,7 +35,7 @@ return [
         'page' => '/partners',
 
         // API endpoint
-        'api' => '/api/v1/partners',
+        'api' => '/api/partners',
 
         // Eloquent модель
         'model' => 'App\\Models\\Partner',

@@ -35,7 +35,7 @@ return [
         'page' => '/domains',
 
         // API endpoint
-        'api' => '/api/v1/domains',
+        'api' => '/api/domains',
 
         // Eloquent модель
         'model' => 'App\\Models\\Domain',

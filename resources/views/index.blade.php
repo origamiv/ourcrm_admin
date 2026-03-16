@@ -20,7 +20,7 @@
                 'chartId' => 'clicks_api',
 
                 // важно: в Blade конкатенация через "." ок, просто следи, чтобы не было двойных слэшей
-                'apiUrl' => rtrim(config('app.api_url'), '/') . '/api/v1/facts/list',
+                'apiUrl' => rtrim(config('app.api_url'), '/') . '/api/facts/list',
 
                 // важно: ключ называется periods (или mode — если у тебя реально так на бэке).
                 // По твоему новому ответу сервер возвращает data.periods, поэтому логично отправлять periods.
@@ -51,7 +51,7 @@
                 'chartId' => 'leads',
 
                 // важно: в Blade конкатенация через "." ок, просто следи, чтобы не было двойных слэшей
-                'apiUrl' => rtrim(config('app.api_url'), '/') . '/api/v1/facts/list',
+                'apiUrl' => rtrim(config('app.api_url'), '/') . '/api/facts/list',
 
                 // важно: ключ называется periods (или mode — если у тебя реально так на бэке).
                 // По твоему новому ответу сервер возвращает data.periods, поэтому логично отправлять periods.

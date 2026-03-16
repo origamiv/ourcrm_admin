@@ -16,7 +16,7 @@ return [
         'is_api' => 2,
         'level' => 2,
         'page' => '/occ_stats',
-        'api' => '/api/v1/stat-okk',
+        'api' => '/api/stat-okk',
         'model' => 'App\\Models\\OccStat',
         'icon' => 'uil uil-chart-bar',
         'resource' => 'occ_stats',
@@ -266,7 +266,7 @@ return [
     */
     'aggregation' => [
         'title' => 'Агрегация по офферам Tier 2',
-        'api' => '/api/v1/stat-okk/agg',
+        'api' => '/api/stat-okk/agg',
         'group_by' => ['offer'],
         'columns' => [
             ['title' => 'Оффер', 'field' => 'offer', 'width' => 250],

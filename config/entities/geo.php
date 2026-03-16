@@ -10,7 +10,7 @@ return [
         'is_api' => 2,
         'level' => 1,
         'page' => '/geo',
-        'api' => '/api/v1/geo',
+        'api' => '/api/geo',
         'model' => 'App\\Models\\Geo',
         'icon' => 'uil uil-map',
         'resource' => 'geo',
