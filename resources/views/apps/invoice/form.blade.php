@@ -87,8 +87,13 @@
                                             </template>
                                         </select>
                                     </template>
-                                    {{-- TEXTAREA / JSON --}}
-                                    <template x-if="!field.is_lookup && ['textarea','json'].includes(field.control)">
+                                    {{-- TEXTAREA / JSON in SHOW mode with modifier --}}
+                                    <template x-if="!field.is_lookup && ['textarea','json'].includes(field.control) && isShow && field.modifier">
+                                        <div class="py-1 text-gray-800 dark:text-gray-200"
+                                             x-html="renderFieldValue(field)"></div>
+                                    </template>
+                                    {{-- TEXTAREA / JSON in edit/create or no modifier --}}
+                                    <template x-if="!field.is_lookup && ['textarea','json'].includes(field.control) && (!isShow || !field.modifier)">
                                         <textarea class="form-textarea w-full"
                                                   :class="{ 'field-error': errors[field.key] }"
                                                   x-model="form[field.key]"
@@ -192,8 +197,13 @@
                                     </select>
                                 </template>
 
-                                {{-- TEXTAREA / JSON --}}
-                                <template x-if="!field.is_lookup && ['textarea','json'].includes(field.control)">
+                                {{-- TEXTAREA / JSON in SHOW mode with modifier --}}
+                                <template x-if="!field.is_lookup && ['textarea','json'].includes(field.control) && isShow && field.modifier">
+                                    <div class="py-1 text-gray-800 dark:text-gray-200"
+                                         x-html="renderFieldValue(field)"></div>
+                                </template>
+                                {{-- TEXTAREA / JSON in edit/create or no modifier --}}
+                                <template x-if="!field.is_lookup && ['textarea','json'].includes(field.control) && (!isShow || !field.modifier)">
                                     <textarea
                                         class="form-textarea w-full"
                                         :class="{ 'field-error': errors[field.key] }"
