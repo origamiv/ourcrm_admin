@@ -556,11 +556,17 @@
                         const nameEntry  = textCards[0] ?? cardEntries[0];
                         const headerFields = textCards.slice(1).map(([k]) => k);
 
+                        const headerKeys = new Set([
+                            imageCard?.[0],
+                            nameEntry?.[0],
+                            ...headerFields,
+                        ].filter(Boolean));
+
                         this.cardConfig = {
                             nameField: nameEntry?.[0] ?? 'id',
                             statusField: statusEntry?.[0] ?? null,
                             headerFields,
-                            allFields,
+                            allFields: allFields.filter(f => !headerKeys.has(f.key)),
                             cardImageField: imageCard?.[0] ?? null,
                         };
                         return;
