@@ -13,6 +13,22 @@ class CrudController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    private function applyFieldDefaults(array $config): array
+    {
+        if (isset($config['fields'])) {
+            foreach ($config['fields'] as $key => &$field) {
+                if (!isset($field['field_mode'])) {
+                    $field['field_mode'] = 'index,create,edit,show';
+                }
+                if (!empty($field['is_lookup']) && !isset($field['lookup_id'])) {
+                    $field['lookup_id'] = 'id';
+                }
+            }
+            unset($field);
+        }
+        return $config;
+    }
+
     private function getConfig($module, $chapter = null)
     {
         if ($chapter) {
@@ -20,7 +36,7 @@ class CrudController extends BaseController
             if (!file_exists($configPath)) {
                 return null;
             }
-            return include $configPath;
+            return $this->applyFieldDefaults(include $configPath);
         }
 
         // Handle dot notation: "main.roles" → entities/main/roles.php
@@ -28,11 +44,12 @@ class CrudController extends BaseController
             [$parentModule, $subChapter] = explode('.', $module, 2);
             $configPath = config_path("entities/{$parentModule}/{$subChapter}.php");
             if (file_exists($configPath)) {
-                return include $configPath;
+                return $this->applyFieldDefaults(include $configPath);
             }
         }
 
-        return config('entities.' . $module);
+        $config = config('entities.' . $module);
+        return $config ? $this->applyFieldDefaults($config) : null;
     }
 
     public function index(Request $request, $module = null, $chapter = null)

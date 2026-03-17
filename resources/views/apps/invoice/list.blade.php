@@ -622,7 +622,7 @@
 
                             this.lookupMaps[key] = {};
                             list.forEach(item => {
-                                this.lookupMaps[key][item[field.lookup_id]] = item[field.lookup_name];
+                                this.lookupMaps[key][item[field.lookup_id ?? 'id']] = item[field.lookup_name];
                             });
                         } catch (e) {
                             console.warn(`loadLookups: не удалось загрузить справочник "${key}"`, e);

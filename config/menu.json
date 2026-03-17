@@ -3,7 +3,7 @@
     "pagination": {
         "perpage": -1,
         "currentPage": 1,
-        "count": 130
+        "count": 145
     },
     "data": [
         {
@@ -162,7 +162,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1560,
@@ -268,7 +269,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 290,
@@ -370,7 +372,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1424,
@@ -473,7 +476,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 122,
@@ -1786,7 +1790,8 @@
                     "child_count": 0
                 }
             ],
-            "child_count": 6
+            "child_count": 6,
+            "children": []
         },
         {
             "id": 291,
@@ -1892,7 +1897,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1549,
@@ -2001,7 +2007,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1426,
@@ -2081,7 +2088,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1427,
@@ -2144,7 +2152,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 134,
@@ -2441,7 +2450,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 149,
@@ -2983,7 +2993,8 @@
                     "child_count": 0
                 }
             ],
-            "child_count": 5
+            "child_count": 5,
+            "children": []
         },
         {
             "id": 123,
@@ -3124,7 +3135,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1557,
@@ -3241,7 +3253,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1420,
@@ -3280,7 +3293,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 31,
@@ -4386,7 +4400,8 @@
                     "child_count": 0
                 }
             ],
-            "child_count": 7
+            "child_count": 7,
+            "children": []
         },
         {
             "id": 288,
@@ -4501,7 +4516,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1415,
@@ -4540,7 +4556,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 11,
@@ -4995,7 +5012,8 @@
                     "child_count": 0
                 }
             ],
-            "child_count": 3
+            "child_count": 3,
+            "children": []
         },
         {
             "id": 1413,
@@ -5142,7 +5160,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1422,
@@ -5268,7 +5287,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 128,
@@ -5369,7 +5389,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 289,
@@ -5476,7 +5497,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1566,
@@ -5527,7 +5549,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1421,
@@ -5572,7 +5595,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 212,
@@ -5596,7 +5620,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 124,
@@ -6105,7 +6130,8 @@
                     "child_count": 0
                 }
             ],
-            "child_count": 8
+            "child_count": 8,
+            "children": []
         },
         {
             "id": 1551,
@@ -6420,7 +6446,8 @@
                     "child_count": 0
                 }
             ],
-            "child_count": 6
+            "child_count": 6,
+            "children": []
         },
         {
             "id": 1550,
@@ -6859,7 +6886,8 @@
                     "child_count": 0
                 }
             ],
-            "child_count": 6
+            "child_count": 6,
+            "children": []
         },
         {
             "id": 132,
@@ -6915,7 +6943,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 130,
@@ -6970,7 +6999,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 213,
@@ -7142,7 +7172,8 @@
                     "child_count": 0
                 }
             ],
-            "child_count": 3
+            "child_count": 3,
+            "children": []
         },
         {
             "id": 125,
@@ -7209,7 +7240,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 129,
@@ -7264,7 +7296,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 127,
@@ -7305,7 +7338,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 133,
@@ -7416,7 +7450,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 126,
@@ -7491,7 +7526,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 131,
@@ -7573,7 +7609,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 136,
@@ -7597,7 +7634,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1411,
@@ -8028,7 +8066,8 @@
                     "child_count": 0
                 }
             ],
-            "child_count": 8
+            "child_count": 8,
+            "children": []
         },
         {
             "id": 193,
@@ -8090,7 +8129,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 194,
@@ -8251,7 +8291,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 214,
@@ -8308,7 +8349,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 215,
@@ -8353,7 +8395,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 216,
@@ -8398,7 +8441,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 287,
@@ -8853,7 +8897,8 @@
                     "child_count": 0
                 }
             ],
-            "child_count": 4
+            "child_count": 4,
+            "children": []
         },
         {
             "id": 1318,
@@ -8901,7 +8946,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1313,
@@ -9280,7 +9326,8 @@
                     "child_count": 0
                 }
             ],
-            "child_count": 6
+            "child_count": 6,
+            "children": []
         },
         {
             "id": 1314,
@@ -9349,7 +9396,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1315,
@@ -9406,7 +9454,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1316,
@@ -9454,7 +9503,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1317,
@@ -9502,7 +9552,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1319,
@@ -9586,7 +9637,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1410,
@@ -10684,7 +10736,8 @@
                     "child_count": 0
                 }
             ],
-            "child_count": 9
+            "child_count": 9,
+            "children": []
         },
         {
             "id": 1412,
@@ -10775,7 +10828,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1414,
@@ -10820,7 +10874,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1416,
@@ -10865,7 +10920,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1417,
@@ -10910,7 +10966,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1418,
@@ -10955,7 +11012,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1419,
@@ -11000,7 +11058,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1423,
@@ -11045,7 +11104,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1425,
@@ -11090,7 +11150,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1548,
@@ -12335,7 +12396,8 @@
                     "child_count": 0
                 }
             ],
-            "child_count": 7
+            "child_count": 7,
+            "children": []
         },
         {
             "id": 1552,
@@ -12380,7 +12442,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1553,
@@ -12473,7 +12536,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1554,
@@ -12572,7 +12636,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1555,
@@ -12641,7 +12706,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1556,
@@ -12686,7 +12752,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1558,
@@ -12731,7 +12798,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1559,
@@ -12814,7 +12882,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1561,
@@ -12859,7 +12928,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1562,
@@ -12904,7 +12974,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1563,
@@ -12967,7 +13038,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1564,
@@ -13022,7 +13094,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1565,
@@ -13077,7 +13150,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 1567,
@@ -13122,7 +13196,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 12,
@@ -13303,7 +13378,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 13,
@@ -13497,7 +13573,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 14,
@@ -13552,7 +13629,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 32,
@@ -13613,7 +13691,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 33,
@@ -13720,7 +13799,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 34,
@@ -14040,7 +14120,8 @@
                     "child_count": 0
                 }
             ],
-            "child_count": 6
+            "child_count": 6,
+            "children": []
         },
         {
             "id": 35,
@@ -14088,7 +14169,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 36,
@@ -14136,7 +14218,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 37,
@@ -14184,7 +14267,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 38,
@@ -14239,7 +14323,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 39,
@@ -14287,7 +14372,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 40,
@@ -14481,7 +14567,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 41,
@@ -14598,7 +14685,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 42,
@@ -14680,7 +14768,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 43,
@@ -14880,7 +14969,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 44,
@@ -14928,7 +15018,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 150,
@@ -15145,7 +15236,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 151,
@@ -15220,7 +15312,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 152,
@@ -15295,7 +15388,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 153,
@@ -15370,7 +15464,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 154,
@@ -15445,7 +15540,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 175,
@@ -17286,7 +17382,8 @@
                     "child_count": 0
                 }
             ],
-            "child_count": 9
+            "child_count": 9,
+            "children": []
         },
         {
             "id": 176,
@@ -17842,7 +17939,8 @@
                     "child_count": 0
                 }
             ],
-            "child_count": 5
+            "child_count": 5,
+            "children": []
         },
         {
             "id": 177,
@@ -17924,7 +18022,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 178,
@@ -18094,7 +18193,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 179,
@@ -18555,7 +18655,8 @@
                     "child_count": 0
                 }
             ],
-            "child_count": 5
+            "child_count": 5,
+            "children": []
         },
         {
             "id": 186,
@@ -18701,7 +18802,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 180,
@@ -18784,7 +18886,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 181,
@@ -18860,7 +18963,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 182,
@@ -18991,7 +19095,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 183,
@@ -19053,7 +19158,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 184,
@@ -19128,7 +19234,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 185,
@@ -19211,7 +19318,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 187,
@@ -19339,7 +19447,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 188,
@@ -19455,7 +19564,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 189,
@@ -19535,7 +19645,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 190,
@@ -19618,7 +19729,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 191,
@@ -19740,7 +19852,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 192,
@@ -19846,7 +19959,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 2000,
@@ -19869,7 +19983,8 @@
             "updated_at": null,
             "deleted_at": null,
             "child_count": 8,
-            "childs": []
+            "childs": [],
+            "children": []
         },
         {
             "id": 2001,
@@ -19928,7 +20043,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 2002,
@@ -20005,7 +20121,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 2003,
@@ -20057,7 +20174,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 2004,
@@ -20102,7 +20220,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 2005,
@@ -20178,7 +20297,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 2006,
@@ -20244,7 +20364,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 2007,
@@ -20301,7 +20422,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 2008,
@@ -20358,403 +20480,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
-        },
-        {
-            "id": 2009,
-            "name": "Ассистенты",
-            "shortname": "messenger.assistants",
-            "parent_id": 1548,
-            "is_root": null,
-            "is_api": 2,
-            "level": 2,
-            "page": "/web/chats/assistant",
-            "api": "https://chats.our24.ru/api/assistant",
-            "model": "Modules\\Messenger\\Models\\Assistant",
-            "options": null,
-            "settings": {
-                "fields": {
-                    "name": {
-                        "name": "Название",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "shortname": {
-                        "name": "Короткое",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "prompt": {
-                        "name": "Инструкция",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "data": {
-                        "name": "Данные",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "func": {
-                        "name": "Функция",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "ext_id": {
-                        "name": "ID ассистента",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "status": {
-                        "name": "Статус",
-                        "control": "status",
-                        "db_type": "integer",
-                        "is_lookup": false
-                    }
-                }
-            },
-            "icon": "uil uil-robot",
-            "resource": null,
-            "status": 1,
-            "nom": 3,
-            "is_list": 2,
-            "created_at": null,
-            "updated_at": null,
-            "deleted_at": null,
-            "childs": [],
-            "child_count": 0
-        },
-        {
-            "id": 2010,
-            "name": "Чаты AI ассистентов",
-            "shortname": "messenger.assistant_chats",
-            "parent_id": 1548,
-            "is_root": null,
-            "is_api": 2,
-            "level": 2,
-            "page": "/web/chats/assistantchat",
-            "api": "https://chats.our24.ru/api/assistantchat",
-            "model": "Modules\\Messenger\\Models\\AssistantChat",
-            "options": null,
-            "settings": {
-                "fields": {
-                    "name": {
-                        "name": "Название",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "shortname": {
-                        "name": "Короткое",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "assistant_id": {
-                        "name": "Ассистент",
-                        "control": "select",
-                        "db_type": "integer",
-                        "is_lookup": true,
-                        "lookup_api": "https://chats.our24.ru/api/assistant",
-                        "lookup_id": "id",
-                        "lookup_name": "name"
-                    },
-                    "account_id": {
-                        "name": "Аккаунт",
-                        "control": "select",
-                        "db_type": "integer",
-                        "is_lookup": true,
-                        "lookup_api": "https://chats.our24.ru/api/account",
-                        "lookup_id": "id",
-                        "lookup_name": "name"
-                    },
-                    "channel_id": {
-                        "name": "Канал",
-                        "control": "select",
-                        "db_type": "integer",
-                        "is_lookup": true,
-                        "lookup_api": "https://chats.our24.ru/api/channel",
-                        "lookup_id": "id",
-                        "lookup_name": "name"
-                    },
-                    "ext_thread_id": {
-                        "name": "Тред ассистента",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "cnt": {
-                        "name": "Количество",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "status": {
-                        "name": "Статус",
-                        "control": "status",
-                        "db_type": "integer",
-                        "is_lookup": false
-                    }
-                }
-            },
-            "icon": "uil uil-comment-alt-message",
-            "resource": null,
-            "status": 1,
-            "nom": 4,
-            "is_list": 2,
-            "created_at": null,
-            "updated_at": null,
-            "deleted_at": null,
-            "childs": [],
-            "child_count": 0
-        },
-        {
-            "id": 2011,
-            "name": "Диалоги AI ассистентов",
-            "shortname": "messenger.assistant_dialogs",
-            "parent_id": 1548,
-            "is_root": null,
-            "is_api": 2,
-            "level": 2,
-            "page": "/web/chats/assistantdialog",
-            "api": "https://chats.our24.ru/api/assistantdialog",
-            "model": "Modules\\Messenger\\Models\\AssistantDialog",
-            "options": null,
-            "settings": {
-                "fields": {
-                    "name": {
-                        "name": "Название",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "shortname": {
-                        "name": "Короткое",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "assistant_id": {
-                        "name": "Ассистент",
-                        "control": "select",
-                        "db_type": "integer",
-                        "is_lookup": true,
-                        "lookup_api": "https://chats.our24.ru/api/assistant",
-                        "lookup_id": "id",
-                        "lookup_name": "name"
-                    },
-                    "account_id": {
-                        "name": "Аккаунт",
-                        "control": "select",
-                        "db_type": "integer",
-                        "is_lookup": true,
-                        "lookup_api": "https://chats.our24.ru/api/account",
-                        "lookup_id": "id",
-                        "lookup_name": "name"
-                    },
-                    "channel_id": {
-                        "name": "Канал",
-                        "control": "select",
-                        "db_type": "integer",
-                        "is_lookup": true,
-                        "lookup_api": "https://chats.our24.ru/api/channel",
-                        "lookup_id": "id",
-                        "lookup_name": "name"
-                    },
-                    "query": {
-                        "name": "Запрос",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "answer": {
-                        "name": "Ответ",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "direction": {
-                        "name": "Направление",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "status": {
-                        "name": "Статус",
-                        "control": "status",
-                        "db_type": "integer",
-                        "is_lookup": false
-                    }
-                }
-            },
-            "icon": "uil uil-exchange",
-            "resource": null,
-            "status": 1,
-            "nom": 5,
-            "is_list": 2,
-            "created_at": null,
-            "updated_at": null,
-            "deleted_at": null,
-            "childs": [],
-            "child_count": 0
-        },
-        {
-            "id": 2012,
-            "name": "Криэйторы",
-            "shortname": "messenger.creators",
-            "parent_id": 1548,
-            "is_root": null,
-            "is_api": 2,
-            "level": 2,
-            "page": "/web/chats/creator",
-            "api": "https://chats.our24.ru/api/creator",
-            "model": "Modules\\Messenger\\Models\\Creator",
-            "options": null,
-            "settings": {
-                "fields": {
-                    "name": {
-                        "name": "Название",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "shortname": {
-                        "name": "Короткое",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "status": {
-                        "name": "Статус",
-                        "control": "status",
-                        "db_type": "integer",
-                        "is_lookup": false
-                    }
-                }
-            },
-            "icon": "uil uil-pen",
-            "resource": null,
-            "status": 1,
-            "nom": 6,
-            "is_list": 2,
-            "created_at": null,
-            "updated_at": null,
-            "deleted_at": null,
-            "childs": [],
-            "child_count": 0
-        },
-        {
-            "id": 2013,
-            "name": "Автопостинги",
-            "shortname": "messenger.posting",
-            "parent_id": 1548,
-            "page": "/web/chats/posting",
-            "api": "https://chats.our24.ru/api/posting",
-            "model": "Modules\\Messenger\\Models\\Posting",
-            "icon": "uil uil-schedule",
-            "nom": 7,
-            "settings": {
-                "fields": {
-                    "name": {
-                        "name": "Название",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "shortname": {
-                        "name": "Короткое",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "status": {
-                        "name": "Статус",
-                        "control": "status",
-                        "db_type": "integer",
-                        "is_lookup": false
-                    }
-                }
-            },
-            "is_root": null,
-            "is_api": 2,
-            "level": 2,
-            "options": null,
-            "resource": null,
-            "status": 1,
-            "is_list": 2,
-            "created_at": null,
-            "updated_at": null,
-            "deleted_at": null,
-            "childs": [],
-            "child_count": 0
-        },
-        {
-            "id": 2014,
-            "name": "Промпты",
-            "shortname": "messenger.prompts",
-            "parent_id": 1548,
-            "page": "/web/chats/prompt",
-            "api": "https://chats.our24.ru/api/prompt",
-            "model": "Modules\\Messenger\\Models\\Prompt",
-            "icon": "uil uil-file-alt",
-            "nom": 8,
-            "settings": {
-                "fields": {
-                    "name": {
-                        "name": "Название",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "shortname": {
-                        "name": "Короткое",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "tag": {
-                        "name": "Тег",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "category": {
-                        "name": "Категория",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "message": {
-                        "name": "Промпт",
-                        "control": "text",
-                        "db_type": "string",
-                        "is_lookup": false
-                    },
-                    "status": {
-                        "name": "Статус",
-                        "control": "status",
-                        "db_type": "integer",
-                        "is_lookup": false
-                    }
-                }
-            },
-            "is_root": null,
-            "is_api": 2,
-            "level": 2,
-            "options": null,
-            "resource": null,
-            "status": 1,
-            "is_list": 2,
-            "created_at": null,
-            "updated_at": null,
-            "deleted_at": null,
-            "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 2015,
@@ -20802,7 +20529,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 2016,
@@ -20850,7 +20578,8 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
         },
         {
             "id": 2017,
@@ -20898,7 +20627,1711 @@
             "updated_at": null,
             "deleted_at": null,
             "childs": [],
-            "child_count": 0
+            "child_count": 0,
+            "children": []
+        },
+        {
+            "id": 2018,
+            "name": "Адреса",
+            "shortname": "addresses_module",
+            "parent_id": 0,
+            "is_root": null,
+            "is_api": null,
+            "level": null,
+            "page": null,
+            "api": null,
+            "model": null,
+            "options": null,
+            "settings": null,
+            "icon": "uil uil-map-marker",
+            "resource": "addresses_module",
+            "status": null,
+            "nom": 100,
+            "is_list": null,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [
+                {
+                    "id": 2019,
+                    "name": "Адреса",
+                    "shortname": "addresses.address",
+                    "parent_id": 2018,
+                    "is_root": null,
+                    "is_api": 2,
+                    "level": 2,
+                    "page": "/web/addresses/address",
+                    "api": "https://address.our24.ru/api/address",
+                    "model": "Modules\\\\Addresses\\\\Models\\\\Address",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "country": {
+                                "name": "Страна",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "region": {
+                                "name": "Регион",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "city": {
+                                "name": "Город",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "field_mode": "index,create,edit,show",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-map-marker",
+                    "resource": null,
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                },
+                {
+                    "id": 2020,
+                    "name": "Города",
+                    "shortname": "addresses.city",
+                    "parent_id": 2018,
+                    "is_root": null,
+                    "is_api": 2,
+                    "level": 2,
+                    "page": "/web/addresses/city",
+                    "api": "https://address.our24.ru/api/city",
+                    "model": "Modules\\\\Addresses\\\\Models\\\\City",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "shortname": {
+                                "name": "Служебное",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "field_mode": "index,create,edit,show",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-building",
+                    "resource": null,
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                },
+                {
+                    "id": 2021,
+                    "name": "Страны",
+                    "shortname": "addresses.country",
+                    "parent_id": 2018,
+                    "is_root": null,
+                    "is_api": 2,
+                    "level": 2,
+                    "page": "/web/addresses/country",
+                    "api": "https://address.our24.ru/api/country",
+                    "model": "Modules\\\\Addresses\\\\Models\\\\Country",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "shortname": {
+                                "name": "Служебное",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "field_mode": "index,create,edit,show",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-globe",
+                    "resource": null,
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                },
+                {
+                    "id": 2022,
+                    "name": "Локации",
+                    "shortname": "addresses.location",
+                    "parent_id": 2018,
+                    "is_root": null,
+                    "is_api": 2,
+                    "level": 2,
+                    "page": "/web/addresses/location",
+                    "api": "https://address.our24.ru/api/location",
+                    "model": "Modules\\\\Addresses\\\\Models\\\\Location",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "shortname": {
+                                "name": "Служебное",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "phone": {
+                                "name": "Телефон",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "field_mode": "index,create,edit,show",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-location-point",
+                    "resource": null,
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                },
+                {
+                    "id": 2023,
+                    "name": "Регионы",
+                    "shortname": "addresses.region",
+                    "parent_id": 2018,
+                    "is_root": null,
+                    "is_api": 2,
+                    "level": 2,
+                    "page": "/web/addresses/region",
+                    "api": "https://address.our24.ru/api/region",
+                    "model": "Modules\\\\Addresses\\\\Models\\\\Region",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "shortname": {
+                                "name": "Служебное",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "descr": {
+                                "name": "Описание",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "field_mode": "index,create,edit,show",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-map",
+                    "resource": null,
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                },
+                {
+                    "id": 2024,
+                    "name": "Геозоны",
+                    "shortname": "addresses.zone",
+                    "parent_id": 2018,
+                    "is_root": null,
+                    "is_api": 2,
+                    "level": 2,
+                    "page": "/web/addresses/zone",
+                    "api": "https://address.our24.ru/api/zone",
+                    "model": "Modules\\\\Addresses\\\\Models\\\\Zone",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "shortname": {
+                                "name": "Служебное",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "field_mode": "index,create,edit,show",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-focus",
+                    "resource": null,
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                }
+            ],
+            "child_count": 6,
+            "children": []
+        },
+        {
+            "id": 2019,
+            "name": "Адреса",
+            "shortname": "addresses.address",
+            "parent_id": 2018,
+            "is_root": null,
+            "is_api": 2,
+            "level": 2,
+            "page": "/web/addresses/address",
+            "api": "https://address.our24.ru/api/address",
+            "model": "Modules\\\\Addresses\\\\Models\\\\Address",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "country": {
+                        "name": "Страна",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "region": {
+                        "name": "Регион",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "city": {
+                        "name": "Город",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "field_mode": "index,create,edit,show",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false
+                    }
+                }
+            },
+            "icon": "uil uil-map-marker",
+            "resource": null,
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0,
+            "children": []
+        },
+        {
+            "id": 2020,
+            "name": "Города",
+            "shortname": "addresses.city",
+            "parent_id": 2018,
+            "is_root": null,
+            "is_api": 2,
+            "level": 2,
+            "page": "/web/addresses/city",
+            "api": "https://address.our24.ru/api/city",
+            "model": "Modules\\\\Addresses\\\\Models\\\\City",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "shortname": {
+                        "name": "Служебное",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "field_mode": "index,create,edit,show",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false
+                    }
+                }
+            },
+            "icon": "uil uil-building",
+            "resource": null,
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0,
+            "children": []
+        },
+        {
+            "id": 2021,
+            "name": "Страны",
+            "shortname": "addresses.country",
+            "parent_id": 2018,
+            "is_root": null,
+            "is_api": 2,
+            "level": 2,
+            "page": "/web/addresses/country",
+            "api": "https://address.our24.ru/api/country",
+            "model": "Modules\\\\Addresses\\\\Models\\\\Country",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "shortname": {
+                        "name": "Служебное",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "field_mode": "index,create,edit,show",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false
+                    }
+                }
+            },
+            "icon": "uil uil-globe",
+            "resource": null,
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0,
+            "children": []
+        },
+        {
+            "id": 2022,
+            "name": "Локации",
+            "shortname": "addresses.location",
+            "parent_id": 2018,
+            "is_root": null,
+            "is_api": 2,
+            "level": 2,
+            "page": "/web/addresses/location",
+            "api": "https://address.our24.ru/api/location",
+            "model": "Modules\\\\Addresses\\\\Models\\\\Location",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "shortname": {
+                        "name": "Служебное",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "phone": {
+                        "name": "Телефон",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "field_mode": "index,create,edit,show",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false
+                    }
+                }
+            },
+            "icon": "uil uil-location-point",
+            "resource": null,
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0,
+            "children": []
+        },
+        {
+            "id": 2023,
+            "name": "Регионы",
+            "shortname": "addresses.region",
+            "parent_id": 2018,
+            "is_root": null,
+            "is_api": 2,
+            "level": 2,
+            "page": "/web/addresses/region",
+            "api": "https://address.our24.ru/api/region",
+            "model": "Modules\\\\Addresses\\\\Models\\\\Region",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "shortname": {
+                        "name": "Служебное",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "descr": {
+                        "name": "Описание",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "field_mode": "index,create,edit,show",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false
+                    }
+                }
+            },
+            "icon": "uil uil-map",
+            "resource": null,
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0,
+            "children": []
+        },
+        {
+            "id": 2024,
+            "name": "Геозоны",
+            "shortname": "addresses.zone",
+            "parent_id": 2018,
+            "is_root": null,
+            "is_api": 2,
+            "level": 2,
+            "page": "/web/addresses/zone",
+            "api": "https://address.our24.ru/api/zone",
+            "model": "Modules\\\\Addresses\\\\Models\\\\Zone",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "shortname": {
+                        "name": "Служебное",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "field_mode": "index,create,edit,show",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false
+                    }
+                }
+            },
+            "icon": "uil uil-focus",
+            "resource": null,
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0,
+            "children": []
+        },
+        {
+            "id": 2025,
+            "name": "Знакомства",
+            "shortname": "dating_module",
+            "parent_id": 0,
+            "is_root": null,
+            "is_api": null,
+            "level": null,
+            "page": null,
+            "api": null,
+            "model": null,
+            "options": null,
+            "settings": null,
+            "icon": "uil uil-heart",
+            "resource": "dating_module",
+            "status": null,
+            "nom": 101,
+            "is_list": null,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [
+                {
+                    "id": 2026,
+                    "name": "Клиенты",
+                    "shortname": "dating.client",
+                    "parent_id": 2025,
+                    "is_root": 1,
+                    "is_api": 1,
+                    "level": 2,
+                    "page": "/web/dating/client",
+                    "api": "https://dating.itstaffer.ru/api/client",
+                    "model": "Modules\\Dating\\Models\\Client",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "shortname": {
+                                "name": "Короткое",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            }
+                        }
+                    },
+                    "icon": "uil uil-telegram-alt",
+                    "resource": "dating_worker",
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                },
+                {
+                    "id": 2027,
+                    "name": "Заказы",
+                    "shortname": "dating.order",
+                    "parent_id": 2025,
+                    "is_root": 1,
+                    "is_api": 1,
+                    "level": 2,
+                    "page": "/web/dating/order",
+                    "api": "https://dating.itstaffer.ru/api/order",
+                    "model": "Modules\\Dating\\Models\\Order",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "shortname": {
+                                "name": "Короткое",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            }
+                        }
+                    },
+                    "icon": "uil uil-telegram-alt",
+                    "resource": "dating_tariff",
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                },
+                {
+                    "id": 2028,
+                    "name": "Места",
+                    "shortname": "dating.places",
+                    "parent_id": 2025,
+                    "is_root": 1,
+                    "is_api": 1,
+                    "level": 2,
+                    "page": "/web/dating/place",
+                    "api": "https://dating.itstaffer.ru/api/place",
+                    "model": "Modules\\Dating\\Models\\Place",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "shortname": {
+                                "name": "Короткое",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            }
+                        }
+                    },
+                    "icon": "uil uil-telegram-alt",
+                    "resource": "dating_tariff",
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                },
+                {
+                    "id": 2029,
+                    "name": "Тарифы",
+                    "shortname": "dating.tariff",
+                    "parent_id": 2025,
+                    "is_root": 1,
+                    "is_api": 1,
+                    "level": 2,
+                    "page": "/web/dating/tariff",
+                    "api": "https://dating.itstaffer.ru/api/tariff",
+                    "model": "Modules\\Dating\\Models\\Tariff",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "worker_id": {
+                                "name": "Исполнитель",
+                                "control": "text",
+                                "db_type": "integer",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "name": {
+                                "name": "Название",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "shortname": {
+                                "name": "Короткое",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "duration": {
+                                "name": "Длительность",
+                                "control": "text",
+                                "db_type": "integer",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "sum": {
+                                "name": "Сумма",
+                                "control": "text",
+                                "db_type": "integer",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            }
+                        }
+                    },
+                    "icon": "uil uil-telegram-alt",
+                    "resource": "dating_tariff",
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                },
+                {
+                    "id": 2030,
+                    "name": "Исполнители",
+                    "shortname": "dating.worker",
+                    "parent_id": 2025,
+                    "is_root": 1,
+                    "is_api": 1,
+                    "level": 2,
+                    "page": "/web/dating/worker",
+                    "api": "https://dating.itstaffer.ru/api/worker",
+                    "model": "Modules\\Dating\\Models\\Worker",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "shortname": {
+                                "name": "Короткое",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            }
+                        }
+                    },
+                    "icon": "uil uil-telegram-alt",
+                    "resource": "dating_worker",
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                }
+            ],
+            "child_count": 5,
+            "children": []
+        },
+        {
+            "id": 2026,
+            "name": "Клиенты",
+            "shortname": "dating.client",
+            "parent_id": 2025,
+            "is_root": 1,
+            "is_api": 1,
+            "level": 2,
+            "page": "/web/dating/client",
+            "api": "https://dating.itstaffer.ru/api/client",
+            "model": "Modules\\Dating\\Models\\Client",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "shortname": {
+                        "name": "Короткое",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    }
+                }
+            },
+            "icon": "uil uil-telegram-alt",
+            "resource": "dating_worker",
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0,
+            "children": []
+        },
+        {
+            "id": 2027,
+            "name": "Заказы",
+            "shortname": "dating.order",
+            "parent_id": 2025,
+            "is_root": 1,
+            "is_api": 1,
+            "level": 2,
+            "page": "/web/dating/order",
+            "api": "https://dating.itstaffer.ru/api/order",
+            "model": "Modules\\Dating\\Models\\Order",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "shortname": {
+                        "name": "Короткое",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    }
+                }
+            },
+            "icon": "uil uil-telegram-alt",
+            "resource": "dating_tariff",
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0,
+            "children": []
+        },
+        {
+            "id": 2028,
+            "name": "Места",
+            "shortname": "dating.places",
+            "parent_id": 2025,
+            "is_root": 1,
+            "is_api": 1,
+            "level": 2,
+            "page": "/web/dating/places",
+            "api": "https://dating.itstaffer.ru/api/place",
+            "model": "Modules\\Dating\\Models\\Place",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "shortname": {
+                        "name": "Короткое",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    }
+                }
+            },
+            "icon": "uil uil-telegram-alt",
+            "resource": "dating_tariff",
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0,
+            "children": []
+        },
+        {
+            "id": 2029,
+            "name": "Тарифы",
+            "shortname": "dating.tariff",
+            "parent_id": 2025,
+            "is_root": 1,
+            "is_api": 1,
+            "level": 2,
+            "page": "/web/dating/tariff",
+            "api": "https://dating.itstaffer.ru/api/tariff",
+            "model": "Modules\\Dating\\Models\\Tariff",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "worker_id": {
+                        "name": "Исполнитель",
+                        "control": "text",
+                        "db_type": "integer",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "name": {
+                        "name": "Название",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "shortname": {
+                        "name": "Короткое",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "duration": {
+                        "name": "Длительность",
+                        "control": "text",
+                        "db_type": "integer",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "sum": {
+                        "name": "Сумма",
+                        "control": "text",
+                        "db_type": "integer",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    }
+                }
+            },
+            "icon": "uil uil-telegram-alt",
+            "resource": "dating_tariff",
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0,
+            "children": []
+        },
+        {
+            "id": 2030,
+            "name": "Исполнители",
+            "shortname": "dating.worker",
+            "parent_id": 2025,
+            "is_root": 1,
+            "is_api": 1,
+            "level": 2,
+            "page": "/web/dating/worker",
+            "api": "https://dating.itstaffer.ru/api/worker",
+            "model": "Modules\\Dating\\Models\\Worker",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "shortname": {
+                        "name": "Короткое",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    }
+                }
+            },
+            "icon": "uil uil-telegram-alt",
+            "resource": "dating_worker",
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0,
+            "children": []
+        },
+        {
+            "id": 2031,
+            "name": "Справочники",
+            "shortname": "dating.lists",
+            "parent_id": 2025,
+            "is_root": 0,
+            "is_api": 2,
+            "level": 2,
+            "page": "/web/dating/lists",
+            "api": null,
+            "model": null,
+            "options": null,
+            "settings": null,
+            "icon": "uil uil-list-ul",
+            "resource": "dating_tariff",
+            "status": 1,
+            "nom": null,
+            "is_list": 2,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [
+                {
+                    "id": 2032,
+                    "name": "Телосложения",
+                    "shortname": "dating.body",
+                    "parent_id": 2031,
+                    "is_root": 1,
+                    "is_api": 1,
+                    "level": 3,
+                    "page": "/web/dating/body",
+                    "api": "https://dating.our24.ru/api/body",
+                    "model": "Modules\\Dating\\Models\\Body",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "shortname": {
+                                "name": "Короткое",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-list-ul",
+                    "resource": "dating_tariff",
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0,
+                    "children": []
+                },
+                {
+                    "id": 2033,
+                    "name": "Глаза",
+                    "shortname": "dating.eye",
+                    "parent_id": 2031,
+                    "is_root": 1,
+                    "is_api": 1,
+                    "level": 3,
+                    "page": "/web/dating/eye",
+                    "api": "https://dating.our24.ru/api/eye",
+                    "model": "Modules\\Dating\\Models\\Eye",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "shortname": {
+                                "name": "Короткое",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-list-ul",
+                    "resource": "dating_tariff",
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0,
+                    "children": []
+                },
+                {
+                    "id": 2034,
+                    "name": "Волосы",
+                    "shortname": "dating.hair",
+                    "parent_id": 2031,
+                    "is_root": 1,
+                    "is_api": 1,
+                    "level": 3,
+                    "page": "/web/dating/hair",
+                    "api": "https://dating.our24.ru/api/hair",
+                    "model": "Modules\\Dating\\Models\\Hair",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "shortname": {
+                                "name": "Короткое",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-list-ul",
+                    "resource": "dating_tariff",
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0,
+                    "children": []
+                },
+                {
+                    "id": 2035,
+                    "name": "Внешность",
+                    "shortname": "dating.look",
+                    "parent_id": 2031,
+                    "is_root": 1,
+                    "is_api": 1,
+                    "level": 3,
+                    "page": "/web/dating/look",
+                    "api": "https://dating.our24.ru/api/look",
+                    "model": "Modules\\Dating\\Models\\Look",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "shortname": {
+                                "name": "Короткое",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-list-ul",
+                    "resource": "dating_tariff",
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0,
+                    "children": []
+                },
+                {
+                    "id": 2036,
+                    "name": "Ориентации",
+                    "shortname": "dating.orientation",
+                    "parent_id": 2031,
+                    "is_root": 1,
+                    "is_api": 1,
+                    "level": 3,
+                    "page": "/web/dating/orientation",
+                    "api": "https://dating.our24.ru/api/orientation",
+                    "model": "Modules\\Dating\\Models\\Orientation",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "shortname": {
+                                "name": "Короткое",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-list-ul",
+                    "resource": "dating_tariff",
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0,
+                    "children": []
+                }
+            ],
+            "child_count": 5,
+            "children": []
+        },
+        {
+            "id": 2032,
+            "name": "Телосложения",
+            "shortname": "dating.body",
+            "parent_id": 2031,
+            "is_root": 1,
+            "is_api": 1,
+            "level": 3,
+            "page": "/web/dating/body",
+            "api": "https://dating.our24.ru/api/body",
+            "model": "Modules\\Dating\\Models\\Body",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "shortname": {
+                        "name": "Короткое",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false
+                    }
+                }
+            },
+            "icon": "uil uil-list-ul",
+            "resource": "dating_tariff",
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0,
+            "children": []
+        },
+        {
+            "id": 2033,
+            "name": "Глаза",
+            "shortname": "dating.eye",
+            "parent_id": 2031,
+            "is_root": 1,
+            "is_api": 1,
+            "level": 3,
+            "page": "/web/dating/eye",
+            "api": "https://dating.our24.ru/api/eye",
+            "model": "Modules\\Dating\\Models\\Eye",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "shortname": {
+                        "name": "Короткое",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false
+                    }
+                }
+            },
+            "icon": "uil uil-list-ul",
+            "resource": "dating_tariff",
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0,
+            "children": []
+        },
+        {
+            "id": 2034,
+            "name": "Волосы",
+            "shortname": "dating.hair",
+            "parent_id": 2031,
+            "is_root": 1,
+            "is_api": 1,
+            "level": 3,
+            "page": "/web/dating/hair",
+            "api": "https://dating.our24.ru/api/hair",
+            "model": "Modules\\Dating\\Models\\Hair",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "shortname": {
+                        "name": "Короткое",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false
+                    }
+                }
+            },
+            "icon": "uil uil-list-ul",
+            "resource": "dating_tariff",
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0,
+            "children": []
+        },
+        {
+            "id": 2035,
+            "name": "Внешность",
+            "shortname": "dating.look",
+            "parent_id": 2031,
+            "is_root": 1,
+            "is_api": 1,
+            "level": 3,
+            "page": "/web/dating/look",
+            "api": "https://dating.our24.ru/api/look",
+            "model": "Modules\\Dating\\Models\\Look",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "shortname": {
+                        "name": "Короткое",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false
+                    }
+                }
+            },
+            "icon": "uil uil-list-ul",
+            "resource": "dating_tariff",
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0,
+            "children": []
+        },
+        {
+            "id": 2036,
+            "name": "Ориентации",
+            "shortname": "dating.orientation",
+            "parent_id": 2031,
+            "is_root": 1,
+            "is_api": 1,
+            "level": 3,
+            "page": "/web/dating/orientation",
+            "api": "https://dating.our24.ru/api/orientation",
+            "model": "Modules\\Dating\\Models\\Orientation",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "shortname": {
+                        "name": "Короткое",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false
+                    }
+                }
+            },
+            "icon": "uil uil-list-ul",
+            "resource": "dating_tariff",
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0,
+            "children": []
         }
     ],
     "message": "Base index"

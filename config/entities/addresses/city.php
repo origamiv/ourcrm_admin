@@ -11,16 +11,16 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 2014,
+        'id' => 2020,
 
         // Название в меню
-        'name' => 'Промпты',
+        'name' => 'Города',
 
         // Уникальный ключ модуля
-        'shortname' => 'messenger.prompts',
+        'shortname' => 'addresses.city',
 
         // Родительский раздел
-        'parent_id' => 1550,
+        'parent_id' => 2018,
 
         // Корневая сущность
         'is_root' => null,
@@ -29,19 +29,19 @@ return [
         'is_api' => 2,
 
         // Уровень вложенности
-        'level' => 3,
+        'level' => 2,
 
         // Web-страница
-        'page' => '/web/chats/prompt',
+        'page' => '/web/addresses/city',
 
         // API endpoint
-        'api' => 'https://chats.our24.ru/api/prompt',
+        'api' => 'https://address.our24.ru/api/city',
 
         // Eloquent модель
-        'model' => 'Modules\\Messenger\\Models\\Prompt',
+        'model' => 'Modules\\Addresses\\Models\\City',
 
         // Иконка меню
-        'icon' => 'uil uil-file-alt',
+        'icon' => 'uil uil-building',
 
         // ACL / permissions resource
         'resource' => null,
@@ -50,10 +50,10 @@ return [
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 8,
+        'nom' => null,
 
-        // Не справочник
-        'is_list' => 2,
+        // Справочник
+        'is_list' => 1,
     ],
 
     /*
@@ -73,34 +73,15 @@ return [
     'fields' => [
         'name' => [
             'name' => 'Название',
+            'field_mode' => 'index,create,edit,show',
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
         ],
 
         'shortname' => [
-            'name' => 'Короткое',
-            'control' => 'text',
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'tag' => [
-            'name' => 'Тег',
-            'control' => 'text',
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'category' => [
-            'name' => 'Категория',
-            'control' => 'text',
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'message' => [
-            'name' => 'Промпт',
+            'name' => 'Служебное',
+            'field_mode' => 'index,create,edit,show',
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
@@ -108,6 +89,7 @@ return [
 
         'status' => [
             'name' => 'Статус',
+            'field_mode' => 'index,create,edit,show',
             'control' => 'status',
             'db_type' => 'integer',
             'is_lookup' => false,

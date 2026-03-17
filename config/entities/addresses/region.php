@@ -11,16 +11,16 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 2010,
+        'id' => 2023,
 
         // Название в меню
-        'name' => 'Чаты AI ассистентов',
+        'name' => 'Регионы',
 
         // Уникальный ключ модуля
-        'shortname' => 'messenger.assistant_chats',
+        'shortname' => 'addresses.region',
 
         // Родительский раздел
-        'parent_id' => 1550,
+        'parent_id' => 2018,
 
         // Корневая сущность
         'is_root' => null,
@@ -29,19 +29,19 @@ return [
         'is_api' => 2,
 
         // Уровень вложенности
-        'level' => 3,
+        'level' => 2,
 
         // Web-страница
-        'page' => '/web/chats/assistantchat',
+        'page' => '/web/addresses/region',
 
         // API endpoint
-        'api' => 'https://chats.our24.ru/api/assistantchat',
+        'api' => 'https://address.our24.ru/api/region',
 
         // Eloquent модель
-        'model' => 'Modules\\Messenger\\Models\\AssistantChat',
+        'model' => 'Modules\\Addresses\\Models\\Region',
 
         // Иконка меню
-        'icon' => 'uil uil-comment-alt-message',
+        'icon' => 'uil uil-map',
 
         // ACL / permissions resource
         'resource' => null,
@@ -50,10 +50,10 @@ return [
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 4,
+        'nom' => null,
 
-        // Не справочник
-        'is_list' => 2,
+        // Справочник
+        'is_list' => 1,
     ],
 
     /*
@@ -73,73 +73,31 @@ return [
     'fields' => [
         'name' => [
             'name' => 'Название',
+            'field_mode' => 'index,create,edit,show',
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
         ],
 
         'shortname' => [
-            'name' => 'Короткое',
+            'name' => 'Служебное',
+            'field_mode' => 'index,create,edit,show',
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
         ],
 
-        'assistant_id' => [
-            'name' => 'Ассистент',
-            'field_model' => '/Modules/Messenger/Models/assistant',
-            'field_items' => 'assistants',
-            'field_prop' => 'assistant',
-            'control' => 'select',
-            'db_type' => 'integer',
-            'is_lookup' => true,
-            'lookup_api' => 'https://chats.our24.ru/api/assistant',
-            'lookup_id' => 'id',
-            'lookup_name' => 'name',
-        ],
-
-        'account_id' => [
-            'name' => 'Аккаунт',
-            'field_model' => '/Modules/Messenger/Models/Account',
-            'field_items' => 'accounts',
-            'field_prop' => 'account',
-            'control' => 'select',
-            'db_type' => 'integer',
-            'is_lookup' => true,
-            'lookup_api' => 'https://chats.our24.ru/api/account',
-            'lookup_id' => 'id',
-            'lookup_name' => 'name',
-        ],
-
-        'channel_id' => [
-            'name' => 'Канал',
-            'field_model' => '/Modules/Messenger/Models/Channel',
-            'field_items' => 'channels',
-            'field_prop' => 'channel',
-            'control' => 'select',
-            'db_type' => 'integer',
-            'is_lookup' => true,
-            'lookup_api' => 'https://chats.our24.ru/api/channel',
-            'lookup_id' => 'id',
-            'lookup_name' => 'name',
-        ],
-
-        'ext_thread_id' => [
-            'name' => 'Тред ассистента',
-            'control' => 'string',
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'cnt' => [
-            'name' => 'Количество',
-            'control' => 'string',
+        'descr' => [
+            'name' => 'Описание',
+            'field_mode' => 'index,create,edit,show',
+            'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
         ],
 
         'status' => [
             'name' => 'Статус',
+            'field_mode' => 'index,create,edit,show',
             'control' => 'status',
             'db_type' => 'integer',
             'is_lookup' => false,

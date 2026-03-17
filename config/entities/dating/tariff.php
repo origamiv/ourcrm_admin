@@ -11,49 +11,49 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 2010,
+        'id' => 2029,
 
         // Название в меню
-        'name' => 'Чаты AI ассистентов',
+        'name' => 'Тарифы',
 
         // Уникальный ключ модуля
-        'shortname' => 'messenger.assistant_chats',
+        'shortname' => 'dating.tariff',
 
         // Родительский раздел
-        'parent_id' => 1550,
+        'parent_id' => 2025,
 
         // Корневая сущность
-        'is_root' => null,
+        'is_root' => 1,
 
         // Создавать API
-        'is_api' => 2,
+        'is_api' => 1,
 
         // Уровень вложенности
-        'level' => 3,
+        'level' => 2,
 
         // Web-страница
-        'page' => '/web/chats/assistantchat',
+        'page' => '/web/dating/tariff',
 
         // API endpoint
-        'api' => 'https://chats.our24.ru/api/assistantchat',
+        'api' => 'https://dating.our24.ru/api/tariff',
 
         // Eloquent модель
-        'model' => 'Modules\\Messenger\\Models\\AssistantChat',
+        'model' => 'Modules\\Dating\\Models\\Tariff',
 
         // Иконка меню
-        'icon' => 'uil uil-comment-alt-message',
+        'icon' => 'uil uil-telegram-alt',
 
         // ACL / permissions resource
-        'resource' => null,
+        'resource' => 'dating_tariff',
 
         // Активен
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 4,
+        'nom' => null,
 
-        // Не справочник
-        'is_list' => 2,
+        // Справочник
+        'is_list' => 1,
     ],
 
     /*
@@ -71,6 +71,16 @@ return [
     |--------------------------------------------------------------------------
     */
     'fields' => [
+        'worker_id' => [
+            'name' => 'Исполнитель',
+            'control' => 'lookup',
+            'db_type' => 'integer',
+            'is_lookup' => true,
+            'lookup_api' => 'https://dating.our24.ru/api/worker',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
+        ],
+
         'name' => [
             'name' => 'Название',
             'control' => 'text',
@@ -85,56 +95,24 @@ return [
             'is_lookup' => false,
         ],
 
-        'assistant_id' => [
-            'name' => 'Ассистент',
-            'field_model' => '/Modules/Messenger/Models/assistant',
-            'field_items' => 'assistants',
-            'field_prop' => 'assistant',
-            'control' => 'select',
-            'db_type' => 'integer',
-            'is_lookup' => true,
-            'lookup_api' => 'https://chats.our24.ru/api/assistant',
-            'lookup_id' => 'id',
-            'lookup_name' => 'name',
-        ],
-
-        'account_id' => [
-            'name' => 'Аккаунт',
-            'field_model' => '/Modules/Messenger/Models/Account',
-            'field_items' => 'accounts',
-            'field_prop' => 'account',
-            'control' => 'select',
-            'db_type' => 'integer',
-            'is_lookup' => true,
-            'lookup_api' => 'https://chats.our24.ru/api/account',
-            'lookup_id' => 'id',
-            'lookup_name' => 'name',
-        ],
-
-        'channel_id' => [
-            'name' => 'Канал',
-            'field_model' => '/Modules/Messenger/Models/Channel',
-            'field_items' => 'channels',
-            'field_prop' => 'channel',
-            'control' => 'select',
-            'db_type' => 'integer',
-            'is_lookup' => true,
-            'lookup_api' => 'https://chats.our24.ru/api/channel',
-            'lookup_id' => 'id',
-            'lookup_name' => 'name',
-        ],
-
-        'ext_thread_id' => [
-            'name' => 'Тред ассистента',
-            'control' => 'string',
+        'fakename' => [
+            'name' => 'Псевдоним',
+            'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
         ],
 
-        'cnt' => [
-            'name' => 'Количество',
-            'control' => 'string',
-            'db_type' => 'string',
+        'duration' => [
+            'name' => 'Длительность',
+            'control' => 'text',
+            'db_type' => 'integer',
+            'is_lookup' => false,
+        ],
+
+        'sum' => [
+            'name' => 'Сумма',
+            'control' => 'text',
+            'db_type' => 'integer',
             'is_lookup' => false,
         ],
 
