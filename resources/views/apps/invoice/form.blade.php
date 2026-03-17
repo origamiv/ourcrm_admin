@@ -106,14 +106,15 @@
                                                x-model="form[field.key]"
                                                :disabled="isShow" />
                                     </template>
-                                    {{-- STATUS (0/1 select) --}}
+                                    {{-- STATUS select --}}
                                     <template x-if="!field.is_lookup && field.control === 'status'">
                                         <select class="form-select w-full"
                                                 :class="{ 'field-error': errors[field.key] }"
                                                 x-model.number="form[field.key]"
                                                 :disabled="isShow">
-                                            <option value="0">Неактивен</option>
-                                            <option value="1">Активен</option>
+                                            <template x-for="[val, label] in Object.entries(field.field_items ?? {'1':'Активно','2':'Выключено','3':'В процессе'})" :key="val">
+                                                <option :value="Number(val)" x-text="label"></option>
+                                            </template>
                                         </select>
                                     </template>
                                     {{-- SELECT with field_items --}}

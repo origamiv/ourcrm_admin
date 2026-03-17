@@ -24,7 +24,7 @@
             const label = config.field_items[String(val)];
             if (label !== undefined) return label;
         }
-        const defaults = { '0': 'Неактивен', '1': 'Активен' };
+        const defaults = { '1': 'Активно', '2': 'Выключено', '3': 'В процессе' };
         return defaults[String(val)] ?? String(val);
     }
 
