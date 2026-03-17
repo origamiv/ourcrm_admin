@@ -78,6 +78,14 @@ return [
             'is_lookup' => false,
         ],
 
+        'photo' => [
+            'name' => 'Фото',
+            'field_mode' => 'index,create,edit,show',
+            'control' => 'image',
+            'db_type' => 'jsonb',
+            'is_lookup' => false,
+        ],
+
         'pol' => [
             'name' => 'Пол',
             'field_mode' => 'create,edit,show',
@@ -184,14 +192,6 @@ return [
             'is_lookup' => true,
             'lookup_api' => 'https://dating.our24.ru/api/orientation',
             'lookup_name' => 'name',
-        ],
-
-        'photo' => [
-            'name' => 'Фото',
-            'field_mode' => 'index,create,edit,show',
-            'control' => 'image',
-            'db_type' => 'jsonb',
-            'is_lookup' => false,
         ],
 
         'photos' => [
