@@ -283,6 +283,13 @@
     ===================================================== --}}
     <div x-data="dataTable" x-init="init()">
 
+        {{-- Кнопка добавления новой записи --}}
+        <div class="mb-3">
+            <a :href="`/${CONFIG.common.shortname}/create`" class="btn btn-success gap-1">
+                <i class="uil uil-plus"></i>Добавить запись
+            </a>
+        </div>
+
         {{-- Mobile card layout (shown on screens < md) --}}
         <x-crud.mobile-cards />
 
