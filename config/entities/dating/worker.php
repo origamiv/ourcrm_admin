@@ -111,9 +111,11 @@ return [
 
         'city_id' => [
             'name' => 'Город',
-            'control' => 'text',
+            'control' => 'lookup',
             'db_type' => 'integer',
-            'is_lookup' => false,
+            'is_lookup' => true,
+            'lookup_api' => 'https://address.our24.ru/api/city',
+            'lookup_name' => 'name',
         ],
 
         'bust_size' => [
