@@ -12,6 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
     {{-- field components --}}
     <script src="/assets/js/components/text.js"></script>
+    <script src="/assets/js/components/image.js"></script>
 
     {{-- menus/components --}}
     <script src="/assets/js/components/tabulatorFilterMenu.js"></script>
@@ -554,7 +555,7 @@
                     // All fields for the card body (excluding id)
                     const allFields = entries
                         .filter(([k]) => k !== 'id')
-                        .map(([k, f]) => ({ key: k, label: f.name ?? k }));
+                        .map(([k, f]) => ({ key: k, label: f.name ?? k, control: f.control ?? 'text' }));
 
                     this.cardConfig = {
                         nameField: nameEntry?.[0] ?? 'id',
@@ -562,6 +563,19 @@
                         headerFields,
                         allFields,
                     };
+                },
+
+                // Extract main image URL from a JSON image value {"main": "..."}
+                imageUrlFromVal(value) {
+                    if (value === null || value === undefined || value === '') return null;
+                    let parsed = value;
+                    if (typeof value === 'string') {
+                        try { parsed = JSON.parse(value); } catch (e) { return value; }
+                    }
+                    if (typeof parsed === 'object' && parsed !== null) {
+                        return parsed.main ?? Object.values(parsed)[0] ?? null;
+                    }
+                    return String(value);
                 },
 
                 // Render status as a coloured icon
@@ -581,9 +595,10 @@
                     const value = row[key];
                     if (value === null || value === undefined || value === '') return null;
 
-                    // Boolean / checkbox
+                    // Boolean / checkbox (not image)
                     const fieldConf = window.CONFIG.fields[key];
-                    if (fieldConf?.control === 'checkbox' || String(fieldConf?.db_type ?? '').toLowerCase().includes('bool')) {
+                    if (fieldConf?.control !== 'image' &&
+                        (fieldConf?.control === 'checkbox' || String(fieldConf?.db_type ?? '').toLowerCase().includes('bool'))) {
                         return (value === true || value === 1 || value === '1') ? '✓' : '✗';
                     }
 

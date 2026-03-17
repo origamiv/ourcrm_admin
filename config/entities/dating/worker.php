@@ -188,8 +188,8 @@ return [
 
         'photo' => [
             'name' => 'Фото',
-            'field_mode' => 'create,edit,show',
-            'control' => 'text',
+            'field_mode' => 'index,create,edit,show',
+            'control' => 'image',
             'db_type' => 'jsonb',
             'is_lookup' => false,
         ],

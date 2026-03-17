@@ -127,13 +127,37 @@
                                             </template>
                                         </select>
                                     </template>
+                                    {{-- IMAGE --}}
+                                    <template x-if="!field.is_lookup && field.control === 'image'">
+                                        <div>
+                                            <template x-if="isShow">
+                                                <div x-html="renderFieldValue(field)"></div>
+                                            </template>
+                                            <template x-if="!isShow">
+                                                <div>
+                                                    <template x-if="getImageUrl(field.key)">
+                                                        <img :src="getImageUrl(field.key)"
+                                                             class="mb-2 max-h-40 rounded object-contain w-full">
+                                                    </template>
+                                                    <input type="file" accept="image/*"
+                                                           @change="onImageFile(field.key, $event)"
+                                                           class="form-input w-full">
+                                                    <template x-if="getImageUrl(field.key)">
+                                                        <button type="button"
+                                                                @click="form[field.key] = ''"
+                                                                class="text-xs text-danger mt-1">Удалить фото</button>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
                                     {{-- SHOW MODE with modifier: render via FieldComponents --}}
-                                    <template x-if="!field.is_lookup && !['textarea','json','checkbox','status','select'].includes(field.control) && isShow && field.modifier">
+                                    <template x-if="!field.is_lookup && !['textarea','json','checkbox','status','select','image'].includes(field.control) && isShow && field.modifier">
                                         <div class="py-1 text-gray-800 dark:text-gray-200"
                                              x-html="renderFieldValue(field)"></div>
                                     </template>
                                     {{-- FALLBACK: text / number / integer / string / email / etc. --}}
-                                    <template x-if="!field.is_lookup && !['textarea','json','checkbox','status','select'].includes(field.control) && (!isShow || !field.modifier)">
+                                    <template x-if="!field.is_lookup && !['textarea','json','checkbox','status','select','image'].includes(field.control) && (!isShow || !field.modifier)">
                                         <input :type="['number','integer'].includes(field.control) ? 'number' : 'text'"
                                                class="form-input w-full"
                                                :class="{ 'field-error': errors[field.key] }"
@@ -253,13 +277,38 @@
                                     </select>
                                 </template>
 
+                                {{-- IMAGE --}}
+                                <template x-if="!field.is_lookup && field.control === 'image'">
+                                    <div>
+                                        <template x-if="isShow">
+                                            <div x-html="renderFieldValue(field)"></div>
+                                        </template>
+                                        <template x-if="!isShow">
+                                            <div>
+                                                <template x-if="getImageUrl(field.key)">
+                                                    <img :src="getImageUrl(field.key)"
+                                                         class="mb-2 max-h-48 rounded object-contain">
+                                                </template>
+                                                <input type="file" accept="image/*"
+                                                       @change="onImageFile(field.key, $event)"
+                                                       class="form-input w-full">
+                                                <template x-if="getImageUrl(field.key)">
+                                                    <button type="button"
+                                                            @click="form[field.key] = ''"
+                                                            class="text-xs text-danger mt-1">Удалить фото</button>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+
                                 {{-- SHOW MODE with modifier: render via FieldComponents --}}
-                                <template x-if="!field.is_lookup && !['textarea','json','checkbox','status','select'].includes(field.control) && isShow && field.modifier">
+                                <template x-if="!field.is_lookup && !['textarea','json','checkbox','status','select','image'].includes(field.control) && isShow && field.modifier">
                                     <div class="py-1 text-gray-800 dark:text-gray-200"
                                          x-html="renderFieldValue(field)"></div>
                                 </template>
                                 {{-- FALLBACK: text / number / integer / string / email / etc. --}}
-                                <template x-if="!field.is_lookup && !['textarea','json','checkbox','status','select'].includes(field.control) && (!isShow || !field.modifier)">
+                                <template x-if="!field.is_lookup && !['textarea','json','checkbox','status','select','image'].includes(field.control) && (!isShow || !field.modifier)">
                                     <input :type="['number','integer'].includes(field.control) ? 'number' : 'text'"
                                            class="form-input w-full"
                                            :class="{ 'field-error': errors[field.key] }"
@@ -310,6 +359,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
     <script src="/assets/js/components/text.js"></script>
+    <script src="/assets/js/components/image.js"></script>
 
     <script>
         document.addEventListener('alpine:init', () => {
@@ -450,6 +500,29 @@
 
                 cancel() {
                     history.back();
+                },
+
+                getImageUrl(key) {
+                    const value = this.form[key];
+                    if (!value) return null;
+                    let parsed = value;
+                    if (typeof value === 'string') {
+                        try { parsed = JSON.parse(value); } catch (e) { return value; }
+                    }
+                    if (typeof parsed === 'object' && parsed !== null) {
+                        return parsed.main ?? Object.values(parsed)[0] ?? null;
+                    }
+                    return typeof value === 'string' ? value : null;
+                },
+
+                onImageFile(key, event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = ev => {
+                        this.form[key] = JSON.stringify({ main: ev.target.result });
+                    };
+                    reader.readAsDataURL(file);
                 },
 
                 renderFieldValue(field) {

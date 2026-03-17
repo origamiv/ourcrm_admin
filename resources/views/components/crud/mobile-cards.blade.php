@@ -85,8 +85,17 @@
                                 <div class="flex justify-between gap-3 text-sm">
                                     <dt class="text-gray-500 dark:text-gray-400 shrink-0 text-xs pt-0.5"
                                         x-text="col.label"></dt>
-                                    <dd class="text-right font-medium text-gray-800 dark:text-gray-200 min-w-0 break-words"
-                                        x-text="formatCardValue(row, col.key) ?? '—'"></dd>
+                                    <dd class="text-right font-medium text-gray-800 dark:text-gray-200 min-w-0">
+                                        <template x-if="col.control === 'image'">
+                                            <template x-if="imageUrlFromVal(row[col.key])">
+                                                <img :src="imageUrlFromVal(row[col.key])"
+                                                     style="height:48px;width:auto;object-fit:cover;border-radius:4px;margin-left:auto">
+                                            </template>
+                                        </template>
+                                        <template x-if="col.control !== 'image'">
+                                            <span class="break-words" x-text="formatCardValue(row, col.key) ?? '—'"></span>
+                                        </template>
+                                    </dd>
                                 </div>
                             </template>
                         </template>
