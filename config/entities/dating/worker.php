@@ -81,9 +81,11 @@ return [
         'pol' => [
             'name' => 'Пол',
             'field_mode' => 'create,edit,show',
-            'control' => 'text',
+            'control' => 'select',
             'db_type' => 'integer',
             'is_lookup' => false,
+            'field_items' => ['1' => 'Женский', '2' => 'Мужской'],
+            'field_default' => 1,
         ],
 
         'age' => [
@@ -137,41 +139,51 @@ return [
         'eye_id' => [
             'name' => 'Глаза',
             'field_mode' => 'create,edit,show',
-            'control' => 'text',
+            'control' => 'lookup',
             'db_type' => 'integer',
-            'is_lookup' => false,
+            'is_lookup' => true,
+            'lookup_api' => 'https://dating.our24.ru/api/eye',
+            'lookup_name' => 'name',
         ],
 
         'body_id' => [
             'name' => 'Телосложение',
             'field_mode' => 'create,edit,show',
-            'control' => 'text',
+            'control' => 'lookup',
             'db_type' => 'integer',
-            'is_lookup' => false,
+            'is_lookup' => true,
+            'lookup_api' => 'https://dating.our24.ru/api/body',
+            'lookup_name' => 'name',
         ],
 
         'look_id' => [
             'name' => 'Внешность',
             'field_mode' => 'create,edit,show',
-            'control' => 'text',
+            'control' => 'lookup',
             'db_type' => 'integer',
-            'is_lookup' => false,
+            'is_lookup' => true,
+            'lookup_api' => 'https://dating.our24.ru/api/look',
+            'lookup_name' => 'name',
         ],
 
         'hair_id' => [
             'name' => 'Волосы',
             'field_mode' => 'create,edit,show',
-            'control' => 'text',
+            'control' => 'lookup',
             'db_type' => 'integer',
-            'is_lookup' => false,
+            'is_lookup' => true,
+            'lookup_api' => 'https://dating.our24.ru/api/hair',
+            'lookup_name' => 'name',
         ],
 
         'orientation_id' => [
             'name' => 'Ориентация',
             'field_mode' => 'create,edit,show',
-            'control' => 'text',
+            'control' => 'lookup',
             'db_type' => 'integer',
-            'is_lookup' => false,
+            'is_lookup' => true,
+            'lookup_api' => 'https://dating.our24.ru/api/orientation',
+            'lookup_name' => 'name',
         ],
 
         'photo' => [
@@ -257,9 +269,11 @@ return [
         'user_id' => [
             'name' => 'Пользователь',
             'field_mode' => 'create,edit,show',
-            'control' => 'text',
+            'control' => 'lookup',
             'db_type' => 'integer',
-            'is_lookup' => false,
+            'is_lookup' => true,
+            'lookup_api' => 'https://main.our24.ru/api/user',
+            'lookup_name' => 'name',
         ],
 
         'yandexdisk' => [
@@ -281,70 +295,70 @@ return [
         'is_tatu' => [
             'name' => 'Татуировки',
             'field_mode' => 'create,edit,show',
-            'control' => 'text',
-            'db_type' => 'integer',
+            'control' => 'checkbox',
+            'db_type' => 'boolean',
             'is_lookup' => false,
         ],
 
         'is_zagran' => [
             'name' => 'Загранпаспорт',
             'field_mode' => 'create,edit,show',
-            'control' => 'text',
-            'db_type' => 'integer',
+            'control' => 'checkbox',
+            'db_type' => 'boolean',
             'is_lookup' => false,
         ],
 
         'is_viezd' => [
             'name' => 'Выезд',
             'field_mode' => 'create,edit,show',
-            'control' => 'text',
-            'db_type' => 'integer',
+            'control' => 'checkbox',
+            'db_type' => 'boolean',
             'is_lookup' => false,
         ],
 
         'is_apart' => [
             'name' => 'Апартаменты',
             'field_mode' => 'create,edit,show',
-            'control' => 'text',
-            'db_type' => 'integer',
+            'control' => 'checkbox',
+            'db_type' => 'boolean',
             'is_lookup' => false,
         ],
 
         'is_sng' => [
             'name' => 'СНГ',
             'field_mode' => 'create,edit,show',
-            'control' => 'text',
-            'db_type' => 'integer',
+            'control' => 'checkbox',
+            'db_type' => 'boolean',
             'is_lookup' => false,
         ],
 
         'is_closed_party' => [
             'name' => 'Закрытые вечеринки',
             'field_mode' => 'create,edit,show',
-            'control' => 'text',
-            'db_type' => 'integer',
+            'control' => 'checkbox',
+            'db_type' => 'boolean',
             'is_lookup' => false,
         ],
 
         'is_living' => [
             'name' => 'Проживание',
             'field_mode' => 'create,edit,show',
-            'control' => 'text',
-            'db_type' => 'integer',
+            'control' => 'checkbox',
+            'db_type' => 'boolean',
             'is_lookup' => false,
         ],
 
         'is_work_today' => [
             'name' => 'Работает сегодня',
-            'control' => 'text',
-            'db_type' => 'integer',
+            'control' => 'checkbox',
+            'db_type' => 'boolean',
             'is_lookup' => false,
         ],
 
         'is_work_tomorrow' => [
             'name' => 'Работает завтра',
-            'control' => 'text',
-            'db_type' => 'integer',
+            'control' => 'checkbox',
+            'db_type' => 'boolean',
             'is_lookup' => false,
         ],
 
@@ -367,24 +381,24 @@ return [
         'is_calls' => [
             'name' => 'Звонки',
             'field_mode' => 'create,edit,show',
-            'control' => 'text',
-            'db_type' => 'integer',
+            'control' => 'checkbox',
+            'db_type' => 'boolean',
             'is_lookup' => false,
         ],
 
         'is_datingsites' => [
             'name' => 'Сайты знакомств',
             'field_mode' => 'create,edit,show',
-            'control' => 'text',
-            'db_type' => 'integer',
+            'control' => 'checkbox',
+            'db_type' => 'boolean',
             'is_lookup' => false,
         ],
 
         'is_intim' => [
             'name' => 'Интим',
             'field_mode' => 'create,edit,show',
-            'control' => 'text',
-            'db_type' => 'integer',
+            'control' => 'checkbox',
+            'db_type' => 'boolean',
             'is_lookup' => false,
         ],
 

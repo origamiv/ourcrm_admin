@@ -116,13 +116,24 @@
                                             <option value="1">Активен</option>
                                         </select>
                                     </template>
+                                    {{-- SELECT with field_items --}}
+                                    <template x-if="!field.is_lookup && field.control === 'select' && field.field_items">
+                                        <select class="form-select w-full"
+                                                :class="{ 'field-error': errors[field.key] }"
+                                                x-model.number="form[field.key]"
+                                                :disabled="isShow">
+                                            <template x-for="[val, label] in Object.entries(field.field_items)" :key="val">
+                                                <option :value="Number(val)" x-text="label"></option>
+                                            </template>
+                                        </select>
+                                    </template>
                                     {{-- SHOW MODE with modifier: render via FieldComponents --}}
-                                    <template x-if="!field.is_lookup && !['textarea','json','checkbox','status'].includes(field.control) && isShow && field.modifier">
+                                    <template x-if="!field.is_lookup && !['textarea','json','checkbox','status','select'].includes(field.control) && isShow && field.modifier">
                                         <div class="py-1 text-gray-800 dark:text-gray-200"
                                              x-html="renderFieldValue(field)"></div>
                                     </template>
                                     {{-- FALLBACK: text / number / integer / string / email / etc. --}}
-                                    <template x-if="!field.is_lookup && !['textarea','json','checkbox','status'].includes(field.control) && (!isShow || !field.modifier)">
+                                    <template x-if="!field.is_lookup && !['textarea','json','checkbox','status','select'].includes(field.control) && (!isShow || !field.modifier)">
                                         <input :type="['number','integer'].includes(field.control) ? 'number' : 'text'"
                                                class="form-input w-full"
                                                :class="{ 'field-error': errors[field.key] }"
@@ -230,13 +241,25 @@
                                     </select>
                                 </template>
 
+                                {{-- SELECT with field_items --}}
+                                <template x-if="!field.is_lookup && field.control === 'select' && field.field_items">
+                                    <select class="form-select w-full"
+                                            :class="{ 'field-error': errors[field.key] }"
+                                            x-model.number="form[field.key]"
+                                            :disabled="isShow">
+                                        <template x-for="[val, label] in Object.entries(field.field_items)" :key="val">
+                                            <option :value="Number(val)" x-text="label"></option>
+                                        </template>
+                                    </select>
+                                </template>
+
                                 {{-- SHOW MODE with modifier: render via FieldComponents --}}
-                                <template x-if="!field.is_lookup && !['textarea','json','checkbox','status'].includes(field.control) && isShow && field.modifier">
+                                <template x-if="!field.is_lookup && !['textarea','json','checkbox','status','select'].includes(field.control) && isShow && field.modifier">
                                     <div class="py-1 text-gray-800 dark:text-gray-200"
                                          x-html="renderFieldValue(field)"></div>
                                 </template>
                                 {{-- FALLBACK: text / number / integer / string / email / etc. --}}
-                                <template x-if="!field.is_lookup && !['textarea','json','checkbox','status'].includes(field.control) && (!isShow || !field.modifier)">
+                                <template x-if="!field.is_lookup && !['textarea','json','checkbox','status','select'].includes(field.control) && (!isShow || !field.modifier)">
                                     <input :type="['number','integer'].includes(field.control) ? 'number' : 'text'"
                                            class="form-input w-full"
                                            :class="{ 'field-error': errors[field.key] }"
@@ -328,7 +351,7 @@
 
                 initForm() {
                     this.formFields.forEach(field => {
-                        this.form[field.key] = '';
+                        this.form[field.key] = field.field_default !== undefined ? field.field_default : '';
                     });
                 },
 
