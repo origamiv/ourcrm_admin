@@ -73,6 +73,7 @@ return [
     'fields' => [
         'name' => [
             'name' => 'Имя',
+            'field_mode' => 'index,create,edit,show,card',
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
@@ -80,7 +81,7 @@ return [
 
         'photo' => [
             'name' => 'Фото',
-            'field_mode' => 'index,create,edit,show',
+            'field_mode' => 'index,create,edit,show,card',
             'control' => 'image',
             'db_type' => 'jsonb',
             'is_lookup' => false,
@@ -98,6 +99,7 @@ return [
 
         'age' => [
             'name' => 'Возраст',
+            'field_mode' => 'index,create,edit,show,card',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,

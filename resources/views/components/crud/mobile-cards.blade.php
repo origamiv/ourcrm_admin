@@ -35,6 +35,11 @@
                 @click="open = !open"
                 class="w-full flex items-start justify-between gap-2 px-4 py-3 text-left"
             >
+                {{-- Photo thumbnail (card image field) --}}
+                <img :src="(cardConfig && cardConfig.cardImageField) ? (imageUrlFromVal(row[cardConfig.cardImageField]) || '') : ''"
+                     x-show="!!(cardConfig && cardConfig.cardImageField && imageUrlFromVal(row[cardConfig.cardImageField]))"
+                     style="height:52px;width:40px;object-fit:cover;border-radius:4px;flex-shrink:0">
+
                 <div class="flex-1 min-w-0">
                     {{-- Primary name field --}}
                     <div

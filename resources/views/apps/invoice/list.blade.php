@@ -534,10 +534,6 @@
                     const entries = Object.entries(window.CONFIG.fields)
                         .filter(([, f]) => !f.field_mode || f.field_mode.includes('index'));
 
-                    // Primary display field: prefer common name keys, otherwise first field
-                    const NAME_KEYS = ['name', 'title', 'subject', 'fio', 'fullname', 'caption'];
-                    const nameEntry = entries.find(([k]) => NAME_KEYS.includes(k)) ?? entries[0];
-
                     // Status field: bool type or named status/state/active
                     const STATUS_KEYS = ['status', 'state', 'active', 'enabled', 'is_active'];
                     const statusEntry = entries.find(([k, f]) =>
@@ -545,23 +541,47 @@
                         String(f.db_type ?? '').toLowerCase().includes('bool')
                     );
 
-                    // Additional header fields: up to 2, excluding name, status, id
+                    // All fields for the card body (excluding id)
+                    const allFields = entries
+                        .filter(([k]) => k !== 'id')
+                        .map(([k, f]) => ({ key: k, label: f.name ?? k, control: f.control ?? 'text' }));
+
+                    // Explicit card-mode fields: use them for the header
+                    const cardEntries = Object.entries(window.CONFIG.fields)
+                        .filter(([, f]) => f.field_mode && f.field_mode.split(',').map(s => s.trim()).includes('card'));
+
+                    if (cardEntries.length > 0) {
+                        const imageCard = cardEntries.find(([, f]) => f.control === 'image');
+                        const textCards  = cardEntries.filter(([, f]) => f.control !== 'image');
+                        const nameEntry  = textCards[0] ?? cardEntries[0];
+                        const headerFields = textCards.slice(1).map(([k]) => k);
+
+                        this.cardConfig = {
+                            nameField: nameEntry?.[0] ?? 'id',
+                            statusField: statusEntry?.[0] ?? null,
+                            headerFields,
+                            allFields,
+                            cardImageField: imageCard?.[0] ?? null,
+                        };
+                        return;
+                    }
+
+                    // Auto-detect (no card fields defined)
+                    const NAME_KEYS = ['name', 'title', 'subject', 'fio', 'fullname', 'caption'];
+                    const nameEntry = entries.find(([k]) => NAME_KEYS.includes(k)) ?? entries[0];
+
                     const excluded = new Set([nameEntry?.[0], statusEntry?.[0], 'id'].filter(Boolean));
                     const headerFields = entries
                         .filter(([k]) => !excluded.has(k))
                         .slice(0, 2)
                         .map(([k]) => k);
 
-                    // All fields for the card body (excluding id)
-                    const allFields = entries
-                        .filter(([k]) => k !== 'id')
-                        .map(([k, f]) => ({ key: k, label: f.name ?? k, control: f.control ?? 'text' }));
-
                     this.cardConfig = {
                         nameField: nameEntry?.[0] ?? 'id',
                         statusField: statusEntry?.[0] ?? null,
                         headerFields,
                         allFields,
+                        cardImageField: null,
                     };
                 },
 
