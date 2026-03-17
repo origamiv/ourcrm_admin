@@ -11,14 +11,14 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
     {{-- field components --}}
-    <script src="/assets/js/components/text.js"></script>
-    <script src="/assets/js/components/image.js"></script>
-    <script src="/assets/js/components/status.js"></script>
+    <script src="/assets/js/components/text.js?v={{ filemtime(public_path('assets/js/components/text.js')) }}"></script>
+    <script src="/assets/js/components/image.js?v={{ filemtime(public_path('assets/js/components/image.js')) }}"></script>
+    <script src="/assets/js/components/status.js?v={{ filemtime(public_path('assets/js/components/status.js')) }}"></script>
 
     {{-- menus/components --}}
-    <script src="/assets/js/components/tabulatorFilterMenu.js"></script>
-    <script src="/assets/js/components/tabulatorColumnsMenu.js"></script>
-    <script src="/assets/js/components/deleteModal.js"></script>
+    <script src="/assets/js/components/tabulatorFilterMenu.js?v={{ filemtime(public_path('assets/js/components/tabulatorFilterMenu.js')) }}"></script>
+    <script src="/assets/js/components/tabulatorColumnsMenu.js?v={{ filemtime(public_path('assets/js/components/tabulatorColumnsMenu.js')) }}"></script>
+    <script src="/assets/js/components/deleteModal.js?v={{ filemtime(public_path('assets/js/components/deleteModal.js')) }}"></script>
 
     {{-- =====================================================
         1. CONFIG

@@ -359,9 +359,9 @@
     ===================================================== --}}
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
-    <script src="/assets/js/components/text.js"></script>
-    <script src="/assets/js/components/image.js"></script>
-    <script src="/assets/js/components/status.js"></script>
+    <script src="/assets/js/components/text.js?v={{ filemtime(public_path('assets/js/components/text.js')) }}"></script>
+    <script src="/assets/js/components/image.js?v={{ filemtime(public_path('assets/js/components/image.js')) }}"></script>
+    <script src="/assets/js/components/status.js?v={{ filemtime(public_path('assets/js/components/status.js')) }}"></script>
 
     <script>
         document.addEventListener('alpine:init', () => {
