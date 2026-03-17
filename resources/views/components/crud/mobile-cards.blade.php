@@ -96,7 +96,10 @@
                                                  x-show="!!imageUrlFromVal(row[col.key])"
                                                  style="height:48px;width:auto;object-fit:cover;border-radius:4px;margin-left:auto">
                                         </template>
-                                        <template x-if="col.control !== 'image'">
+                                        <template x-if="col.control === 'checkbox'">
+                                            <span x-html="statusIcon(row[col.key])"></span>
+                                        </template>
+                                        <template x-if="col.control !== 'image' && col.control !== 'checkbox'">
                                             <span class="break-words" x-text="formatCardValue(row, col.key) ?? '—'"></span>
                                         </template>
                                     </dd>
