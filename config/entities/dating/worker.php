@@ -80,6 +80,7 @@ return [
 
         'pol' => [
             'name' => 'Пол',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -94,6 +95,7 @@ return [
 
         'rost' => [
             'name' => 'Рост',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -101,6 +103,7 @@ return [
 
         'ves' => [
             'name' => 'Вес',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -115,6 +118,7 @@ return [
 
         'bust_size' => [
             'name' => 'Размер груди',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -122,6 +126,7 @@ return [
 
         'bust_id' => [
             'name' => 'Грудь',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -129,6 +134,7 @@ return [
 
         'eye_id' => [
             'name' => 'Глаза',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -136,6 +142,7 @@ return [
 
         'body_id' => [
             'name' => 'Телосложение',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -143,6 +150,7 @@ return [
 
         'look_id' => [
             'name' => 'Внешность',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -150,6 +158,7 @@ return [
 
         'hair_id' => [
             'name' => 'Волосы',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -157,6 +166,7 @@ return [
 
         'orientation_id' => [
             'name' => 'Ориентация',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -164,6 +174,7 @@ return [
 
         'photo' => [
             'name' => 'Фото',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'jsonb',
             'is_lookup' => false,
@@ -171,6 +182,7 @@ return [
 
         'photos' => [
             'name' => 'Фотографии',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'jsonb',
             'is_lookup' => false,
@@ -178,6 +190,7 @@ return [
 
         'cnt' => [
             'name' => 'Счётчик',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -185,6 +198,7 @@ return [
 
         'telegram_peer_id' => [
             'name' => 'Telegram Peer ID',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
@@ -192,6 +206,7 @@ return [
 
         'fake_telegram_peer_id' => [
             'name' => 'Фейк Telegram Peer ID',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
@@ -199,6 +214,7 @@ return [
 
         'bot_chat_id' => [
             'name' => 'Chat ID бота',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
@@ -206,6 +222,7 @@ return [
 
         'card_tinkoff' => [
             'name' => 'Карта Тинькофф',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
@@ -213,6 +230,7 @@ return [
 
         'phone_tinkoff' => [
             'name' => 'Телефон Тинькофф',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
@@ -220,6 +238,7 @@ return [
 
         'number_fix' => [
             'name' => 'Фиксированный номер',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -227,6 +246,7 @@ return [
 
         'manager_id' => [
             'name' => 'Менеджер',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -234,6 +254,7 @@ return [
 
         'user_id' => [
             'name' => 'Пользователь',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -241,6 +262,7 @@ return [
 
         'yandexdisk' => [
             'name' => 'Яндекс диск',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
@@ -248,6 +270,7 @@ return [
 
         'worktime' => [
             'name' => 'Рабочее время',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
@@ -255,6 +278,7 @@ return [
 
         'is_tatu' => [
             'name' => 'Татуировки',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -262,6 +286,7 @@ return [
 
         'is_zagran' => [
             'name' => 'Загранпаспорт',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -269,6 +294,7 @@ return [
 
         'is_viezd' => [
             'name' => 'Выезд',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -276,6 +302,7 @@ return [
 
         'is_apart' => [
             'name' => 'Апартаменты',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -283,6 +310,7 @@ return [
 
         'is_sng' => [
             'name' => 'СНГ',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -290,6 +318,7 @@ return [
 
         'is_closed_party' => [
             'name' => 'Закрытые вечеринки',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -297,6 +326,7 @@ return [
 
         'is_living' => [
             'name' => 'Проживание',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -318,6 +348,7 @@ return [
 
         'dat_check_work' => [
             'name' => 'Дата проверки работы',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'timestamp',
             'is_lookup' => false,
@@ -325,6 +356,7 @@ return [
 
         'photos_for_reklam' => [
             'name' => 'Фото для рекламы',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -332,6 +364,7 @@ return [
 
         'is_calls' => [
             'name' => 'Звонки',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -339,6 +372,7 @@ return [
 
         'is_datingsites' => [
             'name' => 'Сайты знакомств',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
@@ -346,6 +380,7 @@ return [
 
         'is_intim' => [
             'name' => 'Интим',
+            'field_mode' => 'create,edit,show',
             'control' => 'text',
             'db_type' => 'integer',
             'is_lookup' => false,
