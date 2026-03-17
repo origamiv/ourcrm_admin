@@ -3,7 +3,7 @@
     "pagination": {
         "perpage": -1,
         "currentPage": 1,
-        "count": 139
+        "count": 145
     },
     "data": [
         {
@@ -21548,6 +21548,553 @@
             },
             "icon": "uil uil-focus",
             "resource": null,
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0
+        },
+        {
+            "id": 2025,
+            "name": "Знакомства",
+            "shortname": "dating_module",
+            "parent_id": 0,
+            "is_root": null,
+            "is_api": null,
+            "level": null,
+            "page": null,
+            "api": null,
+            "model": null,
+            "options": null,
+            "settings": null,
+            "icon": "uil uil-heart",
+            "resource": "dating_module",
+            "status": null,
+            "nom": null,
+            "is_list": null,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [
+                {
+                    "id": 2026,
+                    "name": "Клиенты",
+                    "shortname": "dating.client",
+                    "parent_id": 2025,
+                    "is_root": 1,
+                    "is_api": 1,
+                    "level": 2,
+                    "page": "/web/dating/client",
+                    "api": "https://dating.itstaffer.ru/api/client",
+                    "model": "Modules\\Dating\\Models\\Client",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "shortname": {
+                                "name": "Короткое",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            }
+                        }
+                    },
+                    "icon": "uil uil-telegram-alt",
+                    "resource": "dating_worker",
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                },
+                {
+                    "id": 2027,
+                    "name": "Заказы",
+                    "shortname": "dating.order",
+                    "parent_id": 2025,
+                    "is_root": 1,
+                    "is_api": 1,
+                    "level": 2,
+                    "page": "/web/dating/order",
+                    "api": "https://dating.itstaffer.ru/api/order",
+                    "model": "Modules\\Dating\\Models\\Order",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "shortname": {
+                                "name": "Короткое",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            }
+                        }
+                    },
+                    "icon": "uil uil-telegram-alt",
+                    "resource": "dating_tariff",
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                },
+                {
+                    "id": 2028,
+                    "name": "Места",
+                    "shortname": "dating.places",
+                    "parent_id": 2025,
+                    "is_root": 1,
+                    "is_api": 1,
+                    "level": 2,
+                    "page": "/web/dating/place",
+                    "api": "https://dating.itstaffer.ru/api/place",
+                    "model": "Modules\\Dating\\Models\\Place",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "shortname": {
+                                "name": "Короткое",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            }
+                        }
+                    },
+                    "icon": "uil uil-telegram-alt",
+                    "resource": "dating_tariff",
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                },
+                {
+                    "id": 2029,
+                    "name": "Тарифы",
+                    "shortname": "dating.tariff",
+                    "parent_id": 2025,
+                    "is_root": 1,
+                    "is_api": 1,
+                    "level": 2,
+                    "page": "/web/dating/tariff",
+                    "api": "https://dating.itstaffer.ru/api/tariff",
+                    "model": "Modules\\Dating\\Models\\Tariff",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "worker_id": {
+                                "name": "Исполнитель",
+                                "control": "text",
+                                "db_type": "integer",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "name": {
+                                "name": "Название",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "shortname": {
+                                "name": "Короткое",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "duration": {
+                                "name": "Длительность",
+                                "control": "text",
+                                "db_type": "integer",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "sum": {
+                                "name": "Сумма",
+                                "control": "text",
+                                "db_type": "integer",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            }
+                        }
+                    },
+                    "icon": "uil uil-telegram-alt",
+                    "resource": "dating_tariff",
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                },
+                {
+                    "id": 2030,
+                    "name": "Исполнители",
+                    "shortname": "dating.worker",
+                    "parent_id": 2025,
+                    "is_root": 1,
+                    "is_api": 1,
+                    "level": 2,
+                    "page": "/web/dating/worker",
+                    "api": "https://dating.itstaffer.ru/api/worker",
+                    "model": "Modules\\Dating\\Models\\Worker",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "shortname": {
+                                "name": "Короткое",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false,
+                                "field_mode": "index,create,edit,show"
+                            }
+                        }
+                    },
+                    "icon": "uil uil-telegram-alt",
+                    "resource": "dating_worker",
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                }
+            ],
+            "child_count": 5
+        },
+        {
+            "id": 2026,
+            "name": "Клиенты",
+            "shortname": "dating.client",
+            "parent_id": 2025,
+            "is_root": 1,
+            "is_api": 1,
+            "level": 2,
+            "page": "/web/dating/client",
+            "api": "https://dating.itstaffer.ru/api/client",
+            "model": "Modules\\Dating\\Models\\Client",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "shortname": {
+                        "name": "Короткое",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    }
+                }
+            },
+            "icon": "uil uil-telegram-alt",
+            "resource": "dating_worker",
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0
+        },
+        {
+            "id": 2027,
+            "name": "Заказы",
+            "shortname": "dating.order",
+            "parent_id": 2025,
+            "is_root": 1,
+            "is_api": 1,
+            "level": 2,
+            "page": "/web/dating/order",
+            "api": "https://dating.itstaffer.ru/api/order",
+            "model": "Modules\\Dating\\Models\\Order",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "shortname": {
+                        "name": "Короткое",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    }
+                }
+            },
+            "icon": "uil uil-telegram-alt",
+            "resource": "dating_tariff",
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0
+        },
+        {
+            "id": 2028,
+            "name": "Места",
+            "shortname": "dating.places",
+            "parent_id": 2025,
+            "is_root": 1,
+            "is_api": 1,
+            "level": 2,
+            "page": "/web/dating/place",
+            "api": "https://dating.itstaffer.ru/api/place",
+            "model": "Modules\\Dating\\Models\\Place",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "shortname": {
+                        "name": "Короткое",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    }
+                }
+            },
+            "icon": "uil uil-telegram-alt",
+            "resource": "dating_tariff",
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0
+        },
+        {
+            "id": 2029,
+            "name": "Тарифы",
+            "shortname": "dating.tariff",
+            "parent_id": 2025,
+            "is_root": 1,
+            "is_api": 1,
+            "level": 2,
+            "page": "/web/dating/tariff",
+            "api": "https://dating.itstaffer.ru/api/tariff",
+            "model": "Modules\\Dating\\Models\\Tariff",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "worker_id": {
+                        "name": "Исполнитель",
+                        "control": "text",
+                        "db_type": "integer",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "name": {
+                        "name": "Название",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "shortname": {
+                        "name": "Короткое",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "duration": {
+                        "name": "Длительность",
+                        "control": "text",
+                        "db_type": "integer",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "sum": {
+                        "name": "Сумма",
+                        "control": "text",
+                        "db_type": "integer",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    }
+                }
+            },
+            "icon": "uil uil-telegram-alt",
+            "resource": "dating_tariff",
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0
+        },
+        {
+            "id": 2030,
+            "name": "Исполнители",
+            "shortname": "dating.worker",
+            "parent_id": 2025,
+            "is_root": 1,
+            "is_api": 1,
+            "level": 2,
+            "page": "/web/dating/worker",
+            "api": "https://dating.itstaffer.ru/api/worker",
+            "model": "Modules\\Dating\\Models\\Worker",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "shortname": {
+                        "name": "Короткое",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false,
+                        "field_mode": "index,create,edit,show"
+                    }
+                }
+            },
+            "icon": "uil uil-telegram-alt",
+            "resource": "dating_worker",
             "status": 1,
             "nom": null,
             "is_list": 1,
