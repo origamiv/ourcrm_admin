@@ -35,7 +35,7 @@ return [
         'page' => '/web/dating/client',
 
         // API endpoint
-        'api' => 'https://dating.itstaffer.ru/api/client',
+        'api' => 'https://dating.our24.ru/api/client',
 
         // Eloquent модель
         'model' => 'Modules\\Dating\\Models\\Client',

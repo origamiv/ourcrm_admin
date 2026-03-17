@@ -35,7 +35,7 @@ return [
         'page' => '/web/dating/place',
 
         // API endpoint
-        'api' => 'https://dating.itstaffer.ru/api/place',
+        'api' => 'https://dating.our24.ru/api/place',
 
         // Eloquent модель
         'model' => 'Modules\\Dating\\Models\\Place',

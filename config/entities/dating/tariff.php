@@ -35,7 +35,7 @@ return [
         'page' => '/web/dating/tariff',
 
         // API endpoint
-        'api' => 'https://dating.itstaffer.ru/api/tariff',
+        'api' => 'https://dating.our24.ru/api/tariff',
 
         // Eloquent модель
         'model' => 'Modules\\Dating\\Models\\Tariff',

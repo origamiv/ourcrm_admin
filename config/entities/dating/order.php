@@ -35,7 +35,7 @@ return [
         'page' => '/web/dating/order',
 
         // API endpoint
-        'api' => 'https://dating.itstaffer.ru/api/order',
+        'api' => 'https://dating.our24.ru/api/order',
 
         // Eloquent модель
         'model' => 'Modules\\Dating\\Models\\Order',
