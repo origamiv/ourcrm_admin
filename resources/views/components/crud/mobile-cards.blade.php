@@ -87,10 +87,9 @@
                                         x-text="col.label"></dt>
                                     <dd class="text-right font-medium text-gray-800 dark:text-gray-200 min-w-0">
                                         <template x-if="col.control === 'image'">
-                                            <template x-if="imageUrlFromVal(row[col.key])">
-                                                <img :src="imageUrlFromVal(row[col.key])"
-                                                     style="height:48px;width:auto;object-fit:cover;border-radius:4px;margin-left:auto">
-                                            </template>
+                                            <img :src="imageUrlFromVal(row[col.key]) || ''"
+                                                 x-show="!!imageUrlFromVal(row[col.key])"
+                                                 style="height:48px;width:auto;object-fit:cover;border-radius:4px;margin-left:auto">
                                         </template>
                                         <template x-if="col.control !== 'image'">
                                             <span class="break-words" x-text="formatCardValue(row, col.key) ?? '—'"></span>
