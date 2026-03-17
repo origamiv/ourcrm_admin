@@ -15,13 +15,19 @@
 
     const DEFAULTS = { '0': 'Неизвестно', '1': 'Активно', '2': 'Выключено', '3': 'В процессе' };
 
-    // Normalize field_items to [{id, name, color?}] regardless of format:
+    // Normalize field_items to [{id, name, color?, style?}] regardless of format:
     //   Array format:  [{id, name, color?}, ...]  — used in fakes/user.php etc.
     //   Object format: {'1': 'Label', ...}        — used in simple selects
     function normalizeItems(field_items) {
         if (!field_items) return null;
         if (Array.isArray(field_items)) return field_items;
-        return Object.entries(field_items).map(([id, name]) => ({ id: String(id), name: String(name) }));
+        // Dict format: values may be strings or objects {name, color, style}
+        return Object.entries(field_items).map(([id, val]) => {
+            if (val && typeof val === 'object') {
+                return { id: String(id), name: String(val.name ?? id), color: val.color, style: val.style };
+            }
+            return { id: String(id), name: String(val) };
+        });
     }
 
     function findItem(val, config) {
@@ -39,6 +45,10 @@
     function getColor(val, config) {
         const item = findItem(val, config);
         if (item?.color) return { bg: item.color, text: '#fff' };
+        // Support style: {backgroundColor, color} format (used in git/repo.php, tasks/task.php etc.)
+        if (item?.style?.backgroundColor) {
+            return { bg: item.style.backgroundColor, text: item.style.color ?? '#fff' };
+        }
         const idx = parseInt(val, 10);
         if (isNaN(idx) || idx < 0) return PALETTE[0];
         return PALETTE[idx % PALETTE.length];
