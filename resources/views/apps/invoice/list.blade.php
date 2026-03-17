@@ -13,6 +13,7 @@
     {{-- field components --}}
     <script src="/assets/js/components/text.js"></script>
     <script src="/assets/js/components/image.js"></script>
+    <script src="/assets/js/components/status.js"></script>
 
     {{-- menus/components --}}
     <script src="/assets/js/components/tabulatorFilterMenu.js"></script>
@@ -589,6 +590,12 @@
                         allFields,
                         cardImageField: null,
                     };
+                },
+
+                // Render status value as a coloured badge (used in mobile cards body)
+                statusBadge(value, key) {
+                    const config = window.CONFIG.fields[key] ?? {};
+                    return window.FieldComponents?.status?.index({ value, config }) ?? String(value ?? '—');
                 },
 
                 // Extract main image URL from a JSON image value {"main": "..."}
