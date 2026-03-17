@@ -284,7 +284,7 @@
     <div x-data="dataTable" x-init="init()">
 
         {{-- Кнопка добавления новой записи --}}
-        <div class="mb-3">
+        <div class="mb-3 flex justify-end">
             <a :href="`/${CONFIG.common.shortname}/create`" class="btn btn-success gap-1">
                 <i class="uil uil-plus"></i>Добавить запись
             </a>
