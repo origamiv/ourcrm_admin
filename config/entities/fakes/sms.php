@@ -35,7 +35,7 @@ return [
         'page' => '/web/fakes/sms',
 
         // API endpoint
-        'api' => '/api/fakes/sms',
+        'api' => 'https://fakes.our24.ru/api/sms',
 
         // Eloquent модель
         'model' => 'Modules\\Fakes\\Models\\Sms',

@@ -35,7 +35,7 @@ return [
         'page' => '/web/fakes/proxy',
 
         // API endpoint
-        'api' => '/api/fakes/proxy',
+        'api' => 'https://fakes.our24.ru/api/proxy',
 
         // Eloquent модель
         'model' => 'Modules\\Fakes\\Models\\Proxy',

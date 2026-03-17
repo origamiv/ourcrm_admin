@@ -35,7 +35,7 @@ return [
         'page' => '/web/fakes/scenariolog',
 
         // API endpoint
-        'api' => '/api/fakes/scenariolog',
+        'api' => 'https://fakes.our24.ru/api/scenariolog',
 
         // Eloquent модель
         'model' => 'Modules\\Fakes\\Models\\ScenarioLog',

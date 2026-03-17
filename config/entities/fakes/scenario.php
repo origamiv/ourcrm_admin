@@ -35,7 +35,7 @@ return [
         'page' => '/web/fakes/scenario',
 
         // API endpoint
-        'api' => '/api/fakes/scenario',
+        'api' => 'https://fakes.our24.ru/api/scenario',
 
         // Eloquent модель
         'model' => 'Modules\\Fakes\\Models\\Scenario',

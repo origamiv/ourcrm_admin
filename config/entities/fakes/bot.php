@@ -35,7 +35,7 @@ return [
         'page' => '/web/fakes/bot',
 
         // API endpoint
-        'api' => '/api/fakes/bot',
+        'api' => 'https://fakes.our24.ru/api/bot',
 
         // Eloquent модель
         'model' => 'Modules\\Fakes\\Models\\Bot',

@@ -35,7 +35,7 @@ return [
         'page' => '/web/fakes/session',
 
         // API endpoint
-        'api' => '/api/fakes/session',
+        'api' => 'https://fakes.our24.ru/api/session',
 
         // Eloquent модель
         'model' => 'Modules\\Fakes\\Models\\Session',

@@ -35,7 +35,7 @@ return [
         'page' => '/web/fakes/botjob',
 
         // API endpoint
-        'api' => '/api/fakes/botjob',
+        'api' => 'https://fakes.our24.ru/api/botjob',
 
         // Eloquent модель
         'model' => 'Modules\\Fakes\\Models\\BotJob',
