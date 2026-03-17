@@ -581,6 +581,12 @@
                     const value = row[key];
                     if (value === null || value === undefined || value === '') return null;
 
+                    // Boolean / checkbox
+                    const fieldConf = window.CONFIG.fields[key];
+                    if (fieldConf?.control === 'checkbox' || String(fieldConf?.db_type ?? '').toLowerCase().includes('bool')) {
+                        return (value === true || value === 1 || value === '1') ? '✓' : '✗';
+                    }
+
                     // Lookup field
                     if (this.lookupMaps[key] !== undefined) {
                         return this.lookupMaps[key][value] ?? String(value);
@@ -924,6 +930,12 @@
                                     } catch (e) {
                                         console.error('Date format error', e);
                                     }
+                                }
+
+                                // Boolean / checkbox
+                                if (col.control === 'checkbox' || col.db_type.includes('bool')) {
+                                    const checked = value === true || value === 1 || value === '1';
+                                    return `<input type="checkbox" disabled ${checked ? 'checked' : ''} style="width:16px;height:16px;cursor:default;pointer-events:none;margin:auto;display:block">`;
                                 }
 
                                 const control = col.control ?? 'text';
