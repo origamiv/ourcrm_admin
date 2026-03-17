@@ -595,7 +595,9 @@
                 // Render status value as a coloured badge (used in mobile cards body)
                 statusBadge(value, key) {
                     const config = window.CONFIG.fields[key] ?? {};
-                    return window.FieldComponents?.status?.index({ value, config }) ?? String(value ?? '—');
+                    const result = window.FieldComponents?.status?.index({ value, config }) ?? String(value ?? '—');
+                    console.log('[statusBadge]', { key, value, valueType: typeof value, hasFC: !!window.FieldComponents?.status, result });
+                    return result;
                 },
 
                 // Extract main image URL from a JSON image value {"main": "..."}
