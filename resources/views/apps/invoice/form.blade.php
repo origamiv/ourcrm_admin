@@ -112,7 +112,7 @@
                                                 :class="{ 'field-error': errors[field.key] }"
                                                 x-model.number="form[field.key]"
                                                 :disabled="isShow">
-                                            <template x-for="[val, label] in Object.entries(field.field_items ?? {'1':'Активно','2':'Выключено','3':'В процессе'})" :key="val">
+                                            <template x-for="[val, label] in FieldComponents.statusSelectItems(field.field_items)" :key="val">
                                                 <option :value="Number(val)" x-text="label"></option>
                                             </template>
                                         </select>

@@ -1,7 +1,7 @@
 (function () {
     window.FieldComponents = window.FieldComponents || {};
 
-    // Color palette: index = status value
+    // Color palette by numeric index (fallback when no color in config)
     const PALETTE = [
         { bg: '#6b7280', text: '#fff' }, // 0 → gray
         { bg: '#22c55e', text: '#fff' }, // 1 → green
@@ -13,27 +13,50 @@
         { bg: '#ec4899', text: '#fff' }, // 7 → pink
     ];
 
-    function getColor(val) {
+    const DEFAULTS = { '0': 'Неизвестно', '1': 'Активно', '2': 'Выключено', '3': 'В процессе' };
+
+    // Normalize field_items to [{id, name, color?}] regardless of format:
+    //   Array format:  [{id, name, color?}, ...]  — used in fakes/user.php etc.
+    //   Object format: {'1': 'Label', ...}        — used in simple selects
+    function normalizeItems(field_items) {
+        if (!field_items) return null;
+        if (Array.isArray(field_items)) return field_items;
+        return Object.entries(field_items).map(([id, name]) => ({ id: String(id), name: String(name) }));
+    }
+
+    function findItem(val, config) {
+        const items = normalizeItems(config?.field_items);
+        if (!items) return null;
+        return items.find(item => String(item.id) === String(val)) ?? null;
+    }
+
+    function getLabel(val, config) {
+        const item = findItem(val, config);
+        if (item) return item.name;
+        return DEFAULTS[String(val)] ?? String(val);
+    }
+
+    function getColor(val, config) {
+        const item = findItem(val, config);
+        if (item?.color) return { bg: item.color, text: '#fff' };
         const idx = parseInt(val, 10);
         if (isNaN(idx) || idx < 0) return PALETTE[0];
         return PALETTE[idx % PALETTE.length];
     }
 
-    function getLabel(val, config) {
-        if (config?.field_items) {
-            const label = config.field_items[String(val)];
-            if (label !== undefined) return label;
-        }
-        const defaults = { '0': 'Неизвестно', '1': 'Активно', '2': 'Выключено', '3': 'В процессе' };
-        return defaults[String(val)] ?? String(val);
-    }
-
     function badge(val, config) {
         if (val === null || val === undefined || val === '') return '—';
-        const { bg, text } = getColor(val);
+        const { bg, text } = getColor(val, config);
         const label = getLabel(val, config);
         return `<span style="display:inline-block;padding:2px 10px;border-radius:9999px;background:${bg};color:${text};font-size:11px;font-weight:600;white-space:nowrap">${label}</span>`;
     }
+
+    // Exported helper: normalizes field_items to [[id, label], ...] for <select> rendering
+    window.FieldComponents.statusSelectItems = function(field_items) {
+        const items = normalizeItems(field_items);
+        if (items) return items.map(i => [i.id, i.name]);
+        return Object.entries(DEFAULTS);
+    };
 
     window.FieldComponents.status = {
         index({ value, config }) { return badge(value, config); },
