@@ -73,7 +73,6 @@ return [
     'fields' => [
         'name' => [
             'name' => 'Название',
-            'field_mode' => 'index,create,edit,show',
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
@@ -81,7 +80,27 @@ return [
 
         'shortname' => [
             'name' => 'Короткое',
-            'field_mode' => 'index,create,edit,show',
+            'control' => 'text',
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'fakename' => [
+            'name' => 'Псевдоним',
+            'control' => 'text',
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'address' => [
+            'name' => 'Адрес',
+            'control' => 'text',
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'fake_address' => [
+            'name' => 'Фейк адрес',
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
@@ -89,7 +108,6 @@ return [
 
         'status' => [
             'name' => 'Статус',
-            'field_mode' => 'index,create,edit,show',
             'control' => 'status',
             'db_type' => 'integer',
             'is_lookup' => false,

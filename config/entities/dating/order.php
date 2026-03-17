@@ -73,7 +73,6 @@ return [
     'fields' => [
         'name' => [
             'name' => 'Название',
-            'field_mode' => 'index,create,edit,show',
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
@@ -81,15 +80,90 @@ return [
 
         'shortname' => [
             'name' => 'Короткое',
-            'field_mode' => 'index,create,edit,show',
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
         ],
 
+        'date_order' => [
+            'name' => 'Дата заказа',
+            'control' => 'text',
+            'db_type' => 'date',
+            'is_lookup' => false,
+        ],
+
+        'time_from' => [
+            'name' => 'Время начала',
+            'control' => 'text',
+            'db_type' => 'time',
+            'is_lookup' => false,
+        ],
+
+        'time_to' => [
+            'name' => 'Время окончания',
+            'control' => 'text',
+            'db_type' => 'time',
+            'is_lookup' => false,
+        ],
+
+        'worker_id' => [
+            'name' => 'Исполнитель',
+            'control' => 'text',
+            'db_type' => 'integer',
+            'is_lookup' => false,
+        ],
+
+        'tariff_id' => [
+            'name' => 'Тариф',
+            'control' => 'text',
+            'db_type' => 'integer',
+            'is_lookup' => false,
+        ],
+
+        'place_id' => [
+            'name' => 'Место',
+            'control' => 'text',
+            'db_type' => 'integer',
+            'is_lookup' => false,
+        ],
+
+        'client_id' => [
+            'name' => 'Клиент',
+            'control' => 'text',
+            'db_type' => 'integer',
+            'is_lookup' => false,
+        ],
+
+        'plan_sum' => [
+            'name' => 'Плановая сумма',
+            'control' => 'text',
+            'db_type' => 'integer',
+            'is_lookup' => false,
+        ],
+
+        'fact_sum' => [
+            'name' => 'Фактическая сумма',
+            'control' => 'text',
+            'db_type' => 'integer',
+            'is_lookup' => false,
+        ],
+
+        'comission' => [
+            'name' => 'Комиссия',
+            'control' => 'text',
+            'db_type' => 'integer',
+            'is_lookup' => false,
+        ],
+
+        'is_payed_comission' => [
+            'name' => 'Комиссия оплачена',
+            'control' => 'text',
+            'db_type' => 'integer',
+            'is_lookup' => false,
+        ],
+
         'status' => [
             'name' => 'Статус',
-            'field_mode' => 'index,create,edit,show',
             'control' => 'status',
             'db_type' => 'integer',
             'is_lookup' => false,

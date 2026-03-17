@@ -21846,6 +21846,264 @@
             "childs": [],
             "child_count": 0,
             "children": []
+        },
+        {
+            "id": 2031,
+            "name": "Справочники",
+            "shortname": "dating.lists",
+            "parent_id": 2025,
+            "is_root": 0,
+            "is_api": 0,
+            "level": 2,
+            "page": "/web/dating/lists",
+            "api": null,
+            "model": null,
+            "options": null,
+            "settings": {
+                "fields": {}
+            },
+            "icon": "uil uil-list-ul",
+            "resource": "dating_tariff",
+            "status": 1,
+            "nom": null,
+            "is_list": 0,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 5,
+            "children": [
+                {
+                    "id": 2032,
+                    "name": "Телосложения",
+                    "shortname": "dating.body",
+                    "parent_id": 2031,
+                    "is_root": 1,
+                    "is_api": 1,
+                    "level": 3,
+                    "page": "/web/dating/body",
+                    "api": "https://dating.our24.ru/api/body",
+                    "model": "Modules\\Dating\\Models\\Body",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "shortname": {
+                                "name": "Короткое",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-list-ul",
+                    "resource": "dating_tariff",
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0,
+                    "children": []
+                },
+                {
+                    "id": 2033,
+                    "name": "Глаза",
+                    "shortname": "dating.eye",
+                    "parent_id": 2031,
+                    "is_root": 1,
+                    "is_api": 1,
+                    "level": 3,
+                    "page": "/web/dating/eye",
+                    "api": "https://dating.our24.ru/api/eye",
+                    "model": "Modules\\Dating\\Models\\Eye",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "shortname": {
+                                "name": "Короткое",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-list-ul",
+                    "resource": "dating_tariff",
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0,
+                    "children": []
+                },
+                {
+                    "id": 2034,
+                    "name": "Волосы",
+                    "shortname": "dating.hair",
+                    "parent_id": 2031,
+                    "is_root": 1,
+                    "is_api": 1,
+                    "level": 3,
+                    "page": "/web/dating/hair",
+                    "api": "https://dating.our24.ru/api/hair",
+                    "model": "Modules\\Dating\\Models\\Hair",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "shortname": {
+                                "name": "Короткое",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-list-ul",
+                    "resource": "dating_tariff",
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0,
+                    "children": []
+                },
+                {
+                    "id": 2035,
+                    "name": "Внешность",
+                    "shortname": "dating.look",
+                    "parent_id": 2031,
+                    "is_root": 1,
+                    "is_api": 1,
+                    "level": 3,
+                    "page": "/web/dating/look",
+                    "api": "https://dating.our24.ru/api/look",
+                    "model": "Modules\\Dating\\Models\\Look",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "shortname": {
+                                "name": "Короткое",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-list-ul",
+                    "resource": "dating_tariff",
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0,
+                    "children": []
+                },
+                {
+                    "id": 2036,
+                    "name": "Ориентации",
+                    "shortname": "dating.orientation",
+                    "parent_id": 2031,
+                    "is_root": 1,
+                    "is_api": 1,
+                    "level": 3,
+                    "page": "/web/dating/orientation",
+                    "api": "https://dating.our24.ru/api/orientation",
+                    "model": "Modules\\Dating\\Models\\Orientation",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "shortname": {
+                                "name": "Короткое",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-list-ul",
+                    "resource": "dating_tariff",
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0,
+                    "children": []
+                }
+            ]
         }
     ],
     "message": "Base index"
