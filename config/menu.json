@@ -3,7 +3,7 @@
     "pagination": {
         "perpage": -1,
         "currentPage": 1,
-        "count": 130
+        "count": 139
     },
     "data": [
         {
@@ -20890,6 +20890,663 @@
                 }
             },
             "icon": "uil uil-user",
+            "resource": null,
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0
+        },
+        {
+            "id": 2018,
+            "name": "Адреса",
+            "shortname": "addresses_module",
+            "parent_id": 0,
+            "is_root": null,
+            "is_api": null,
+            "level": null,
+            "page": null,
+            "api": null,
+            "model": null,
+            "options": null,
+            "settings": null,
+            "icon": "uil uil-map-marker",
+            "resource": "addresses_module",
+            "status": null,
+            "nom": null,
+            "is_list": null,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [
+                {
+                    "id": 2019,
+                    "name": "Адреса",
+                    "shortname": "addresses.address",
+                    "parent_id": 2018,
+                    "is_root": null,
+                    "is_api": 2,
+                    "level": 2,
+                    "page": "/web/addresses/address",
+                    "api": "https://address.our24.ru/api/address",
+                    "model": "Modules\\\\Addresses\\\\Models\\\\Address",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "country": {
+                                "name": "Страна",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "region": {
+                                "name": "Регион",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "city": {
+                                "name": "Город",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "field_mode": "index,create,edit,show",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-map-marker",
+                    "resource": null,
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                },
+                {
+                    "id": 2020,
+                    "name": "Города",
+                    "shortname": "addresses.city",
+                    "parent_id": 2018,
+                    "is_root": null,
+                    "is_api": 2,
+                    "level": 2,
+                    "page": "/web/addresses/city",
+                    "api": "https://address.our24.ru/api/city",
+                    "model": "Modules\\\\Addresses\\\\Models\\\\City",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "shortname": {
+                                "name": "Служебное",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "field_mode": "index,create,edit,show",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-building",
+                    "resource": null,
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                },
+                {
+                    "id": 2021,
+                    "name": "Страны",
+                    "shortname": "addresses.country",
+                    "parent_id": 2018,
+                    "is_root": null,
+                    "is_api": 2,
+                    "level": 2,
+                    "page": "/web/addresses/country",
+                    "api": "https://address.our24.ru/api/country",
+                    "model": "Modules\\\\Addresses\\\\Models\\\\Country",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "shortname": {
+                                "name": "Служебное",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "field_mode": "index,create,edit,show",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-globe",
+                    "resource": null,
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                },
+                {
+                    "id": 2022,
+                    "name": "Локации",
+                    "shortname": "addresses.location",
+                    "parent_id": 2018,
+                    "is_root": null,
+                    "is_api": 2,
+                    "level": 2,
+                    "page": "/web/addresses/location",
+                    "api": "https://address.our24.ru/api/location",
+                    "model": "Modules\\\\Addresses\\\\Models\\\\Location",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "shortname": {
+                                "name": "Служебное",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "phone": {
+                                "name": "Телефон",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "field_mode": "index,create,edit,show",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-location-point",
+                    "resource": null,
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                },
+                {
+                    "id": 2023,
+                    "name": "Регионы",
+                    "shortname": "addresses.region",
+                    "parent_id": 2018,
+                    "is_root": null,
+                    "is_api": 2,
+                    "level": 2,
+                    "page": "/web/addresses/region",
+                    "api": "https://address.our24.ru/api/region",
+                    "model": "Modules\\\\Addresses\\\\Models\\\\Region",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "shortname": {
+                                "name": "Служебное",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "descr": {
+                                "name": "Описание",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "field_mode": "index,create,edit,show",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-map",
+                    "resource": null,
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                },
+                {
+                    "id": 2024,
+                    "name": "Геозоны",
+                    "shortname": "addresses.zone",
+                    "parent_id": 2018,
+                    "is_root": null,
+                    "is_api": 2,
+                    "level": 2,
+                    "page": "/web/addresses/zone",
+                    "api": "https://address.our24.ru/api/zone",
+                    "model": "Modules\\\\Addresses\\\\Models\\\\Zone",
+                    "options": null,
+                    "settings": {
+                        "fields": {
+                            "name": {
+                                "name": "Название",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "shortname": {
+                                "name": "Служебное",
+                                "field_mode": "index,create,edit,show",
+                                "control": "text",
+                                "db_type": "string",
+                                "is_lookup": false
+                            },
+                            "status": {
+                                "name": "Статус",
+                                "field_mode": "index,create,edit,show",
+                                "control": "status",
+                                "db_type": "integer",
+                                "is_lookup": false
+                            }
+                        }
+                    },
+                    "icon": "uil uil-focus",
+                    "resource": null,
+                    "status": 1,
+                    "nom": null,
+                    "is_list": 1,
+                    "created_at": null,
+                    "updated_at": null,
+                    "deleted_at": null,
+                    "childs": [],
+                    "child_count": 0
+                }
+            ],
+            "child_count": 6
+        },
+        {
+            "id": 2019,
+            "name": "Адреса",
+            "shortname": "addresses.address",
+            "parent_id": 2018,
+            "is_root": null,
+            "is_api": 2,
+            "level": 2,
+            "page": "/web/addresses/address",
+            "api": "https://address.our24.ru/api/address",
+            "model": "Modules\\\\Addresses\\\\Models\\\\Address",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "country": {
+                        "name": "Страна",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "region": {
+                        "name": "Регион",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "city": {
+                        "name": "Город",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "field_mode": "index,create,edit,show",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false
+                    }
+                }
+            },
+            "icon": "uil uil-map-marker",
+            "resource": null,
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0
+        },
+        {
+            "id": 2020,
+            "name": "Города",
+            "shortname": "addresses.city",
+            "parent_id": 2018,
+            "is_root": null,
+            "is_api": 2,
+            "level": 2,
+            "page": "/web/addresses/city",
+            "api": "https://address.our24.ru/api/city",
+            "model": "Modules\\\\Addresses\\\\Models\\\\City",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "shortname": {
+                        "name": "Служебное",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "field_mode": "index,create,edit,show",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false
+                    }
+                }
+            },
+            "icon": "uil uil-building",
+            "resource": null,
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0
+        },
+        {
+            "id": 2021,
+            "name": "Страны",
+            "shortname": "addresses.country",
+            "parent_id": 2018,
+            "is_root": null,
+            "is_api": 2,
+            "level": 2,
+            "page": "/web/addresses/country",
+            "api": "https://address.our24.ru/api/country",
+            "model": "Modules\\\\Addresses\\\\Models\\\\Country",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "shortname": {
+                        "name": "Служебное",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "field_mode": "index,create,edit,show",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false
+                    }
+                }
+            },
+            "icon": "uil uil-globe",
+            "resource": null,
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0
+        },
+        {
+            "id": 2022,
+            "name": "Локации",
+            "shortname": "addresses.location",
+            "parent_id": 2018,
+            "is_root": null,
+            "is_api": 2,
+            "level": 2,
+            "page": "/web/addresses/location",
+            "api": "https://address.our24.ru/api/location",
+            "model": "Modules\\\\Addresses\\\\Models\\\\Location",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "shortname": {
+                        "name": "Служебное",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "phone": {
+                        "name": "Телефон",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "field_mode": "index,create,edit,show",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false
+                    }
+                }
+            },
+            "icon": "uil uil-location-point",
+            "resource": null,
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0
+        },
+        {
+            "id": 2023,
+            "name": "Регионы",
+            "shortname": "addresses.region",
+            "parent_id": 2018,
+            "is_root": null,
+            "is_api": 2,
+            "level": 2,
+            "page": "/web/addresses/region",
+            "api": "https://address.our24.ru/api/region",
+            "model": "Modules\\\\Addresses\\\\Models\\\\Region",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "shortname": {
+                        "name": "Служебное",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "descr": {
+                        "name": "Описание",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "field_mode": "index,create,edit,show",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false
+                    }
+                }
+            },
+            "icon": "uil uil-map",
+            "resource": null,
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0
+        },
+        {
+            "id": 2024,
+            "name": "Геозоны",
+            "shortname": "addresses.zone",
+            "parent_id": 2018,
+            "is_root": null,
+            "is_api": 2,
+            "level": 2,
+            "page": "/web/addresses/zone",
+            "api": "https://address.our24.ru/api/zone",
+            "model": "Modules\\\\Addresses\\\\Models\\\\Zone",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "shortname": {
+                        "name": "Служебное",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "field_mode": "index,create,edit,show",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false
+                    }
+                }
+            },
+            "icon": "uil uil-focus",
             "resource": null,
             "status": 1,
             "nom": null,
