@@ -986,6 +986,11 @@
                                     return `<input type="checkbox" disabled ${checked ? 'checked' : ''} style="width:16px;height:16px;cursor:default;pointer-events:none;margin:auto;display:block">`;
                                 }
 
+                                // Status badge
+                                if (col.control === 'status') {
+                                    return this.statusBadge(value, col.key);
+                                }
+
                                 const control = col.control ?? 'text';
                                 const cmp = (window.FieldComponents && window.FieldComponents[control])
                                     ? window.FieldComponents[control]
