@@ -76,7 +76,7 @@ return [
             'field_model' => '/Modules/Staff/Models/AccountHh',
             'field_items' => 'accounts',
             'field_prop' => 'account',
-            'lookup_api' => 'https://staff.itstaffer.ru/api/accounthh',
+            'lookup_api' => 'https://staff.our24.ru/api/accounthh',
             'lookup_id' => 'id',
             'lookup_name' => 'name',
             'field_mode' => 'index,create,edit,show',

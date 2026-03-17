@@ -111,7 +111,7 @@ return [
             'field_items' => 'groups',
             'field_prop' => 'group',
             'field_mode' => 'index,create,edit,show',
-            'lookup_api' => 'https://access.itstaffer.ru/api/group',
+            'lookup_api' => 'https://access.our24.ru/api/group',
             'lookup_name' => 'name',
             'validation' => [
                 'rules' => [

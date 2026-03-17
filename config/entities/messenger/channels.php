@@ -79,7 +79,7 @@ return [
             'control' => 'select',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup_api' => 'https://chats.itstaffer.ru/api/account',
+            'lookup_api' => 'https://chats.our24.ru/api/account',
             'lookup_id' => 'id',
             'lookup_name' => 'name',
         ],

@@ -106,7 +106,7 @@ return [
             'field_model' => '/Modules/Money/Models/OperationGroup',
             'field_items' => 'opgroups',
             'field_prop' => 'opgroup',
-            'lookup_api' => 'https://money.itstaffer.ru/api/operationgroup',
+            'lookup_api' => 'https://money.our24.ru/api/operationgroup',
             'lookup_id' => 'id',
             'lookup_name' => 'name',
             'field_mode' => 'create,edit,show',

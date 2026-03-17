@@ -76,7 +76,7 @@ return [
             'field_model' => '/Modules/Staff/Models/Vacancy',
             'field_items' => 'vacancies',
             'field_prop' => 'vacancy',
-            'lookup_api' => 'https://staff.itstaffer.ru/api/vacancies',
+            'lookup_api' => 'https://staff.our24.ru/api/vacancies',
             'lookup_id' => 'id',
             'lookup_name' => 'name',
             'field_mode' => 'index,create,edit,show',

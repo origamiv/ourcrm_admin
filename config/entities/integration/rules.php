@@ -92,7 +92,7 @@ return [
             'name' => 'Тип обработки',
             'control' => 'select',
             'is_lookup' => true,
-            'lookup_api' => 'https://integration.itstaffer.ru/api/typeprocessing',
+            'lookup_api' => 'https://integration.our24.ru/api/typeprocessing',
             'lookup_id' => 'id',
             'lookup_name' => 'name',
         ],

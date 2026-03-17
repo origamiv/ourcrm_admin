@@ -8039,7 +8039,7 @@
             "is_api": 2,
             "level": 3,
             "page": "/web/fakes/smsrule",
-            "api": "/api/fakes/smsrule",
+            "api": "https://fakes.our24.ru/api/smsrule",
             "model": "Modules\\Fakes\\Models\\SmsRule",
             "options": null,
             "settings": {
@@ -8101,7 +8101,7 @@
             "is_api": 2,
             "level": 2,
             "page": "/web/fakes/user",
-            "api": "/api/fakes/user",
+            "api": "https://fakes.our24.ru/api/user",
             "model": "Modules\\Fakes\\Models\\User",
             "options": null,
             "settings": {
@@ -15500,7 +15500,7 @@
                             "is_api": 2,
                             "level": 3,
                             "page": "/web/fakes/accountlog",
-                            "api": "/api/fakes/accountlog",
+                            "api": "https://fakes.our24.ru/api/accountlog",
                             "model": "Modules\\Fakes\\Models\\AccountLog",
                             "options": null,
                             "settings": {
@@ -15521,7 +15521,7 @@
                                         "control": "select",
                                         "db_type": "integer",
                                         "is_lookup": true,
-                                        "lookup_api": "/api/fakes/account",
+                                        "lookup_api": "https://fakes.our24.ru/api/account",
                                         "lookup_id": "id",
                                         "lookup_name": "name"
                                     },
@@ -15582,7 +15582,7 @@
                             "is_api": 2,
                             "level": 3,
                             "page": "/web/fakes/log",
-                            "api": "/api/fakes/log",
+                            "api": "https://fakes.our24.ru/api/log",
                             "model": "Modules\\Fakes\\Models\\Log",
                             "options": null,
                             "settings": {
@@ -15665,7 +15665,7 @@
                             "is_api": 2,
                             "level": 3,
                             "page": "/web/fakes/run",
-                            "api": "/api/fakes/run",
+                            "api": "https://fakes.our24.ru/api/run",
                             "model": "Modules\\Fakes\\Models\\Run",
                             "options": null,
                             "settings": {
@@ -15697,13 +15697,13 @@
                                         "field_items": "scenarios",
                                         "field_prop": "scenario",
                                         "field_mode": "index,create,edit,show",
-                                        "field_api": "/api/fakes/scenario",
+                                        "field_api": "https://fakes.our24.ru/api/scenario",
                                         "field_name": "name",
                                         "field_id": "id",
                                         "control": "select",
                                         "db_type": "integer",
                                         "is_lookup": true,
-                                        "lookup_api": "/api/fakes/scenario",
+                                        "lookup_api": "https://fakes.our24.ru/api/scenario",
                                         "lookup_id": "id",
                                         "lookup_name": "name"
                                     },
@@ -15793,7 +15793,7 @@
                             "is_api": 2,
                             "level": 3,
                             "page": "/web/fakes/scenariolog",
-                            "api": "/api/fakes/scenariolog",
+                            "api": "https://fakes.our24.ru/api/scenariolog",
                             "model": "Modules\\Fakes\\Models\\ScenarioLog",
                             "options": null,
                             "settings": {
@@ -15828,7 +15828,7 @@
                                         "control": "select",
                                         "db_type": "integer",
                                         "is_lookup": true,
-                                        "lookup_api": "/api/fakes/scenario",
+                                        "lookup_api": "https://fakes.our24.ru/api/scenario",
                                         "lookup_id": "id",
                                         "lookup_name": "name"
                                     },
@@ -15848,7 +15848,7 @@
                                         "control": "select",
                                         "db_type": "integer",
                                         "is_lookup": true,
-                                        "lookup_api": "/api/fakes/bot",
+                                        "lookup_api": "https://fakes.our24.ru/api/bot",
                                         "lookup_id": "id",
                                         "lookup_name": "name"
                                     },
@@ -15909,7 +15909,7 @@
                             "is_api": 2,
                             "level": 3,
                             "page": "/web/fakes/session",
-                            "api": "/api/fakes/session",
+                            "api": "https://fakes.our24.ru/api/session",
                             "model": "Modules\\Fakes\\Models\\Session",
                             "options": null,
                             "settings": {
@@ -15930,7 +15930,7 @@
                                         "control": "select",
                                         "db_type": "integer",
                                         "is_lookup": true,
-                                        "lookup_api": "/api/fakes/bot",
+                                        "lookup_api": "https://fakes.our24.ru/api/bot",
                                         "lookup_id": "id",
                                         "lookup_name": "name"
                                     },
@@ -16034,7 +16034,7 @@
                     "is_api": 2,
                     "level": 2,
                     "page": "/web/fakes/account",
-                    "api": "/api/fakes/account",
+                    "api": "https://fakes.our24.ru/api/account",
                     "model": "Modules\\Fakes\\Models\\Account",
                     "options": null,
                     "settings": {
@@ -16066,13 +16066,13 @@
                                 "field_items": "services",
                                 "field_prop": "service",
                                 "field_mode": "index,create,edit,show",
-                                "field_api": "/api/fakes/service",
+                                "field_api": "https://fakes.our24.ru/api/service",
                                 "field_name": "name",
                                 "field_id": "id",
                                 "control": "select",
                                 "db_type": "integer",
                                 "is_lookup": true,
-                                "lookup_api": "/api/fakes/service",
+                                "lookup_api": "https://fakes.our24.ru/api/service",
                                 "lookup_id": "id",
                                 "lookup_name": "name"
                             },
@@ -16226,7 +16226,7 @@
                             "is_api": 2,
                             "level": 3,
                             "page": "/web/fakes/proxy",
-                            "api": "/api/fakes/proxy",
+                            "api": "https://fakes.our24.ru/api/proxy",
                             "model": "Modules\\Fakes\\Models\\Proxy",
                             "options": null,
                             "settings": {
@@ -16372,7 +16372,7 @@
                             "is_api": 2,
                             "level": 3,
                             "page": "/web/fakes/botaction",
-                            "api": "/api/fakes/botaction",
+                            "api": "https://fakes.our24.ru/api/botaction",
                             "model": "Modules\\Fakes\\Models\\BotAction",
                             "options": null,
                             "settings": {
@@ -16455,7 +16455,7 @@
                             "is_api": 2,
                             "level": 3,
                             "page": "/web/fakes/cardshem",
-                            "api": "/api/fakes/cardshem",
+                            "api": "https://fakes.our24.ru/api/cardshem",
                             "model": "Modules\\Fakes\\Models\\CardShem",
                             "options": null,
                             "settings": {
@@ -16517,7 +16517,7 @@
                             "is_api": 2,
                             "level": 3,
                             "page": "/web/fakes/service",
-                            "api": "/api/fakes/service",
+                            "api": "https://fakes.our24.ru/api/service",
                             "model": "Modules\\Fakes\\Models\\Service",
                             "options": null,
                             "settings": {
@@ -16600,7 +16600,7 @@
                             "is_api": 2,
                             "level": 3,
                             "page": "/web/fakes/smsrule",
-                            "api": "/api/fakes/smsrule",
+                            "api": "https://fakes.our24.ru/api/smsrule",
                             "model": "Modules\\Fakes\\Models\\SmsRule",
                             "options": null,
                             "settings": {
@@ -16665,7 +16665,7 @@
                     "is_api": 2,
                     "level": 2,
                     "page": "/web/fakes/botjob",
-                    "api": "/api/fakes/botjob",
+                    "api": "https://fakes.our24.ru/api/botjob",
                     "model": "Modules\\Fakes\\Models\\BotJob",
                     "options": null,
                     "settings": {
@@ -16741,7 +16741,7 @@
                     "is_api": 2,
                     "level": 2,
                     "page": "/web/fakes/bot",
-                    "api": "/api/fakes/bot",
+                    "api": "https://fakes.our24.ru/api/bot",
                     "model": "Modules\\Fakes\\Models\\Bot",
                     "options": null,
                     "settings": {
@@ -16787,13 +16787,13 @@
                                 "field_model": "/Modules/Fakes/Models/Service",
                                 "field_items": "services",
                                 "field_prop": "service",
-                                "field_api": "/api/fakes/service",
+                                "field_api": "https://fakes.our24.ru/api/service",
                                 "field_name": "name",
                                 "field_id": "id",
                                 "control": "select",
                                 "db_type": "integer",
                                 "is_lookup": true,
-                                "lookup_api": "/api/fakes/service",
+                                "lookup_api": "https://fakes.our24.ru/api/service",
                                 "lookup_id": "id",
                                 "lookup_name": "name"
                             },
@@ -16872,7 +16872,7 @@
                     "is_api": 2,
                     "level": 2,
                     "page": "/web/fakes/card",
-                    "api": "/api/fakes/card",
+                    "api": "https://fakes.our24.ru/api/card",
                     "model": "Modules\\Fakes\\Models\\Card",
                     "options": null,
                     "settings": {
@@ -16904,7 +16904,7 @@
                                 "field_model": "/Modules/Fakes/Models/TypeCard",
                                 "field_items": "typecards",
                                 "field_prop": "typecard",
-                                "field_api": "/api/fakes/typecard",
+                                "field_api": "https://fakes.our24.ru/api/typecard",
                                 "field_name": "name",
                                 "field_id": "id",
                                 "control": "text",
@@ -16947,7 +16947,7 @@
                     "is_api": 2,
                     "level": 2,
                     "page": "/web/fakes/scenario",
-                    "api": "/api/fakes/scenario",
+                    "api": "https://fakes.our24.ru/api/scenario",
                     "model": "Modules\\Fakes\\Models\\Scenario",
                     "options": null,
                     "settings": {
@@ -17027,7 +17027,7 @@
                     "is_api": 2,
                     "level": 2,
                     "page": "/web/fakes/sms",
-                    "api": "/api/fakes/sms",
+                    "api": "https://fakes.our24.ru/api/sms",
                     "model": "Modules\\Fakes\\Models\\Sms",
                     "options": null,
                     "settings": {
@@ -17041,7 +17041,7 @@
                                 "control": "select",
                                 "db_type": "integer",
                                 "is_lookup": true,
-                                "lookup_api": "/api/fakes/account",
+                                "lookup_api": "https://fakes.our24.ru/api/account",
                                 "lookup_id": "id",
                                 "lookup_name": "name"
                             },
@@ -17133,7 +17133,7 @@
                     "is_api": 2,
                     "level": 2,
                     "page": "/web/fakes/user",
-                    "api": "/api/fakes/user",
+                    "api": "https://fakes.our24.ru/api/user",
                     "model": "Modules\\Fakes\\Models\\User",
                     "options": null,
                     "settings": {
@@ -17319,7 +17319,7 @@
                     "is_api": 2,
                     "level": 3,
                     "page": "/web/fakes/accountlog",
-                    "api": "/api/fakes/accountlog",
+                    "api": "https://fakes.our24.ru/api/accountlog",
                     "model": "Modules\\Fakes\\Models\\AccountLog",
                     "options": null,
                     "settings": {
@@ -17340,7 +17340,7 @@
                                 "control": "select",
                                 "db_type": "integer",
                                 "is_lookup": true,
-                                "lookup_api": "/api/fakes/account",
+                                "lookup_api": "https://fakes.our24.ru/api/account",
                                 "lookup_id": "id",
                                 "lookup_name": "name"
                             },
@@ -17401,7 +17401,7 @@
                     "is_api": 2,
                     "level": 3,
                     "page": "/web/fakes/log",
-                    "api": "/api/fakes/log",
+                    "api": "https://fakes.our24.ru/api/log",
                     "model": "Modules\\Fakes\\Models\\Log",
                     "options": null,
                     "settings": {
@@ -17484,7 +17484,7 @@
                     "is_api": 2,
                     "level": 3,
                     "page": "/web/fakes/run",
-                    "api": "/api/fakes/run",
+                    "api": "https://fakes.our24.ru/api/run",
                     "model": "Modules\\Fakes\\Models\\Run",
                     "options": null,
                     "settings": {
@@ -17516,13 +17516,13 @@
                                 "field_items": "scenarios",
                                 "field_prop": "scenario",
                                 "field_mode": "index,create,edit,show",
-                                "field_api": "/api/fakes/scenario",
+                                "field_api": "https://fakes.our24.ru/api/scenario",
                                 "field_name": "name",
                                 "field_id": "id",
                                 "control": "select",
                                 "db_type": "integer",
                                 "is_lookup": true,
-                                "lookup_api": "/api/fakes/scenario",
+                                "lookup_api": "https://fakes.our24.ru/api/scenario",
                                 "lookup_id": "id",
                                 "lookup_name": "name"
                             },
@@ -17612,7 +17612,7 @@
                     "is_api": 2,
                     "level": 3,
                     "page": "/web/fakes/scenariolog",
-                    "api": "/api/fakes/scenariolog",
+                    "api": "https://fakes.our24.ru/api/scenariolog",
                     "model": "Modules\\Fakes\\Models\\ScenarioLog",
                     "options": null,
                     "settings": {
@@ -17647,7 +17647,7 @@
                                 "control": "select",
                                 "db_type": "integer",
                                 "is_lookup": true,
-                                "lookup_api": "/api/fakes/scenario",
+                                "lookup_api": "https://fakes.our24.ru/api/scenario",
                                 "lookup_id": "id",
                                 "lookup_name": "name"
                             },
@@ -17667,7 +17667,7 @@
                                 "control": "select",
                                 "db_type": "integer",
                                 "is_lookup": true,
-                                "lookup_api": "/api/fakes/bot",
+                                "lookup_api": "https://fakes.our24.ru/api/bot",
                                 "lookup_id": "id",
                                 "lookup_name": "name"
                             },
@@ -17728,7 +17728,7 @@
                     "is_api": 2,
                     "level": 3,
                     "page": "/web/fakes/session",
-                    "api": "/api/fakes/session",
+                    "api": "https://fakes.our24.ru/api/session",
                     "model": "Modules\\Fakes\\Models\\Session",
                     "options": null,
                     "settings": {
@@ -17749,7 +17749,7 @@
                                 "control": "select",
                                 "db_type": "integer",
                                 "is_lookup": true,
-                                "lookup_api": "/api/fakes/bot",
+                                "lookup_api": "https://fakes.our24.ru/api/bot",
                                 "lookup_id": "id",
                                 "lookup_name": "name"
                             },
@@ -17853,7 +17853,7 @@
             "is_api": 2,
             "level": 3,
             "page": "/web/fakes/accountlog",
-            "api": "/api/fakes/accountlog",
+            "api": "https://fakes.our24.ru/api/accountlog",
             "model": "Modules\\Fakes\\Models\\AccountLog",
             "options": null,
             "settings": {
@@ -17874,7 +17874,7 @@
                         "control": "select",
                         "db_type": "integer",
                         "is_lookup": true,
-                        "lookup_api": "/api/fakes/account",
+                        "lookup_api": "https://fakes.our24.ru/api/account",
                         "lookup_id": "id",
                         "lookup_name": "name"
                     },
@@ -17935,7 +17935,7 @@
             "is_api": 2,
             "level": 2,
             "page": "/web/fakes/account",
-            "api": "/api/fakes/account",
+            "api": "https://fakes.our24.ru/api/account",
             "model": "Modules\\Fakes\\Models\\Account",
             "options": null,
             "settings": {
@@ -17967,13 +17967,13 @@
                         "field_items": "services",
                         "field_prop": "service",
                         "field_mode": "index,create,edit,show",
-                        "field_api": "/api/fakes/service",
+                        "field_api": "https://fakes.our24.ru/api/service",
                         "field_name": "name",
                         "field_id": "id",
                         "control": "select",
                         "db_type": "integer",
                         "is_lookup": true,
-                        "lookup_api": "/api/fakes/service",
+                        "lookup_api": "https://fakes.our24.ru/api/service",
                         "lookup_id": "id",
                         "lookup_name": "name"
                     },
@@ -18127,7 +18127,7 @@
                     "is_api": 2,
                     "level": 3,
                     "page": "/web/fakes/proxy",
-                    "api": "/api/fakes/proxy",
+                    "api": "https://fakes.our24.ru/api/proxy",
                     "model": "Modules\\Fakes\\Models\\Proxy",
                     "options": null,
                     "settings": {
@@ -18273,7 +18273,7 @@
                     "is_api": 2,
                     "level": 3,
                     "page": "/web/fakes/botaction",
-                    "api": "/api/fakes/botaction",
+                    "api": "https://fakes.our24.ru/api/botaction",
                     "model": "Modules\\Fakes\\Models\\BotAction",
                     "options": null,
                     "settings": {
@@ -18356,7 +18356,7 @@
                     "is_api": 2,
                     "level": 3,
                     "page": "/web/fakes/cardshem",
-                    "api": "/api/fakes/cardshem",
+                    "api": "https://fakes.our24.ru/api/cardshem",
                     "model": "Modules\\Fakes\\Models\\CardShem",
                     "options": null,
                     "settings": {
@@ -18418,7 +18418,7 @@
                     "is_api": 2,
                     "level": 3,
                     "page": "/web/fakes/service",
-                    "api": "/api/fakes/service",
+                    "api": "https://fakes.our24.ru/api/service",
                     "model": "Modules\\Fakes\\Models\\Service",
                     "options": null,
                     "settings": {
@@ -18501,7 +18501,7 @@
                     "is_api": 2,
                     "level": 3,
                     "page": "/web/fakes/smsrule",
-                    "api": "/api/fakes/smsrule",
+                    "api": "https://fakes.our24.ru/api/smsrule",
                     "model": "Modules\\Fakes\\Models\\SmsRule",
                     "options": null,
                     "settings": {
@@ -18566,7 +18566,7 @@
             "is_api": 2,
             "level": 3,
             "page": "/web/fakes/proxy",
-            "api": "/api/fakes/proxy",
+            "api": "https://fakes.our24.ru/api/proxy",
             "model": "Modules\\Fakes\\Models\\Proxy",
             "options": null,
             "settings": {
@@ -18712,7 +18712,7 @@
             "is_api": 2,
             "level": 3,
             "page": "/web/fakes/botaction",
-            "api": "/api/fakes/botaction",
+            "api": "https://fakes.our24.ru/api/botaction",
             "model": "Modules\\Fakes\\Models\\BotAction",
             "options": null,
             "settings": {
@@ -18795,7 +18795,7 @@
             "is_api": 2,
             "level": 2,
             "page": "/web/fakes/botjob",
-            "api": "/api/fakes/botjob",
+            "api": "https://fakes.our24.ru/api/botjob",
             "model": "Modules\\Fakes\\Models\\BotJob",
             "options": null,
             "settings": {
@@ -18871,7 +18871,7 @@
             "is_api": 2,
             "level": 2,
             "page": "/web/fakes/bot",
-            "api": "/api/fakes/bot",
+            "api": "https://fakes.our24.ru/api/bot",
             "model": "Modules\\Fakes\\Models\\Bot",
             "options": null,
             "settings": {
@@ -18917,13 +18917,13 @@
                         "field_model": "/Modules/Fakes/Models/Service",
                         "field_items": "services",
                         "field_prop": "service",
-                        "field_api": "/api/fakes/service",
+                        "field_api": "https://fakes.our24.ru/api/service",
                         "field_name": "name",
                         "field_id": "id",
                         "control": "select",
                         "db_type": "integer",
                         "is_lookup": true,
-                        "lookup_api": "/api/fakes/service",
+                        "lookup_api": "https://fakes.our24.ru/api/service",
                         "lookup_id": "id",
                         "lookup_name": "name"
                     },
@@ -19002,7 +19002,7 @@
             "is_api": 2,
             "level": 3,
             "page": "/web/fakes/cardshem",
-            "api": "/api/fakes/cardshem",
+            "api": "https://fakes.our24.ru/api/cardshem",
             "model": "Modules\\Fakes\\Models\\CardShem",
             "options": null,
             "settings": {
@@ -19064,7 +19064,7 @@
             "is_api": 2,
             "level": 2,
             "page": "/web/fakes/card",
-            "api": "/api/fakes/card",
+            "api": "https://fakes.our24.ru/api/card",
             "model": "Modules\\Fakes\\Models\\Card",
             "options": null,
             "settings": {
@@ -19096,7 +19096,7 @@
                         "field_model": "/Modules/Fakes/Models/TypeCard",
                         "field_items": "typecards",
                         "field_prop": "typecard",
-                        "field_api": "/api/fakes/typecard",
+                        "field_api": "https://fakes.our24.ru/api/typecard",
                         "field_name": "name",
                         "field_id": "id",
                         "control": "text",
@@ -19139,7 +19139,7 @@
             "is_api": 2,
             "level": 3,
             "page": "/web/fakes/log",
-            "api": "/api/fakes/log",
+            "api": "https://fakes.our24.ru/api/log",
             "model": "Modules\\Fakes\\Models\\Log",
             "options": null,
             "settings": {
@@ -19222,7 +19222,7 @@
             "is_api": 2,
             "level": 3,
             "page": "/web/fakes/run",
-            "api": "/api/fakes/run",
+            "api": "https://fakes.our24.ru/api/run",
             "model": "Modules\\Fakes\\Models\\Run",
             "options": null,
             "settings": {
@@ -19254,13 +19254,13 @@
                         "field_items": "scenarios",
                         "field_prop": "scenario",
                         "field_mode": "index,create,edit,show",
-                        "field_api": "/api/fakes/scenario",
+                        "field_api": "https://fakes.our24.ru/api/scenario",
                         "field_name": "name",
                         "field_id": "id",
                         "control": "select",
                         "db_type": "integer",
                         "is_lookup": true,
-                        "lookup_api": "/api/fakes/scenario",
+                        "lookup_api": "https://fakes.our24.ru/api/scenario",
                         "lookup_id": "id",
                         "lookup_name": "name"
                     },
@@ -19350,7 +19350,7 @@
             "is_api": 2,
             "level": 3,
             "page": "/web/fakes/scenariolog",
-            "api": "/api/fakes/scenariolog",
+            "api": "https://fakes.our24.ru/api/scenariolog",
             "model": "Modules\\Fakes\\Models\\ScenarioLog",
             "options": null,
             "settings": {
@@ -19385,7 +19385,7 @@
                         "control": "select",
                         "db_type": "integer",
                         "is_lookup": true,
-                        "lookup_api": "/api/fakes/scenario",
+                        "lookup_api": "https://fakes.our24.ru/api/scenario",
                         "lookup_id": "id",
                         "lookup_name": "name"
                     },
@@ -19405,7 +19405,7 @@
                         "control": "select",
                         "db_type": "integer",
                         "is_lookup": true,
-                        "lookup_api": "/api/fakes/bot",
+                        "lookup_api": "https://fakes.our24.ru/api/bot",
                         "lookup_id": "id",
                         "lookup_name": "name"
                     },
@@ -19466,7 +19466,7 @@
             "is_api": 2,
             "level": 2,
             "page": "/web/fakes/scenario",
-            "api": "/api/fakes/scenario",
+            "api": "https://fakes.our24.ru/api/scenario",
             "model": "Modules\\Fakes\\Models\\Scenario",
             "options": null,
             "settings": {
@@ -19546,7 +19546,7 @@
             "is_api": 2,
             "level": 3,
             "page": "/web/fakes/service",
-            "api": "/api/fakes/service",
+            "api": "https://fakes.our24.ru/api/service",
             "model": "Modules\\Fakes\\Models\\Service",
             "options": null,
             "settings": {
@@ -19629,7 +19629,7 @@
             "is_api": 2,
             "level": 3,
             "page": "/web/fakes/session",
-            "api": "/api/fakes/session",
+            "api": "https://fakes.our24.ru/api/session",
             "model": "Modules\\Fakes\\Models\\Session",
             "options": null,
             "settings": {
@@ -19650,7 +19650,7 @@
                         "control": "select",
                         "db_type": "integer",
                         "is_lookup": true,
-                        "lookup_api": "/api/fakes/bot",
+                        "lookup_api": "https://fakes.our24.ru/api/bot",
                         "lookup_id": "id",
                         "lookup_name": "name"
                     },
@@ -19751,7 +19751,7 @@
             "is_api": 2,
             "level": 2,
             "page": "/web/fakes/sms",
-            "api": "/api/fakes/sms",
+            "api": "https://fakes.our24.ru/api/sms",
             "model": "Modules\\Fakes\\Models\\Sms",
             "options": null,
             "settings": {
@@ -19765,7 +19765,7 @@
                         "control": "select",
                         "db_type": "integer",
                         "is_lookup": true,
-                        "lookup_api": "/api/fakes/account",
+                        "lookup_api": "https://fakes.our24.ru/api/account",
                         "lookup_id": "id",
                         "lookup_name": "name"
                     },

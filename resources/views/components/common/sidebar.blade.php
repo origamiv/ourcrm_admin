@@ -102,21 +102,65 @@
 
                             <template x-for="child in children(item.id)" :key="child.id">
                                 <li>
-                                    <a
-                                        :href="menuUrl(child)"
-                                        class="nav-link flex items-center"
-                                        :class="{ 'active': isActive(child) }"
-                                        style="margin-left: 5px; "
-                                    >
-                                        <i
-                                            class="shrink-0 uil"
-                                            :class="child.icon ? child.icon.replace('uil ', '') : 'uil-angle-right'">
-                                        </i>
+                                    {{-- Child with grandchildren: expandable --}}
+                                    <template x-if="hasChildren(child)">
+                                        <div>
+                                            <button
+                                                type="button"
+                                                class="nav-link flex items-center w-full"
+                                                :class="{ 'active': isActive(child) }"
+                                                style="margin-left: 5px;"
+                                                @click="open[child.id] = !open[child.id]"
+                                            >
+                                                <i
+                                                    class="shrink-0 uil"
+                                                    :class="child.icon ? child.icon.replace('uil ', '') : 'uil-angle-right'">
+                                                </i>
+                                                <span class="ltr:pl-3 rtl:pr-3 menu-title flex-1 text-left" x-text="child.name"></span>
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                     :class="{ 'rotate-90': open[child.id] }"
+                                                     class="transition-transform duration-200">
+                                                    <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5"
+                                                          stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                            </button>
+                                            {{-- GRANDCHILDREN --}}
+                                            <ul x-show="open[child.id]" x-collapse class="sub-menu text-gray-500">
+                                                <template x-for="grand in children(child.id)" :key="grand.id">
+                                                    <li>
+                                                        <a
+                                                            :href="menuUrl(grand)"
+                                                            class="nav-link flex items-center"
+                                                            :class="{ 'active': isActive(grand) }"
+                                                            style="margin-left: 15px;"
+                                                        >
+                                                            <i
+                                                                class="shrink-0 uil"
+                                                                :class="grand.icon ? grand.icon.replace('uil ', '') : 'uil-angle-right'">
+                                                            </i>
+                                                            <span class="ltr:pl-3 rtl:pr-3 menu-title" x-text="grand.name"></span>
+                                                        </a>
+                                                    </li>
+                                                </template>
+                                            </ul>
+                                        </div>
+                                    </template>
 
-                                        <span class="ltr:pl-3 rtl:pr-3 menu-title"
-                                              x-text="child.name">
-        </span>
-                                    </a>
+                                    {{-- Child without grandchildren: plain link --}}
+                                    <template x-if="!hasChildren(child)">
+                                        <a
+                                            :href="menuUrl(child)"
+                                            class="nav-link flex items-center"
+                                            :class="{ 'active': isActive(child) }"
+                                            style="margin-left: 5px;"
+                                        >
+                                            <i
+                                                class="shrink-0 uil"
+                                                :class="child.icon ? child.icon.replace('uil ', '') : 'uil-angle-right'">
+                                            </i>
+                                            <span class="ltr:pl-3 rtl:pr-3 menu-title" x-text="child.name"></span>
+                                        </a>
+                                    </template>
                                 </li>
                             </template>
                         </ul>
@@ -209,8 +253,13 @@
                 const current = this.menus.find(
                     m => this.menuUrl(m) === window.location.pathname
                 );
-                if (current?.parent_id) {
-                    this.open[current.parent_id] = true;
+                if (!current) return;
+                // Раскрываем цепочку родителей (до 3 уровней)
+                let id = current.parent_id;
+                while (id) {
+                    this.open[id] = true;
+                    const parent = this.menus.find(m => m.id === id);
+                    id = parent?.parent_id ?? 0;
                 }
             }
 
