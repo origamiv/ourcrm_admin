@@ -191,33 +191,7 @@
                 let apiMenus = (json.data || [])
                     .filter(item => item.status || item.status === null);
 
-                // Добавляем кастомный пункт "Отчеты" и подпункт "Статистика ОКК"
-                const customMenus = [
-                    {
-                        id: 5000,
-                        name: 'Отчеты',
-                        shortname: 'reports',
-                        parent_id: 0,
-                        is_root: 1,
-                        icon: 'uil uil-chart-pie',
-                        page: null,
-                        status: 1,
-                        nom: 90
-                    },
-                    {
-                        id: 5001,
-                        name: 'Статистика ОКК',
-                        shortname: 'occ_stats',
-                        parent_id: 5000,
-                        is_root: 2,
-                        icon: 'uil uil-chart-bar',
-                        page: '/occ_stats',
-                        status: 1,
-                        nom: 10
-                    }
-                ];
-
-                this.menus = [...apiMenus, ...customMenus]
+                this.menus = [...apiMenus]
                     .sort((a, b) => (a.nom ?? 0) - (b.nom ?? 0));
             },
 
