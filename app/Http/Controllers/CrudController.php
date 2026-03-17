@@ -20,6 +20,9 @@ class CrudController extends BaseController
                 if (!isset($field['field_mode'])) {
                     $field['field_mode'] = 'index,create,edit,show';
                 }
+                if (!empty($field['is_lookup']) && !isset($field['lookup_id'])) {
+                    $field['lookup_id'] = 'id';
+                }
             }
             unset($field);
         }

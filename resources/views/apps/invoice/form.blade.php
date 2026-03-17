@@ -81,8 +81,8 @@
                                                 :disabled="isShow">
                                             <option value="">—</option>
                                             <template x-for="item in lookups[field.key] ?? []"
-                                                      :key="item[field.lookup_id]">
-                                                <option :value="item[field.lookup_id]"
+                                                      :key="item[field.lookup_id ?? 'id']">
+                                                <option :value="item[field.lookup_id ?? 'id']"
                                                         x-text="item[field.lookup_name]"></option>
                                             </template>
                                         </select>
@@ -188,9 +188,9 @@
                                         <option value="">—</option>
 
                                         <template x-for="item in lookups[field.key] ?? []"
-                                                  :key="item[field.lookup_id]">
+                                                  :key="item[field.lookup_id ?? 'id']">
                                             <option
-                                                :value="item[field.lookup_id]"
+                                                :value="item[field.lookup_id ?? 'id']"
                                                 x-text="item[field.lookup_name]"
                                             ></option>
                                         </template>
