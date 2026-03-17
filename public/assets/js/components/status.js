@@ -61,6 +61,9 @@
         if (val === null || val === undefined) return '—';
         const { bg, text } = getColor(val, config);
         const label = getLabel(val, config);
+        const items = normalizeItems(config?.field_items);
+        const item = items ? items.find(i => String(i.id) === String(val)) : null;
+        console.log('[badge]', { val, valType: typeof val, isArrayFI: Array.isArray(config?.field_items), items, item, itemName: item?.name, itemNameType: typeof item?.name, label, labelType: typeof label, bg, text });
         return `<span style="display:inline-block;padding:2px 10px;border-radius:9999px;background:${bg};color:${text};font-size:11px;font-weight:600;white-space:nowrap">${label}</span>`;
     }
 
