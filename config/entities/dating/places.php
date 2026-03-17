@@ -32,7 +32,7 @@ return [
         'level' => 2,
 
         // Web-страница
-        'page' => '/web/dating/place',
+        'page' => '/web/dating/places',
 
         // API endpoint
         'api' => 'https://dating.our24.ru/api/place',

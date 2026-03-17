@@ -21687,7 +21687,7 @@
             "is_root": 1,
             "is_api": 1,
             "level": 2,
-            "page": "/web/dating/place",
+            "page": "/web/dating/places",
             "api": "https://dating.itstaffer.ru/api/place",
             "model": "Modules\\Dating\\Models\\Place",
             "options": null,
