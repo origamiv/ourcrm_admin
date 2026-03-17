@@ -104,7 +104,7 @@ return [
             'control' => 'select',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup_api' => '/api/money/schet',
+            'lookup_api' => 'https://money.our24.ru/api/schet',
             'lookup_id' => 'id',
             'lookup_name' => 'name',
         ],

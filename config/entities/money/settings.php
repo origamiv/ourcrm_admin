@@ -104,7 +104,7 @@ return [
             'control' => 'select',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup_api' => '/api/main/user',
+            'lookup_api' => 'https://main.our24.ru/api/user',
             'lookup_id' => 'id',
             'lookup_name' => 'name',
         ],

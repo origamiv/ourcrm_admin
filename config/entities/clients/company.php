@@ -11,16 +11,16 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 32,
+        'id' => 2016,
 
         // Название в меню
-        'name' => 'Балансы (факт)',
+        'name' => 'Компании',
 
         // Уникальный ключ модуля
-        'shortname' => 'money.balancelog',
+        'shortname' => 'clients.company',
 
         // Родительский раздел
-        'parent_id' => 31,
+        'parent_id' => 212,
 
         // Корневая сущность
         'is_root' => null,
@@ -32,13 +32,13 @@ return [
         'level' => 2,
 
         // Web-страница
-        'page' => '/web/money/balancelog',
+        'page' => '/web/clients/company',
 
         // API endpoint
-        'api' => 'https://money.our24.ru/api/balancelog',
+        'api' => 'https://clients.our24.ru/api/company',
 
         // Eloquent модель
-        'model' => 'Modules\\Money\\Models\\BalanceLog',
+        'model' => 'Modules\\Clients\\Models\\Company',
 
         // Иконка меню
         'icon' => 'uil uil-user',
@@ -53,7 +53,7 @@ return [
         'nom' => null,
 
         // Не справочник
-        'is_list' => 2,
+        'is_list' => 1,
     ],
 
     /*
@@ -71,30 +71,16 @@ return [
     |--------------------------------------------------------------------------
     */
     'fields' => [
-        'schet_id' => [
-            'name' => 'Счет',
-            'field_model' => '/Modules/Money/Models/Schet',
-            'field_items' => 'schets',
-            'field_prop' => 'schet',
-            'field_mode' => 'index,create,edit,show',
-            'control' => 'select',
-            'db_type' => 'integer',
-            'is_lookup' => true,
-            'lookup_api' => 'https://money.our24.ru/api/schet',
-            'lookup_id' => 'id',
-            'lookup_name' => 'name',
-        ],
-
-        'balance' => [
-            'name' => 'Баланс',
+        'name' => [
+            'name' => 'Название',
             'field_mode' => 'index,create,edit,show',
             'control' => 'text',
             'db_type' => 'string',
             'is_lookup' => false,
         ],
 
-        'checked_at' => [
-            'name' => 'Дата и время',
+        'shortname' => [
+            'name' => 'Короткое название',
             'field_mode' => 'index,create,edit,show',
             'control' => 'text',
             'db_type' => 'string',

@@ -20755,6 +20755,150 @@
             "deleted_at": null,
             "childs": [],
             "child_count": 0
+        },
+        {
+            "id": 2015,
+            "name": "Клиенты",
+            "shortname": "clients.client",
+            "parent_id": 212,
+            "is_root": null,
+            "is_api": 2,
+            "level": 2,
+            "page": "/web/clients/client",
+            "api": "https://clients.itstaffer.ru/api/client",
+            "model": "Modules\\Clients\\Models\\Client",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "shortname": {
+                        "name": "Короткое название",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "field_mode": "index,create,edit,show",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false
+                    }
+                }
+            },
+            "icon": "uil uil-user",
+            "resource": null,
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0
+        },
+        {
+            "id": 2016,
+            "name": "Компании",
+            "shortname": "clients.company",
+            "parent_id": 212,
+            "is_root": null,
+            "is_api": 2,
+            "level": 2,
+            "page": "/web/clients/company",
+            "api": "https://clients.our24.ru/api/company",
+            "model": "Modules\\Clients\\Models\\Company",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "shortname": {
+                        "name": "Короткое название",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "field_mode": "index,create,edit,show",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false
+                    }
+                }
+            },
+            "icon": "uil uil-user",
+            "resource": null,
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0
+        },
+        {
+            "id": 2017,
+            "name": "Физлица",
+            "shortname": "clients.individual",
+            "parent_id": 212,
+            "is_root": null,
+            "is_api": 2,
+            "level": 2,
+            "page": "/web/clients/individual",
+            "api": "https://clients.our24.ru/api/individual",
+            "model": "Modules\\Clients\\Models\\Individual",
+            "options": null,
+            "settings": {
+                "fields": {
+                    "name": {
+                        "name": "Название",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "shortname": {
+                        "name": "Короткое название",
+                        "field_mode": "index,create,edit,show",
+                        "control": "text",
+                        "db_type": "string",
+                        "is_lookup": false
+                    },
+                    "status": {
+                        "name": "Статус",
+                        "field_mode": "index,create,edit,show",
+                        "control": "status",
+                        "db_type": "integer",
+                        "is_lookup": false
+                    }
+                }
+            },
+            "icon": "uil uil-user",
+            "resource": null,
+            "status": 1,
+            "nom": null,
+            "is_list": 1,
+            "created_at": null,
+            "updated_at": null,
+            "deleted_at": null,
+            "childs": [],
+            "child_count": 0
         }
     ],
     "message": "Base index"

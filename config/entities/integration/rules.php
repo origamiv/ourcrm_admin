@@ -35,7 +35,7 @@ return [
         'page' => '/web/integration/rules',
 
         // API endpoint
-        'api' => 'https://integration.our24.ru/api/rules',
+        'api' => 'https://integration.our24.ru/api/rule',
 
         // Eloquent модель
         'model' => 'Modules\\Integration\\Models\\Rule',
