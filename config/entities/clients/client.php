@@ -35,7 +35,7 @@ return [
         'page' => '/web/clients/client',
 
         // API endpoint
-        'api' => 'https://clients.itstaffer.ru/api/client',
+        'api' => 'https://clients.our24.ru/api/client',
 
         // Eloquent модель
         'model' => 'Modules\\Clients\\Models\\Client',

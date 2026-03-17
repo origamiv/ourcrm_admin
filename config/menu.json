@@ -20765,7 +20765,7 @@
             "is_api": 2,
             "level": 2,
             "page": "/web/clients/client",
-            "api": "https://clients.itstaffer.ru/api/client",
+            "api": "https://clients.our24.ru/api/client",
             "model": "Modules\\Clients\\Models\\Client",
             "options": null,
             "settings": {
