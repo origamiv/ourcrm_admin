@@ -20,7 +20,7 @@ return [
         'shortname' => 'messenger.assistant_chats',
 
         // Родительский раздел
-        'parent_id' => 1548,
+        'parent_id' => 1550,
 
         // Корневая сущность
         'is_root' => null,
@@ -29,7 +29,7 @@ return [
         'is_api' => 2,
 
         // Уровень вложенности
-        'level' => 2,
+        'level' => 3,
 
         // Web-страница
         'page' => '/web/chats/assistantchat',
