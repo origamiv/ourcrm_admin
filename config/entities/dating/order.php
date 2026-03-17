@@ -108,30 +108,42 @@ return [
 
         'worker_id' => [
             'name' => 'Исполнитель',
-            'control' => 'text',
+            'control' => 'lookup',
             'db_type' => 'integer',
-            'is_lookup' => false,
+            'is_lookup' => true,
+            'lookup_api' => 'https://dating.our24.ru/api/worker',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'tariff_id' => [
             'name' => 'Тариф',
-            'control' => 'text',
+            'control' => 'lookup',
             'db_type' => 'integer',
-            'is_lookup' => false,
+            'is_lookup' => true,
+            'lookup_api' => 'https://dating.our24.ru/api/tariff',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'place_id' => [
             'name' => 'Место',
-            'control' => 'text',
+            'control' => 'lookup',
             'db_type' => 'integer',
-            'is_lookup' => false,
+            'is_lookup' => true,
+            'lookup_api' => 'https://dating.our24.ru/api/place',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'client_id' => [
             'name' => 'Клиент',
-            'control' => 'text',
+            'control' => 'lookup',
             'db_type' => 'integer',
-            'is_lookup' => false,
+            'is_lookup' => true,
+            'lookup_api' => 'https://dating.our24.ru/api/client',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'plan_sum' => [

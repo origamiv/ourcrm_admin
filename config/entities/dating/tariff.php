@@ -73,9 +73,12 @@ return [
     'fields' => [
         'worker_id' => [
             'name' => 'Исполнитель',
-            'control' => 'text',
+            'control' => 'lookup',
             'db_type' => 'integer',
-            'is_lookup' => false,
+            'is_lookup' => true,
+            'lookup_api' => 'https://dating.our24.ru/api/worker',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
         ],
 
         'name' => [
