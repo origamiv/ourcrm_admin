@@ -56,6 +56,9 @@
 
     function badge(val, config) {
         if (val === null || val === undefined || val === '') return '—';
+        // If API returned an enriched object {id, name, ...} instead of a primitive, extract id
+        if (typeof val === 'object') val = val.id ?? val;
+        if (val === null || val === undefined) return '—';
         const { bg, text } = getColor(val, config);
         const label = getLabel(val, config);
         return `<span style="display:inline-block;padding:2px 10px;border-radius:9999px;background:${bg};color:${text};font-size:11px;font-weight:600;white-space:nowrap">${label}</span>`;
