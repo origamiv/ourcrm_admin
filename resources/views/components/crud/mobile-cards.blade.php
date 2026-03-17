@@ -63,7 +63,7 @@
                 {{-- Status icon + chevron --}}
                 <div class="flex items-center gap-2 shrink-0 pt-0.5">
                     <template x-if="cardConfig && cardConfig.statusField">
-                        <span x-html="statusIcon(row[cardConfig.statusField])"></span>
+                        <span x-html="(window.CONFIG.fields[cardConfig.statusField]?.control === 'status') ? statusBadge(row[cardConfig.statusField], cardConfig.statusField) : statusIcon(row[cardConfig.statusField])"></span>
                     </template>
 
                     <svg
