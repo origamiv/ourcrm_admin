@@ -2,7 +2,15 @@
 
 use App\Http\Controllers\CrudController;
 use App\Http\Controllers\DownloadController;
+use App\Http\Controllers\ExportController;
 use Illuminate\Support\Facades\Route;
+
+// Excel export API
+Route::prefix('api/export')->group(function () {
+    Route::post('/excel', [ExportController::class, 'create']);
+    Route::get('/status/{id}', [ExportController::class, 'status']);
+    Route::get('/download/{id}', [ExportController::class, 'download']);
+});
 
 Route::get('/web', [CrudController::class, 'index']);
 
