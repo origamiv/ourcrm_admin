@@ -20,7 +20,7 @@ return [
         'shortname' => 'main.roles',
 
         // Родительский раздел
-        'parent_id' => 2000,
+        'parent_id' => 2009,
 
         // Корневая сущность
         'is_root' => null,
@@ -50,7 +50,7 @@ return [
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 3,
+        'nom' => 1,
 
         // Не справочник
         'is_list' => 2,

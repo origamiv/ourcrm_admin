@@ -20,7 +20,7 @@ return [
         'shortname' => 'main.permission',
 
         // Родительский раздел
-        'parent_id' => 2000,
+        'parent_id' => 2009,
 
         // Корневая сущность
         'is_root' => null,
