@@ -90,7 +90,8 @@ class ExportExcelJob implements ShouldQueue
         // Write headers
         $col = 1;
         foreach ($this->fields as $field) {
-            $sheet->setCellValueByColumnAndRow($col, 1, $field['title'] ?? $field['key']);
+            $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col);
+            $sheet->setCellValue($colLetter . '1', $field['title'] ?? $field['key']);
             $col++;
         }
 
@@ -112,7 +113,8 @@ class ExportExcelJob implements ShouldQueue
                     $value = json_encode($value, JSON_UNESCAPED_UNICODE);
                 }
 
-                $sheet->setCellValueByColumnAndRow($col, $rowNum, $value);
+                $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col);
+                $sheet->setCellValue($colLetter . $rowNum, $value);
                 $col++;
             }
             $rowNum++;
@@ -121,7 +123,8 @@ class ExportExcelJob implements ShouldQueue
         // Auto-size columns
         $colCount = count($this->fields);
         for ($c = 1; $c <= $colCount; $c++) {
-            $sheet->getColumnDimensionByColumn($c)->setAutoSize(true);
+            $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($c);
+            $sheet->getColumnDimension($colLetter)->setAutoSize(true);
         }
 
         // Save to storage/app/public/exports/

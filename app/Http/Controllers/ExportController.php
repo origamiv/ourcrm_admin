@@ -42,7 +42,7 @@ class ExportController extends Controller
             $data['fields'],
             $data['filter'] ?? [],
             $data['order'] ?? [],
-        );
+        )->onQueue('exports');
 
         return response()->json(['id' => $export->id]);
     }
