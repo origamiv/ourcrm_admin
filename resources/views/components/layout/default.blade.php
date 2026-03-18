@@ -98,5 +98,95 @@
 <script defer src="/assets/js/alpine-focus.min.js"></script>
 <script defer src="/assets/js/alpine.min.js"></script>
 <script src="/assets/js/custom.js"></script>
+
+{{-- 📊 Excel Export Global Poller — работает на любой странице --}}
+<style>
+    @keyframes slideInToast {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+</style>
+<script>
+window.ExcelPoller = (function () {
+    const KEY = 'pending_excel_export';
+    let timer = null;
+
+    function showToast(type, message, downloadUrl) {
+        const existing = document.getElementById('excel-export-toast');
+        if (existing) existing.remove();
+
+        const isSuccess = type === 'success';
+        const bgColor   = isSuccess ? '#1a7f37' : '#c0392b';
+        const icon      = isSuccess ? '✓' : '✕';
+
+        const toast = document.createElement('div');
+        toast.id = 'excel-export-toast';
+        toast.style.cssText = [
+            'position:fixed', 'bottom:24px', 'right:24px', 'z-index:99999',
+            'min-width:280px', 'max-width:380px', 'background:' + bgColor,
+            'color:#fff', 'border-radius:12px', 'padding:14px 18px',
+            'box-shadow:0 8px 30px rgba(0,0,0,0.25)', 'display:flex',
+            'flex-direction:column', 'gap:6px', 'font-size:14px',
+            'animation:slideInToast .3s ease',
+        ].join(';');
+
+        toast.innerHTML =
+            '<div style="display:flex;align-items:center;gap:10px;font-weight:600;">' +
+                '<span style="font-size:18px;line-height:1;">' + icon + '</span>' +
+                '<span>' + message + '</span>' +
+                '<button onclick="document.getElementById(\'excel-export-toast\').remove()" ' +
+                        'style="margin-left:auto;background:transparent;border:0;color:#fff;font-size:18px;cursor:pointer;line-height:1;">×</button>' +
+            '</div>' +
+            (downloadUrl
+                ? '<a href="' + downloadUrl + '" target="_blank" ' +
+                    'style="display:inline-block;margin-top:4px;padding:6px 14px;background:rgba(255,255,255,0.2);border-radius:8px;color:#fff;text-decoration:none;font-weight:600;font-size:13px;text-align:center;">' +
+                    '⬇ Скачать Excel</a>'
+                : '');
+
+        document.body.appendChild(toast);
+        setTimeout(() => toast && toast.remove(), isSuccess ? 10000 : 5000);
+    }
+
+    function doPoll(exportId) {
+        if (timer) clearInterval(timer);
+        timer = setInterval(async function () {
+            try {
+                const resp = await fetch('/api/export/status/' + exportId, {
+                    headers: { 'Accept': 'application/json' },
+                });
+                const data = await resp.json();
+                if (data.status === 'done') {
+                    clearInterval(timer); timer = null;
+                    localStorage.removeItem(KEY);
+                    document.dispatchEvent(new CustomEvent('excel-export-done', { detail: data }));
+                    showToast('success', 'Отчёт Excel сформирован', data.download_url);
+                } else if (data.status === 'failed') {
+                    clearInterval(timer); timer = null;
+                    localStorage.removeItem(KEY);
+                    document.dispatchEvent(new CustomEvent('excel-export-failed', { detail: data }));
+                    showToast('error', 'Ошибка формирования отчёта: ' + (data.error || ''));
+                }
+            } catch (e) { /* keep polling on network errors */ }
+        }, 3000);
+    }
+
+    return {
+        start(exportId) {
+            localStorage.setItem(KEY, exportId);
+            doPoll(exportId);
+        },
+        init() {
+            const id = localStorage.getItem(KEY);
+            if (id) doPoll(id);
+        },
+        isPending() {
+            return !!localStorage.getItem(KEY);
+        },
+        showToast,
+    };
+})();
+
+document.addEventListener('DOMContentLoaded', function () { window.ExcelPoller.init(); });
+</script>
 </body>
 </html>

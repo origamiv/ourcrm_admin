@@ -279,10 +279,6 @@
             border-color: rgba(0, 123, 255, 0.45);
         }
 
-        @keyframes slideInToast {
-            from { opacity: 0; transform: translateY(20px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
     </style>
 
     {{-- =====================================================
@@ -292,17 +288,18 @@
 
         {{-- Кнопка добавления новой записи + экспорт в Excel --}}
         <div class="mb-3 flex justify-end gap-2">
+            <a :href="`/${CONFIG.common.shortname}/create`" class="btn btn-success gap-1">
+                <i class="uil uil-plus"></i>Добавить запись
+            </a>
             <button @click="startExport()"
                     :disabled="exportLoading"
                     title="Экспорт в Excel"
                     class="btn btn-outline-success gap-1 px-3"
                     style="min-width:42px;">
                 <template x-if="!exportLoading">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="12" y1="18" x2="12" y2="12"></line>
-                        <line x1="9" y1="15" x2="15" y2="15"></line>
+                    {{-- Excel icon --}}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M2.859 2.877l12.57-1.795a.5.5 0 0 1 .571.494V22.42a.5.5 0 0 1-.57.494L2.858 21.12A1 1 0 0 1 2 20.128V3.87a1 1 0 0 1 .859-.993zM17 3h4a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1h-4V3zm-6.8 9 2.8 4h-2.1L9 13.5 7.1 16H5l2.8-4L5 8h2.1L9 10.5 10.9 8H13l-2.8 4z"/>
                     </svg>
                 </template>
                 <template x-if="exportLoading">
@@ -311,9 +308,6 @@
                     </svg>
                 </template>
             </button>
-            <a :href="`/${CONFIG.common.shortname}/create`" class="btn btn-success gap-1">
-                <i class="uil uil-plus"></i>Добавить запись
-            </a>
         </div>
 
         {{-- Mobile card layout (shown on screens < md) --}}
@@ -405,7 +399,6 @@
 
                 // ✅ Excel export
                 exportLoading: false,
-                exportPollTimer: null,
 
                 // filters ui state: {field: {kind, ...}}
                 filters: {},
@@ -456,6 +449,13 @@
                         const id = e.detail;
                         this.deleteModal?.open(id);
                     });
+
+                    // Восстанавливаем состояние кнопки экспорта, если задача ещё выполняется
+                    if (window.ExcelPoller?.isPending()) {
+                        this.exportLoading = true;
+                    }
+                    document.addEventListener('excel-export-done',   () => { this.exportLoading = false; });
+                    document.addEventListener('excel-export-failed', () => { this.exportLoading = false; });
                 },
 
                 initComponents() {
@@ -1266,13 +1266,12 @@
 
                     const token = localStorage.getItem('access_token');
                     if (!token) {
-                        this.showToast('error', 'Не найден токен авторизации');
+                        window.ExcelPoller.showToast('error', 'Не найден токен авторизации');
                         return;
                     }
 
                     this.exportLoading = true;
 
-                    // Build visible columns list
                     const fields = this.config.columns.map(c => ({
                         key: c.key,
                         title: c.title ?? c.key,
@@ -1301,84 +1300,13 @@
                         if (!resp.ok) throw new Error('Ошибка запуска экспорта');
 
                         const data = await resp.json();
-                        this.pollExport(data.id);
+                        // Передаём управление глобальному поллеру — он продолжит работу
+                        // даже если пользователь перейдёт на другую страницу
+                        window.ExcelPoller.start(data.id);
                     } catch (e) {
                         this.exportLoading = false;
-                        this.showToast('error', 'Не удалось запустить экспорт: ' + e.message);
+                        window.ExcelPoller.showToast('error', 'Не удалось запустить экспорт: ' + e.message);
                     }
-                },
-
-                pollExport(exportId) {
-                    if (this.exportPollTimer) clearInterval(this.exportPollTimer);
-
-                    this.exportPollTimer = setInterval(async () => {
-                        try {
-                            const resp = await fetch(`/api/export/status/${exportId}`, {
-                                headers: { 'Accept': 'application/json' },
-                            });
-                            const data = await resp.json();
-
-                            if (data.status === 'done') {
-                                clearInterval(this.exportPollTimer);
-                                this.exportLoading = false;
-                                this.showToast('success', 'Отчёт Excel сформирован', data.download_url);
-                            } else if (data.status === 'failed') {
-                                clearInterval(this.exportPollTimer);
-                                this.exportLoading = false;
-                                this.showToast('error', 'Ошибка формирования отчёта: ' + (data.error ?? ''));
-                            }
-                        } catch (e) {
-                            // keep polling on network errors
-                        }
-                    }, 3000);
-                },
-
-                showToast(type, message, downloadUrl = null) {
-                    const existing = document.getElementById('excel-export-toast');
-                    if (existing) existing.remove();
-
-                    const isSuccess = type === 'success';
-                    const bgColor  = isSuccess ? '#1a7f37' : '#c0392b';
-                    const icon     = isSuccess ? '✓' : '✕';
-
-                    const toast = document.createElement('div');
-                    toast.id = 'excel-export-toast';
-                    toast.style.cssText = `
-                        position: fixed;
-                        bottom: 24px;
-                        right: 24px;
-                        z-index: 99999;
-                        min-width: 280px;
-                        max-width: 380px;
-                        background: ${bgColor};
-                        color: #fff;
-                        border-radius: 12px;
-                        padding: 14px 18px;
-                        box-shadow: 0 8px 30px rgba(0,0,0,0.25);
-                        display: flex;
-                        flex-direction: column;
-                        gap: 6px;
-                        font-size: 14px;
-                        animation: slideInToast .3s ease;
-                    `;
-
-                    toast.innerHTML = `
-                        <div style="display:flex;align-items:center;gap:10px;font-weight:600;">
-                            <span style="font-size:18px;line-height:1;">${icon}</span>
-                            <span>${message}</span>
-                            <button onclick="this.closest('#excel-export-toast').remove()"
-                                    style="margin-left:auto;background:transparent;border:0;color:#fff;font-size:18px;cursor:pointer;line-height:1;">×</button>
-                        </div>
-                        ${downloadUrl ? `<a href="${downloadUrl}" target="_blank"
-                            style="display:inline-block;margin-top:4px;padding:6px 14px;background:rgba(255,255,255,0.2);border-radius:8px;color:#fff;text-decoration:none;font-weight:600;font-size:13px;text-align:center;">
-                            ⬇ Скачать Excel
-                        </a>` : ''}
-                    `;
-
-                    document.body.appendChild(toast);
-
-                    // Auto-remove after 10s (or 5s on error)
-                    setTimeout(() => toast?.remove(), isSuccess ? 10000 : 5000);
                 },
 
                 // ============================
