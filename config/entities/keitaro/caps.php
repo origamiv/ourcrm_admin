@@ -11,16 +11,16 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 4003,
+        'id' => 4015,
 
         // Название в меню
-        'name' => 'Офферы',
+        'name' => 'Капы',
 
         // Уникальный ключ модуля
-        'shortname' => 'offers',
+        'shortname' => 'keitaro.caps',
 
         // Родительский раздел
-        'parent_id' => 0,
+        'parent_id' => 6000,
 
         // Корневая сущность
         'is_root' => 1,
@@ -29,28 +29,28 @@ return [
         'is_api' => 2,
 
         // Уровень вложенности
-        'level' => 1,
+        'level' => 2,
 
         // Web-страница
-        'page' => '/offers',
+        'page' => '/keitaro.caps',
 
         // API endpoint
-        'api' => '/api/offers',
+        'api' => '/api/caps',
 
         // Eloquent модель
-        'model' => 'App\\Models\\Offer',
+        'model' => 'App\\Models\\Cap',
 
         // Иконка меню
-        'icon' => 'uil uil-gift',
+        'icon' => 'uil uil-chart-line',
 
         // ACL / permissions resource
-        'resource' => 'offers',
+        'resource' => 'caps',
 
         // Активен
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 12,
+        'nom' => 60,
 
         // Не справочник
         'is_list' => 2,
@@ -62,12 +62,12 @@ return [
     |--------------------------------------------------------------------------
     */
     'layout' => [
-        'filter_view' => 'title',
+        'filter_view' => 'advanced',
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | Fields — бизнес-поля сущности Offer
+    | Fields — бизнес-поля сущности Cap
     |--------------------------------------------------------------------------
     */
     'fields' => [
@@ -92,40 +92,14 @@ return [
             'is_lookup' => false,
         ],
 
-        'ext_id' => [
-            'name' => 'Ext ID',
+        'shortname' => [
+            'name' => 'Код',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
-            'control' => 'number',
-            'formatter' => 'number',
-            'db_type' => 'integer',
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'string',
             'is_lookup' => false,
-        ],
-
-        'advertiser_id' => [
-            'name' => 'Рекламодатель',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'lookup',
-            'formatter' => null,
-            'db_type' => 'integer',
-            'is_lookup' => true,
-            'lookup_api' => '/api/advertisers',
-            'lookup_id' => 'id',
-            'lookup_name' => 'name',
-        ],
-
-        'partner_id' => [
-            'name' => 'Партнёр',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'lookup',
-            'formatter' => null,
-            'db_type' => 'integer',
-            'is_lookup' => true,
-            'lookup_api' => '/api/partners',
-            'lookup_id' => 'id',
-            'lookup_name' => 'name',
         ],
 
         'product_id' => [
@@ -133,7 +107,7 @@ return [
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'lookup',
-            'formatter' => null,
+            'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
             'lookup_api' => '/api/products',
@@ -146,7 +120,7 @@ return [
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'lookup',
-            'formatter' => null,
+            'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
             'lookup_api' => '/api/geo',
@@ -154,44 +128,55 @@ return [
             'lookup_name' => 'name',
         ],
 
-        'state' => [
-            'name' => 'Статус',
+        'user_id' => [
+            'name' => 'Пользователь',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
-            'control' => 'text',
-            'formatter' => 'badge',
-            'formatter_options' => [
-                'active'   => 'badge-outline-success',
-                'paused'   => 'badge-outline-warning',
-                'disabled' => 'badge-outline-danger',
-            ],
-            'db_type' => 'string',
+            'control' => 'lookup',
+            'formatter' => 'lookup',
+            'db_type' => 'integer',
+            'is_lookup' => true,
+            'lookup_api' => '/api/users',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
+        ],
+
+        'interval_id' => [
+            'name' => 'Интервал',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'lookup',
+            'formatter' => 'lookup',
+            'db_type' => 'integer',
+            'is_lookup' => true,
+            'lookup_api' => '/api/intervals',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
+        ],
+
+        'val' => [
+            'name' => 'Лимит',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'number',
+            'formatter' => 'number',
+            'db_type' => 'integer',
             'is_lookup' => false,
         ],
 
-        'payout' => [
-            'name' => 'Выплата',
+        'current_val' => [
+            'name' => 'Текущее значение',
             'field_mode' => 'index,show',
             'is_filter_need' => true,
             'control' => 'number',
-            'formatter' => 'currency',
-            'db_type' => 'decimal',
+            'formatter' => 'number',
+            'db_type' => 'integer',
             'is_lookup' => false,
         ],
 
-        'currency' => [
-            'name' => 'Валюта',
-            'field_mode' => 'index,show',
-            'is_filter_need' => true,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'created_at' => [
-            'name' => 'Создан',
-            'field_mode' => 'index,show',
+        'finish_at' => [
+            'name' => 'Дата окончания',
+            'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
             'formatter' => 'date',
@@ -199,8 +184,32 @@ return [
             'is_lookup' => false,
         ],
 
+        'status' => [
+            'name' => 'Статус',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'text',
+            'formatter' => 'badge',
+            'formatter_options' => [
+                1 => 'badge-outline-success',
+                0 => 'badge-outline-danger',
+            ],
+            'db_type' => 'integer',
+            'is_lookup' => false,
+        ],
+
+        'created_at' => [
+            'name' => 'Создана',
+            'field_mode' => 'index,show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => 'date',
+            'db_type' => 'datetime',
+            'is_lookup' => false,
+        ],
+
         'updated_at' => [
-            'name' => 'Обновлён',
+            'name' => 'Обновлена',
             'field_mode' => 'show',
             'is_filter_need' => false,
             'control' => 'text',

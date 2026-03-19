@@ -11,16 +11,16 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 4006,
+        'id' => 4005,
 
         // Название в меню
-        'name' => 'Группы',
+        'name' => 'Домены',
 
         // Уникальный ключ модуля
-        'shortname' => 'groups',
+        'shortname' => 'keitaro.domains',
 
         // Родительский раздел
-        'parent_id' => 0,
+        'parent_id' => 6000,
 
         // Корневая сущность
         'is_root' => 1,
@@ -29,31 +29,31 @@ return [
         'is_api' => 2,
 
         // Уровень вложенности
-        'level' => 1,
+        'level' => 2,
 
         // Web-страница
-        'page' => '/groups',
+        'page' => '/keitaro.domains',
 
         // API endpoint
-        'api' => '/api/groups',
+        'api' => '/api/domains',
 
         // Eloquent модель
-        'model' => 'App\\Models\\Group',
+        'model' => 'App\\Models\\Domain',
 
         // Иконка меню
-        'icon' => 'uil uil-layer-group',
+        'icon' => 'uil uil-globe',
 
         // ACL / permissions resource
-        'resource' => 'groups',
+        'resource' => 'domains',
 
         // Активен
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 15,
+        'nom' => 14,
 
-        // Справочник
-        'is_list' => 1,
+        // Не справочник
+        'is_list' => 2,
     ],
 
     /*
@@ -67,7 +67,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Fields — бизнес-поля сущности Group
+    | Fields — бизнес-поля сущности Domain
     |--------------------------------------------------------------------------
     */
     'fields' => [
@@ -83,7 +83,7 @@ return [
         ],
 
         'name' => [
-            'name' => 'Название',
+            'name' => 'Домен',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
@@ -92,27 +92,46 @@ return [
             'is_lookup' => false,
         ],
 
-        'type' => [
-            'name' => 'Тип группы',
+        'is_ssl' => [
+            'name' => 'SSL',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
+//            'formatter' => 'badge',
+//            'formatter_options' => [
+//                false  => 'badge-outline-warning',
+//                true => 'badge-outline-success',
+//            ],
             'db_type' => 'string',
             'is_lookup' => false,
         ],
 
-        'position' => [
-            'name' => 'Позиция',
+        'state' => [
+            'name' => 'Статус',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
-            'control' => 'number',
-            'formatter' => 'number',
-            'db_type' => 'integer',
+            'control' => 'text',
+            'formatter' => 'badge',
+            'formatter_options' => [
+                'active'   => 'badge-outline-success',
+                'inactive' => 'badge-outline-danger',
+            ],
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'notes' => [
+            'name' => 'Заметки',
+            'field_mode' => 'create,edit,show',
+            'is_filter_need' => false,
+            'control' => 'textarea',
+            'formatter' => null,
+            'db_type' => 'string',
             'is_lookup' => false,
         ],
 
         'created_at' => [
-            'name' => 'Создано',
+            'name' => 'Создан',
             'field_mode' => 'index,show',
             'is_filter_need' => true,
             'control' => 'text',
@@ -122,7 +141,7 @@ return [
         ],
 
         'updated_at' => [
-            'name' => 'Обновлено',
+            'name' => 'Обновлён',
             'field_mode' => 'show',
             'is_filter_need' => false,
             'control' => 'text',
@@ -138,8 +157,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'order' => [
-        'type' => 'asc',
-        'position' => 'asc',
+        'id' => 'asc',
     ],
 
 ];

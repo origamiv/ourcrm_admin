@@ -6,23 +6,53 @@ return [
     |--------------------------------------------------------------------------
     | Common — описание сущности / модуля / пункта меню
     |--------------------------------------------------------------------------
+    | Это отражение записи из таблицы menus
     */
     'common' => [
 
-        'id' => 4002,
-        'name' => 'Кампании',
-        'shortname' => 'campaigns',
-        'parent_id' => 0,
+        // ID записи в menus
+        'id' => 4004,
+
+        // Название в меню
+        'name' => 'Партнёры',
+
+        // Уникальный ключ модуля
+        'shortname' => 'keitaro.partners',
+
+        // Родительский раздел
+        'parent_id' => 6000,
+
+        // Корневая сущность
         'is_root' => 1,
+
+        // Создавать API
         'is_api' => 2,
-        'level' => 1,
-        'page' => '/campaigns',
-        'api' => '/api/campaigns',
-        'model' => 'App\\Models\\Campaign',
-        'icon' => 'uil uil-bullhorn',
-        'resource' => 'campaigns',
+
+        // Уровень вложенности
+        'level' => 2,
+
+        // Web-страница
+        'page' => '/keitaro.partners',
+
+        // API endpoint
+        'api' => '/api/partners',
+
+        // Eloquent модель
+        'model' => 'App\\Models\\Partner',
+
+        // Иконка меню
+        'icon' => 'uil uil-users-alt',
+
+        // ACL / permissions resource
+        'resource' => 'partners',
+
+        // Активен
         'status' => 1,
-        'nom' => 11,
+
+        // Порядок в меню
+        'nom' => 13,
+
+        // Не справочник
         'is_list' => 2,
     ],
 
@@ -37,7 +67,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Fields — бизнес-поля сущности Campaign
+    | Fields — бизнес-поля сущности Partner
     |--------------------------------------------------------------------------
     */
     'fields' => [
@@ -62,8 +92,8 @@ return [
             'is_lookup' => false,
         ],
 
-        'alias' => [
-            'name' => 'Алиас',
+        'shortname' => [
+            'name' => 'Код',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
@@ -80,84 +110,15 @@ return [
             'formatter' => 'badge',
             'formatter_options' => [
                 'active'   => 'badge-outline-success',
-                'paused'   => 'badge-outline-warning',
-                'disabled' => 'badge-outline-danger',
+                'inactive' => 'badge-outline-danger',
             ],
             'db_type' => 'string',
             'is_lookup' => false,
         ],
 
-        'type' => [
-            'name' => 'Тип',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-//        'group_id' => [
-//            'name' => 'Группа',
-//            'field_mode' => 'index,create,edit,show',
-//            'is_filter_need' => true,
-//            'control' => 'lookup',
-//            'formatter' => null,
-//            'db_type' => 'integer',
-//            'is_lookup' => true,
-//            'lookup_api' => '/api/groups',
-//            'lookup_id' => 'id',
-//            'lookup_name' => 'name',
-//        ],
-
-//        'domain_id' => [
-//            'name' => 'Домен',
-//            'field_mode' => 'index,create,edit,show',
-//            'is_filter_need' => true,
-//            'control' => 'lookup',
-//            'formatter' => null,
-//            'db_type' => 'integer',
-//            'is_lookup' => true,
-//            'lookup_api' => '/api/domains',
-//            'lookup_id' => 'id',
-//            'lookup_name' => 'name',
-//        ],
-        'domain' => [
-            'name' => 'Домен',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'integer',
-            'is_lookup' => false,
-//            'lookup_api' => '/api/domains',
-//            'lookup_id' => 'id',
-//            'lookup_name' => 'name',
-        ],
-
-        'traffic_source_id' => [
-            'name' => 'Источник трафика',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'number',
-            'formatter' => 'number',
-            'db_type' => 'integer',
-            'is_lookup' => false,
-        ],
-
-//        'position' => [
-//            'name' => 'Позиция',
-//            'field_mode' => 'index,edit,show',
-//            'is_filter_need' => false,
-//            'control' => 'number',
-//            'formatter' => 'number',
-//            'db_type' => 'integer',
-//            'is_lookup' => false,
-//        ],
-
         'notes' => [
             'name' => 'Заметки',
-            'field_mode' => 'edit,show',
+            'field_mode' => 'create,edit,show',
             'is_filter_need' => false,
             'control' => 'textarea',
             'formatter' => null,
@@ -166,7 +127,7 @@ return [
         ],
 
         'created_at' => [
-            'name' => 'Создана',
+            'name' => 'Создан',
             'field_mode' => 'index,show',
             'is_filter_need' => true,
             'control' => 'text',
@@ -176,7 +137,7 @@ return [
         ],
 
         'updated_at' => [
-            'name' => 'Обновлена',
+            'name' => 'Обновлён',
             'field_mode' => 'show',
             'is_filter_need' => false,
             'control' => 'text',
@@ -192,7 +153,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'order' => [
-        'id' => 'desc',
+        'id' => 'asc',
     ],
 
 ];

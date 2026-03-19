@@ -11,16 +11,16 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 4004,
+        'id' => 4001,
 
         // Название в меню
-        'name' => 'Партнёры',
+        'name' => 'Рекламодатели',
 
         // Уникальный ключ модуля
-        'shortname' => 'partners',
+        'shortname' => 'keitaro.advertisers',
 
-        // Родительский раздел
-        'parent_id' => 0,
+        // Родительский раздел (например "Маркетинг")
+        'parent_id' => 6000,
 
         // Корневая сущность
         'is_root' => 1,
@@ -29,28 +29,28 @@ return [
         'is_api' => 2,
 
         // Уровень вложенности
-        'level' => 1,
+        'level' => 2,
 
         // Web-страница
-        'page' => '/partners',
+        'page' => '/keitaro.advertisers',
 
         // API endpoint
-        'api' => '/api/partners',
+        'api' => '/api/advertisers',
 
-        // Eloquent модель
-        'model' => 'App\\Models\\Partner',
+        // Eloquent / Domain модель
+        'model' => 'App\\Models\\Advertiser',
 
         // Иконка меню
-        'icon' => 'uil uil-users-alt',
+        'icon' => 'uil uil-megaphone',
 
         // ACL / permissions resource
-        'resource' => 'partners',
+        'resource' => 'advertisers',
 
         // Активен
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 13,
+        'nom' => 10,
 
         // Не справочник
         'is_list' => 2,
@@ -67,7 +67,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Fields — бизнес-поля сущности Partner
+    | Fields — бизнес-поля сущности Advertiser
     |--------------------------------------------------------------------------
     */
     'fields' => [
@@ -92,19 +92,9 @@ return [
             'is_lookup' => false,
         ],
 
-        'shortname' => [
-            'name' => 'Код',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
         'state' => [
             'name' => 'Статус',
-            'field_mode' => 'index,create,edit,show',
+            'field_mode' => 'index,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
             'formatter' => 'badge',
@@ -116,6 +106,62 @@ return [
             'is_lookup' => false,
         ],
 
+//        'offers' => [
+//            'name' => 'Оффер',
+//            'field_mode' => 'index,create,edit,show',
+//            'is_filter_need' => false,
+//            'control' => 'lookup',
+//            'formatter' => null,
+//            'db_type' => 'integer',
+//            'is_lookup' => true,
+//            'lookup_api' => '/api/offers',
+//            'lookup_id' => 'id',
+//            'lookup_name' => 'name',
+//        ],
+
+        'postback_url' => [
+            'name' => 'Postback URL',
+            'field_mode' => 'create,edit,show',
+            'is_filter_need' => false,
+            'control' => 'textarea',
+            'formatter' => 'truncate',
+            'formatter_options' => [
+                'length' => 60,
+            ],
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'offer_param' => [
+            'name' => 'Параметр оффера',
+            'field_mode' => 'create,edit,show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'template_name' => [
+            'name' => 'Шаблон',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'ext_id' => [
+            'name' => 'Ext ID',
+            'field_mode' => 'index,edit,show',
+            'is_filter_need' => true,
+            'control' => 'number',
+            'formatter' => 'number',
+            'db_type' => 'integer',
+            'is_lookup' => false,
+        ],
+
         'notes' => [
             'name' => 'Заметки',
             'field_mode' => 'create,edit,show',
@@ -123,6 +169,26 @@ return [
             'control' => 'textarea',
             'formatter' => null,
             'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'pull_api_options' => [
+            'name' => 'Pull API options',
+            'field_mode' => 'show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => null,
+            'db_type' => 'json',
+            'is_lookup' => false,
+        ],
+
+        'account_id' => [
+            'name' => 'Account ID',
+            'field_mode' => 'show',
+            'is_filter_need' => false,
+            'control' => 'number',
+            'formatter' => 'number',
+            'db_type' => 'integer',
             'is_lookup' => false,
         ],
 

@@ -10,12 +10,12 @@ return [
     'common' => [
         'id' => 5001, // Произвольный ID для меню
         'name' => 'Статистика ОКК',
-        'shortname' => 'occ_stats',
+        'shortname' => 'keitaro.occ_stats',
         'parent_id' => 5000, // Будет ID для "Отчеты"
         'is_root' => 2,
         'is_api' => 2,
         'level' => 2,
-        'page' => '/occ_stats',
+        'page' => '/keitaro.occ_stats',
         'api' => '/api/stat-okk',
         'model' => 'App\\Models\\OccStat',
         'icon' => 'uil uil-chart-bar',

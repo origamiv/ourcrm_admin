@@ -11,16 +11,16 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 4014,
+        'id' => 4017,
 
         // Название в меню
-        'name' => 'Потоки',
+        'name' => 'Вебхуки',
 
         // Уникальный ключ модуля
-        'shortname' => 'streams',
+        'shortname' => 'keitaro.webhooks',
 
         // Родительский раздел
-        'parent_id' => 0,
+        'parent_id' => 6000,
 
         // Корневая сущность
         'is_root' => 1,
@@ -29,28 +29,28 @@ return [
         'is_api' => 2,
 
         // Уровень вложенности
-        'level' => 1,
+        'level' => 2,
 
         // Web-страница
-        'page' => '/streams',
+        'page' => '/keitaro.webhooks',
 
         // API endpoint
-        'api' => '/api/streams',
+        'api' => '/api/webhooks',
 
         // Eloquent модель
-        'model' => 'App\\Models\\Stream',
+        'model' => 'App\\Models\\Webhook',
 
         // Иконка меню
-        'icon' => 'uil uil-random',
+        'icon' => 'uil uil-webhook',
 
         // ACL / permissions resource
-        'resource' => 'streams',
+        'resource' => 'webhooks',
 
         // Активен
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 55,
+        'nom' => 80,
 
         // Не справочник
         'is_list' => 2,
@@ -67,7 +67,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Fields — бизнес-поля сущности Stream
+    | Fields — бизнес-поля сущности Webhook
     |--------------------------------------------------------------------------
     */
     'fields' => [
@@ -75,16 +75,6 @@ return [
         'id' => [
             'name' => 'ID',
             'field_mode' => 'index,show',
-            'is_filter_need' => true,
-            'control' => 'number',
-            'formatter' => 'number',
-            'db_type' => 'integer',
-            'is_lookup' => false,
-        ],
-
-        'ext_id' => [
-            'name' => 'Ext ID',
-            'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'number',
             'formatter' => 'number',
@@ -102,23 +92,9 @@ return [
             'is_lookup' => false,
         ],
 
-        'type' => [
-            'name' => 'Тип',
+        'shortname' => [
+            'name' => 'Короткое имя',
             'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'text',
-            'formatter' => 'badge',
-            'formatter_options' => [
-                'forced'  => 'badge-outline-warning',
-                'regular' => 'badge-outline-primary',
-            ],
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'campaign_ext_id' => [
-            'name' => 'Кампания',
-            'field_mode' => 'index,show',
             'is_filter_need' => true,
             'control' => 'text',
             'formatter' => null,
@@ -126,120 +102,84 @@ return [
             'is_lookup' => false,
         ],
 
-//        'campaign_id' => [
-//            'name' => 'Кампания',
-//            'field_mode' => 'index,create,edit,show',
-//            'is_filter_need' => true,
-//            'control' => 'lookup',
-//            'formatter' => 'lookup',
-//            'db_type' => 'integer',
-//            'is_lookup' => true,
-//            'lookup_api' => '/api/campaigns',
-//            'lookup_id' => 'id',
-//            'lookup_name' => 'name',
-//        ],
+        'url' => [
+            'name' => 'URL идентификатор',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'text',
+            'formatter' => 'code',
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
 
-        'state' => [
+        'service_id' => [
+            'name' => 'Сервис',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'number',
+            'formatter' => 'number',
+            'db_type' => 'integer',
+            'is_lookup' => false,
+        ],
+
+        'type_hook_id' => [
+            'name' => 'Тип хука',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'number',
+            'formatter' => 'number',
+            'db_type' => 'integer',
+            'is_lookup' => false,
+        ],
+
+        'rules_id' => [
+            'name' => 'Правила обработки',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'text',
+            'formatter' => 'json',
+            'db_type' => 'json',
+            'is_lookup' => false,
+        ],
+
+        'cnt' => [
+            'name' => 'Количество вызовов',
+            'field_mode' => 'index,show',
+            'is_filter_need' => true,
+            'control' => 'number',
+            'formatter' => 'number',
+            'db_type' => 'integer',
+            'is_lookup' => false,
+        ],
+
+        'dat_last_run' => [
+            'name' => 'Последний вызов',
+            'field_mode' => 'index,show',
+            'is_filter_need' => true,
+            'control' => 'text',
+            'formatter' => 'date',
+            'db_type' => 'datetime',
+            'is_lookup' => false,
+        ],
+
+        'status' => [
             'name' => 'Статус',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
             'formatter' => 'badge',
             'formatter_options' => [
-                'active'   => 'badge-outline-success',
-                'disabled' => 'badge-outline-danger',
+                1 => 'badge-outline-success',
+                0 => 'badge-outline-danger',
             ],
-            'db_type' => 'string',
+            'db_type' => 'integer',
             'is_lookup' => false,
         ],
 
-        'schema' => [
-            'name' => 'Схема',
-            'field_mode' => 'index,show',
-            'is_filter_need' => true,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'action_type' => [
-            'name' => 'Тип действия',
-            'field_mode' => 'index,show',
-            'is_filter_need' => true,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'action_payload' => [
-            'name' => 'Action payload',
-            'field_mode' => 'show',
+        'params' => [
+            'name' => 'Параметры',
+            'field_mode' => 'create,edit,show',
             'is_filter_need' => false,
-            'control' => 'textarea',
-            'formatter' => 'truncate',
-            'formatter_options' => [
-                'length' => 80,
-            ],
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'position' => [
-            'name' => 'Позиция',
-            'field_mode' => 'index,show',
-            'is_filter_need' => true,
-            'control' => 'number',
-            'formatter' => 'number',
-            'db_type' => 'integer',
-            'is_lookup' => false,
-        ],
-
-        'weight' => [
-            'name' => 'Вес',
-            'field_mode' => 'index,show',
-            'is_filter_need' => true,
-            'control' => 'number',
-            'formatter' => 'number',
-            'db_type' => 'integer',
-            'is_lookup' => false,
-        ],
-
-        'collect_clicks' => [
-            'name' => 'Собирать клики',
-            'field_mode' => 'index,show',
-            'is_filter_need' => true,
-            'control' => 'text',
-            'formatter' => 'boolean',
-            'db_type' => 'boolean',
-            'is_lookup' => false,
-        ],
-
-        'filter_or' => [
-            'name' => 'Filter OR',
-            'field_mode' => 'index,show',
-            'is_filter_need' => true,
-            'control' => 'text',
-            'formatter' => 'boolean',
-            'db_type' => 'boolean',
-            'is_lookup' => false,
-        ],
-
-        'offer_selection' => [
-            'name' => 'Выбор оффера',
-            'field_mode' => 'index,show',
-            'is_filter_need' => true,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'filters' => [
-            'name' => 'Фильтры',
-            'field_mode' => 'show',
-            'is_filter_need' => true,
             'control' => 'text',
             'formatter' => 'json',
             'db_type' => 'json',
@@ -248,7 +188,7 @@ return [
 
         'created_at' => [
             'name' => 'Создан',
-            'field_mode' => 'show',
+            'field_mode' => 'index,show',
             'is_filter_need' => false,
             'control' => 'text',
             'formatter' => 'date',
@@ -265,6 +205,16 @@ return [
             'db_type' => 'datetime',
             'is_lookup' => false,
         ],
+
+        'deleted_at' => [
+            'name' => 'Удалён',
+            'field_mode' => 'show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => 'date',
+            'db_type' => 'datetime',
+            'is_lookup' => false,
+        ],
     ],
 
     /*
@@ -273,7 +223,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'order' => [
-        'position' => 'asc',
+        'id' => 'desc',
     ],
 
 ];

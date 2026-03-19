@@ -11,16 +11,16 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 4016,
+        'id' => 4019,
 
         // Название в меню
-        'name' => 'Интервалы',
+        'name' => 'Статусы лидов',
 
         // Уникальный ключ модуля
-        'shortname' => 'intervals',
+        'shortname' => 'keitaro.lead_statuses',
 
         // Родительский раздел
-        'parent_id' => 0,
+        'parent_id' => 6000,
 
         // Корневая сущность
         'is_root' => 1,
@@ -29,28 +29,28 @@ return [
         'is_api' => 2,
 
         // Уровень вложенности
-        'level' => 1,
+        'level' => 2,
 
         // Web-страница
-        'page' => '/intervals',
+        'page' => '/keitaro.lead_statuses',
 
         // API endpoint
-        'api' => '/api/intervals',
+        'api' => '/api/lead_statuses',
 
         // Eloquent модель
-        'model' => 'App\\Models\\Interval',
+        'model' => 'App\\Models\\LeadStatus',
 
         // Иконка меню
-        'icon' => 'uil uil-clock',
+        'icon' => 'uil uil-info-circle',
 
         // ACL / permissions resource
-        'resource' => 'intervals',
+        'resource' => 'lead_statuses',
 
         // Активен
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 65,
+        'nom' => 70,
 
         // Справочник
         'is_list' => 1,
@@ -67,7 +67,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Fields — бизнес-поля сущности Interval
+    | Fields — бизнес-поля сущности LeadStatus
     |--------------------------------------------------------------------------
     */
     'fields' => [
@@ -97,7 +97,12 @@ return [
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
-            'formatter' => null,
+            'formatter' => 'badge',
+            'formatter_options' => [
+                'install'      => 'badge-outline-secondary',
+                'registration' => 'badge-outline-info',
+                'deposit'      => 'badge-outline-success',
+            ],
             'db_type' => 'string',
             'is_lookup' => false,
         ],
@@ -128,6 +133,16 @@ return [
 
         'updated_at' => [
             'name' => 'Обновлён',
+            'field_mode' => 'show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => 'date',
+            'db_type' => 'datetime',
+            'is_lookup' => false,
+        ],
+
+        'deleted_at' => [
+            'name' => 'Удалён',
             'field_mode' => 'show',
             'is_filter_need' => false,
             'control' => 'text',

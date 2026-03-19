@@ -11,16 +11,16 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 4023,
+        'id' => 4022,
 
         // Название в меню
-        'name' => 'Права доступа',
+        'name' => 'Роли',
 
         // Уникальный ключ модуля
-        'shortname' => 'permissions',
+        'shortname' => 'keitaro.roles',
 
         // Родительский раздел
-        'parent_id' => 0,
+        'parent_id' => 6000,
 
         // Корневая сущность
         'is_root' => 1,
@@ -29,28 +29,28 @@ return [
         'is_api' => 2,
 
         // Уровень вложенности
-        'level' => 1,
+        'level' => 2,
 
         // Web-страница
-        'page' => '/permissions',
+        'page' => '/keitaro.roles',
 
         // API endpoint
-        'api' => '/api/permissions',
+        'api' => '/api/roles',
 
         // Eloquent модель
-        'model' => 'Spatie\\Permission\\Models\\Permission',
+        'model' => 'Spatie\\Permission\\Models\\Role',
 
         // Иконка меню
-        'icon' => 'uil uil-key-skeleton',
+        'icon' => 'uil uil-shield',
 
         // ACL / permissions resource
-        'resource' => 'permissions',
+        'resource' => 'roles',
 
         // Активен
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 7,
+        'nom' => 6,
 
         // Справочник
         'is_list' => 1,
@@ -67,7 +67,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Fields — бизнес-поля сущности Permission
+    | Fields — бизнес-поля сущности Role
     |--------------------------------------------------------------------------
     */
     'fields' => [
@@ -83,11 +83,15 @@ return [
         ],
 
         'name' => [
-            'name' => 'Permission',
+            'name' => 'Название роли',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
-            'formatter' => 'code',
+            'formatter' => 'badge',
+            'formatter_options' => [
+                'admin' => 'badge-outline-danger',
+                'user'  => 'badge-outline-primary',
+            ],
             'db_type' => 'string',
             'is_lookup' => false,
         ],
@@ -103,7 +107,7 @@ return [
         ],
 
         'created_at' => [
-            'name' => 'Создано',
+            'name' => 'Создана',
             'field_mode' => 'index,show',
             'is_filter_need' => false,
             'control' => 'text',
@@ -113,7 +117,7 @@ return [
         ],
 
         'updated_at' => [
-            'name' => 'Обновлено',
+            'name' => 'Обновлена',
             'field_mode' => 'show',
             'is_filter_need' => false,
             'control' => 'text',

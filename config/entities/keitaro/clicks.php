@@ -17,10 +17,10 @@ return [
         'name' => 'Клики',
 
         // Уникальный ключ модуля
-        'shortname' => 'clicks',
+        'shortname' => 'keitaro.clicks',
 
         // Родительский раздел
-        'parent_id' => 0,
+        'parent_id' => 6000,
 
         // Корневая сущность
         'is_root' => 1,
@@ -29,10 +29,10 @@ return [
         'is_api' => 2,
 
         // Уровень вложенности
-        'level' => 1,
+        'level' => 2,
 
         // Web-страница
-        'page' => '/clicks',
+        'page' => '/keitaro.clicks',
 
         // API endpoint
         'api' => '/api/clicks',

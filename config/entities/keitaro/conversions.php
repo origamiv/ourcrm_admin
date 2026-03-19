@@ -17,10 +17,10 @@ return [
         'name' => 'Конверсии',
 
         // Уникальный ключ модуля
-        'shortname' => 'conversions',
+        'shortname' => 'keitaro.conversions',
 
         // Родительский раздел
-        'parent_id' => 0,
+        'parent_id' => 6000,
 
         // Корневая сущность
         'is_root' => 1,
@@ -29,10 +29,10 @@ return [
         'is_api' => 2,
 
         // Уровень вложенности
-        'level' => 1,
+        'level' => 2,
 
         // Web-страница
-        'page' => '/conversions',
+        'page' => '/keitaro.conversions',
 
         // API endpoint
         'api' => '/api/conversions',
