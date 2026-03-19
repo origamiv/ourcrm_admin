@@ -296,5 +296,67 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 </script>
+
+{{-- 🗂 Кэш основных таблиц --}}
+<script>
+window.MainTableCache = (function () {
+    const CACHE_TTL = 30 * 60 * 1000; // 30 минут
+    const KEY_PREFIX = 'main:';
+
+    function cacheKey(api) { return KEY_PREFIX + api; }
+
+    function get(api) {
+        try {
+            const raw = localStorage.getItem(cacheKey(api));
+            if (!raw) return null;
+            const entry = JSON.parse(raw);
+            if (Date.now() - (entry.cached_at || 0) > CACHE_TTL) {
+                localStorage.removeItem(cacheKey(api));
+                return null;
+            }
+            return entry.data;
+        } catch (e) { return null; }
+    }
+
+    function set(api, data) {
+        try {
+            localStorage.setItem(cacheKey(api), JSON.stringify({
+                data: Array.isArray(data) ? data : [],
+                cached_at: Date.now()
+            }));
+        } catch (e) {
+            console.warn('MainTableCache: не удалось сохранить в localStorage', e);
+        }
+    }
+
+    function addItem(api, item) {
+        const data = get(api);
+        if (data !== null) set(api, [...data, item]);
+    }
+
+    function updateItem(api, id, item) {
+        const data = get(api);
+        if (data !== null) {
+            const idx = data.findIndex(r => String(r.id) === String(id));
+            if (idx >= 0) {
+                const updated = [...data];
+                updated[idx] = Object.assign({}, updated[idx], item);
+                set(api, updated);
+            } else {
+                set(api, [...data, item]);
+            }
+        }
+    }
+
+    function removeItem(api, id) {
+        const data = get(api);
+        if (data !== null) {
+            set(api, data.filter(r => String(r.id) !== String(id)));
+        }
+    }
+
+    return { get, set, addItem, updateItem, removeItem };
+})();
+</script>
 </body>
 </html>

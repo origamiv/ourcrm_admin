@@ -414,8 +414,8 @@
                     for (const field of this.formFields.filter(f => f.is_lookup && f.lookup_api)) {
                         const api = resolveUrl(field.lookup_api);
 
-                        // Проверяем кэш справочников
-                        const cached = window.LookupCache?.get(api);
+                        // Проверяем кэш справочников, затем кэш основных таблиц
+                        const cached = window.LookupCache?.get(api) ?? window.MainTableCache?.get(api);
                         if (cached !== null && cached !== undefined) {
                             this.lookups[field.key] = cached;
                             continue;
@@ -504,12 +504,14 @@
                             }
                         });
 
-                        // Обновляем кэш справочника (если текущая сущность — справочник)
+                        // Обновляем кэш справочника и кэш основной таблицы
                         const savedItem = response.data?.data ?? this.form;
                         if (this.mode === 'create') {
                             window.LookupCache?.addItem(base, savedItem);
+                            window.MainTableCache?.addItem(base, savedItem);
                         } else {
                             window.LookupCache?.updateItem(base, this.entityId, savedItem);
+                            window.MainTableCache?.updateItem(base, this.entityId, savedItem);
                         }
 
                         window.location.href = this.CONFIG.common.page;

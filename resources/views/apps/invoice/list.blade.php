@@ -445,6 +445,9 @@
                     await this.loadData(1);
                     this.buildTable();
 
+                    // Фоновая загрузка всех записей основной таблицы в кэш
+                    this._backgroundLoadAllRecords();
+
                     window.addEventListener('datatable-delete', e => {
                         const id = e.detail;
                         this.deleteModal?.open(id);
@@ -686,6 +689,40 @@
                     return String(value);
                 },
 
+                // =====================================================
+                // Фоновая загрузка всех записей основной таблицы
+                // =====================================================
+                async _backgroundLoadAllRecords() {
+                    // Только для основных таблиц (is_list === 2)
+                    if ((window.CONFIG.common?.is_list ?? 0) !== 2) return;
+
+                    const api = resolveUrl(window.CONFIG.common.api);
+                    if (!api) return;
+
+                    // Если уже в кэше — не грузим
+                    if (window.MainTableCache?.get(api) !== null) return;
+
+                    const token = localStorage.getItem('access_token');
+                    if (!token) return;
+
+                    try {
+                        const resp = await fetch(api + '/list', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'Authorization': 'Bearer ' + token
+                            },
+                            body: JSON.stringify({ page: 1, perpage: -1 })
+                        });
+                        if (!resp.ok) return;
+                        const json = await resp.json();
+                        window.MainTableCache?.set(api, Array.isArray(json.data) ? json.data : []);
+                    } catch (e) {
+                        console.warn('MainTableCache: не удалось загрузить все записи', e);
+                    }
+                },
+
                 async loadLookups() {
                     const token = localStorage.getItem('access_token');
                     if (!token) return;
@@ -696,8 +733,8 @@
                     for (const [key, field] of lookupFields) {
                         const api = resolveUrl(field.lookup_api);
 
-                        // Проверяем кэш справочников
-                        const cached = window.LookupCache?.get(api);
+                        // Проверяем кэш справочников, затем кэш основных таблиц
+                        const cached = window.LookupCache?.get(api) ?? window.MainTableCache?.get(api);
                         if (cached !== null && cached !== undefined) {
                             this.lookups[key] = cached;
                             this.lookupMaps[key] = {};
@@ -1340,8 +1377,10 @@
                         }
                     });
 
-                    // Обновляем кэш: удаляем запись из справочника (если текущая сущность — справочник)
-                    window.LookupCache?.removeItem(resolveUrl(window.CONFIG.common.api), id);
+                    // Обновляем кэш: удаляем запись из справочника / основной таблицы
+                    const _deleteApi = resolveUrl(window.CONFIG.common.api);
+                    window.LookupCache?.removeItem(_deleteApi, id);
+                    window.MainTableCache?.removeItem(_deleteApi, id);
 
                     const nextPage = (this.page > 1 && this.items.length === 1) ? (this.page - 1) : this.page;
 
