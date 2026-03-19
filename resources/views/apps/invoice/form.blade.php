@@ -412,9 +412,18 @@
                     if (!token) return;
 
                     for (const field of this.formFields.filter(f => f.is_lookup && f.lookup_api)) {
+                        const api = resolveUrl(field.lookup_api);
+
+                        // Проверяем кэш справочников
+                        const cached = window.LookupCache?.get(api);
+                        if (cached !== null && cached !== undefined) {
+                            this.lookups[field.key] = cached;
+                            continue;
+                        }
+
                         try {
                             const res = await axios.post(
-                                `${resolveUrl(field.lookup_api)}/list`,
+                                `${api}/list`,
                                 { page: 1, perpage: 100 },
                                 {
                                     headers: {
@@ -424,7 +433,11 @@
                                 }
                             );
 
-                            this.lookups[field.key] = res.data?.data ?? [];
+                            const list = res.data?.data ?? [];
+                            this.lookups[field.key] = list;
+
+                            // Сохраняем в кэш
+                            window.LookupCache?.set(api, list);
                         } catch (e) {
                             console.warn(`loadLookups: не удалось загрузить справочник "${field.key}"`, e);
                             this.lookups[field.key] = [];
@@ -481,7 +494,7 @@
                     }
 
                     try {
-                        await axios({
+                        const response = await axios({
                             method,
                             url,
                             data: this.form,
@@ -490,6 +503,14 @@
                                 'Authorization': `Bearer ${token}`
                             }
                         });
+
+                        // Обновляем кэш справочника (если текущая сущность — справочник)
+                        const savedItem = response.data?.data ?? this.form;
+                        if (this.mode === 'create') {
+                            window.LookupCache?.addItem(base, savedItem);
+                        } else {
+                            window.LookupCache?.updateItem(base, this.entityId, savedItem);
+                        }
 
                         window.location.href = this.CONFIG.common.page;
 
