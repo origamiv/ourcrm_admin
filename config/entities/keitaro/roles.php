@@ -35,7 +35,7 @@ return [
         'page' => '/keitaro.roles',
 
         // API endpoint
-        'api' => 'https://keitaro.our24.ru/api/roles',
+        'api' => 'https://keitaro.our24.ru/api/v1/roles',
 
         // Eloquent модель
         'model' => 'Spatie\\Permission\\Models\\Role',

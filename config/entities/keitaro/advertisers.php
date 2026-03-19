@@ -35,7 +35,7 @@ return [
         'page' => '/keitaro.advertisers',
 
         // API endpoint
-        'api' => 'https://keitaro.our24.ru/api/advertisers',
+        'api' => 'https://keitaro.our24.ru/api/v1/advertisers',
 
         // Eloquent / Domain модель
         'model' => 'App\\Models\\Advertiser',

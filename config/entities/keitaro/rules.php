@@ -35,7 +35,7 @@ return [
         'page' => '/keitaro.rules',
 
         // API endpoint
-        'api' => 'https://keitaro.our24.ru/api/rules',
+        'api' => 'https://keitaro.our24.ru/api/v1/rules',
 
         // Eloquent модель
         'model' => 'App\\Models\\Rule',

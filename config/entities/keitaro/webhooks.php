@@ -35,7 +35,7 @@ return [
         'page' => '/keitaro.webhooks',
 
         // API endpoint
-        'api' => 'https://keitaro.our24.ru/api/webhooks',
+        'api' => 'https://keitaro.our24.ru/api/v1/webhooks',
 
         // Eloquent модель
         'model' => 'App\\Models\\Webhook',

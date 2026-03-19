@@ -35,7 +35,7 @@ return [
         'page' => '/keitaro.streams',
 
         // API endpoint
-        'api' => 'https://keitaro.our24.ru/api/streams',
+        'api' => 'https://keitaro.our24.ru/api/v1/streams',
 
         // Eloquent модель
         'model' => 'App\\Models\\Stream',

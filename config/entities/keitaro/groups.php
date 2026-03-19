@@ -35,7 +35,7 @@ return [
         'page' => '/keitaro.groups',
 
         // API endpoint
-        'api' => 'https://keitaro.our24.ru/api/groups',
+        'api' => 'https://keitaro.our24.ru/api/v1/groups',
 
         // Eloquent модель
         'model' => 'App\\Models\\Group',

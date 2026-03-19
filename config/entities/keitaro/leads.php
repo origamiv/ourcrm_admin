@@ -10,7 +10,7 @@ return [
         'is_api' => 2,
         'level' => 2,
         'page' => '/keitaro.leads',
-        'api' => 'https://keitaro.our24.ru/api/leads',
+        'api' => 'https://keitaro.our24.ru/api/v1/leads',
         'model' => 'App\\Models\\Lead',
         'icon' => 'uil uil-user-plus',
         'resource' => 'leads',

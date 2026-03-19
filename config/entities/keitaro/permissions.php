@@ -35,7 +35,7 @@ return [
         'page' => '/keitaro.permissions',
 
         // API endpoint
-        'api' => 'https://keitaro.our24.ru/api/permissions',
+        'api' => 'https://keitaro.our24.ru/api/v1/permissions',
 
         // Eloquent модель
         'model' => 'Spatie\\Permission\\Models\\Permission',
