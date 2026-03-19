@@ -10,13 +10,13 @@ return [
     'common' => [
         'id' => 5001, // Произвольный ID для меню
         'name' => 'Статистика ОКК',
-        'shortname' => 'occ_stats',
+        'shortname' => 'keitaro.occ_stats',
         'parent_id' => 5000, // Будет ID для "Отчеты"
         'is_root' => 2,
         'is_api' => 2,
         'level' => 2,
-        'page' => '/occ_stats',
-        'api' => '/api/stat-okk',
+        'page' => '/keitaro.occ_stats',
+        'api' => 'https://keitaro.our24.ru/api/v1/stat-okk',
         'model' => 'App\\Models\\OccStat',
         'icon' => 'uil uil-chart-bar',
         'resource' => 'occ_stats',
@@ -266,7 +266,7 @@ return [
     */
     'aggregation' => [
         'title' => 'Агрегация по офферам Tier 2',
-        'api' => '/api/stat-okk/agg',
+        'api' => 'https://keitaro.our24.ru/api/v1/stat-okk/agg',
         'group_by' => ['offer'],
         'columns' => [
             ['title' => 'Оффер', 'field' => 'offer', 'width' => 250],

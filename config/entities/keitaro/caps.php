@@ -11,16 +11,16 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 4016,
+        'id' => 4015,
 
         // Название в меню
-        'name' => 'Интервалы',
+        'name' => 'Капы',
 
         // Уникальный ключ модуля
-        'shortname' => 'intervals',
+        'shortname' => 'keitaro.caps',
 
         // Родительский раздел
-        'parent_id' => 0,
+        'parent_id' => 6000,
 
         // Корневая сущность
         'is_root' => 1,
@@ -29,31 +29,31 @@ return [
         'is_api' => 2,
 
         // Уровень вложенности
-        'level' => 1,
+        'level' => 2,
 
         // Web-страница
-        'page' => '/intervals',
+        'page' => '/keitaro.caps',
 
         // API endpoint
-        'api' => '/api/intervals',
+        'api' => 'https://keitaro.our24.ru/api/v1/caps',
 
         // Eloquent модель
-        'model' => 'App\\Models\\Interval',
+        'model' => 'App\\Models\\Cap',
 
         // Иконка меню
-        'icon' => 'uil uil-clock',
+        'icon' => 'uil uil-chart-line',
 
         // ACL / permissions resource
-        'resource' => 'intervals',
+        'resource' => 'caps',
 
         // Активен
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 65,
+        'nom' => 60,
 
-        // Справочник
-        'is_list' => 1,
+        // Не справочник
+        'is_list' => 2,
     ],
 
     /*
@@ -62,12 +62,12 @@ return [
     |--------------------------------------------------------------------------
     */
     'layout' => [
-        'filter_view' => 'title',
+        'filter_view' => 'advanced',
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | Fields — бизнес-поля сущности Interval
+    | Fields — бизнес-поля сущности Cap
     |--------------------------------------------------------------------------
     */
     'fields' => [
@@ -102,6 +102,88 @@ return [
             'is_lookup' => false,
         ],
 
+        'product_id' => [
+            'name' => 'Продукт',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'lookup',
+            'formatter' => 'lookup',
+            'db_type' => 'integer',
+            'is_lookup' => true,
+            'lookup_api' => 'https://keitaro.our24.ru/api/v1/products',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
+        ],
+
+        'geo_id' => [
+            'name' => 'GEO',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'lookup',
+            'formatter' => 'lookup',
+            'db_type' => 'integer',
+            'is_lookup' => true,
+            'lookup_api' => 'https://keitaro.our24.ru/api/v1/geo',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
+        ],
+
+        'user_id' => [
+            'name' => 'Пользователь',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'lookup',
+            'formatter' => 'lookup',
+            'db_type' => 'integer',
+            'is_lookup' => true,
+            'lookup_api' => 'https://keitaro.our24.ru/api/v1/users',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
+        ],
+
+        'interval_id' => [
+            'name' => 'Интервал',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'lookup',
+            'formatter' => 'lookup',
+            'db_type' => 'integer',
+            'is_lookup' => true,
+            'lookup_api' => 'https://keitaro.our24.ru/api/v1/intervals',
+            'lookup_id' => 'id',
+            'lookup_name' => 'name',
+        ],
+
+        'val' => [
+            'name' => 'Лимит',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'number',
+            'formatter' => 'number',
+            'db_type' => 'integer',
+            'is_lookup' => false,
+        ],
+
+        'current_val' => [
+            'name' => 'Текущее значение',
+            'field_mode' => 'index,show',
+            'is_filter_need' => true,
+            'control' => 'number',
+            'formatter' => 'number',
+            'db_type' => 'integer',
+            'is_lookup' => false,
+        ],
+
+        'finish_at' => [
+            'name' => 'Дата окончания',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'text',
+            'formatter' => 'date',
+            'db_type' => 'datetime',
+            'is_lookup' => false,
+        ],
+
         'status' => [
             'name' => 'Статус',
             'field_mode' => 'index,create,edit,show',
@@ -117,7 +199,7 @@ return [
         ],
 
         'created_at' => [
-            'name' => 'Создан',
+            'name' => 'Создана',
             'field_mode' => 'index,show',
             'is_filter_need' => false,
             'control' => 'text',
@@ -127,7 +209,7 @@ return [
         ],
 
         'updated_at' => [
-            'name' => 'Обновлён',
+            'name' => 'Обновлена',
             'field_mode' => 'show',
             'is_filter_need' => false,
             'control' => 'text',
@@ -143,7 +225,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'order' => [
-        'id' => 'asc',
+        'id' => 'desc',
     ],
 
 ];

@@ -11,16 +11,16 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 4018,
+        'id' => 4016,
 
         // Название в меню
-        'name' => 'Правила',
+        'name' => 'Интервалы',
 
         // Уникальный ключ модуля
-        'shortname' => 'rules',
+        'shortname' => 'keitaro.intervals',
 
         // Родительский раздел
-        'parent_id' => 0,
+        'parent_id' => 6000,
 
         // Корневая сущность
         'is_root' => 1,
@@ -29,28 +29,28 @@ return [
         'is_api' => 2,
 
         // Уровень вложенности
-        'level' => 1,
+        'level' => 2,
 
         // Web-страница
-        'page' => '/rules',
+        'page' => '/keitaro.intervals',
 
         // API endpoint
-        'api' => '/api/rules',
+        'api' => 'https://keitaro.our24.ru/api/v1/intervals',
 
         // Eloquent модель
-        'model' => 'App\\Models\\Rule',
+        'model' => 'App\\Models\\Interval',
 
         // Иконка меню
-        'icon' => 'uil uil-sliders-v-alt',
+        'icon' => 'uil uil-clock',
 
         // ACL / permissions resource
-        'resource' => 'rules',
+        'resource' => 'intervals',
 
         // Активен
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 85,
+        'nom' => 65,
 
         // Справочник
         'is_list' => 1,
@@ -67,7 +67,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Fields — бизнес-поля сущности Rule
+    | Fields — бизнес-поля сущности Interval
     |--------------------------------------------------------------------------
     */
     'fields' => [
@@ -97,27 +97,7 @@ return [
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
-            'formatter' => 'code',
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'type_processing_id' => [
-            'name' => 'Тип обработки',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'number',
-            'formatter' => 'number',
-            'db_type' => 'integer',
-            'is_lookup' => false,
-        ],
-
-        'val' => [
-            'name' => 'Обработчик',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'text',
-            'formatter' => 'code',
+            'formatter' => null,
             'db_type' => 'string',
             'is_lookup' => false,
         ],
@@ -136,18 +116,8 @@ return [
             'is_lookup' => false,
         ],
 
-        'params' => [
-            'name' => 'Параметры',
-            'field_mode' => 'create,edit,show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => 'json',
-            'db_type' => 'json',
-            'is_lookup' => false,
-        ],
-
         'created_at' => [
-            'name' => 'Создано',
+            'name' => 'Создан',
             'field_mode' => 'index,show',
             'is_filter_need' => false,
             'control' => 'text',
@@ -157,17 +127,7 @@ return [
         ],
 
         'updated_at' => [
-            'name' => 'Обновлено',
-            'field_mode' => 'show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => 'date',
-            'db_type' => 'datetime',
-            'is_lookup' => false,
-        ],
-
-        'deleted_at' => [
-            'name' => 'Удалено',
+            'name' => 'Обновлён',
             'field_mode' => 'show',
             'is_filter_need' => false,
             'control' => 'text',

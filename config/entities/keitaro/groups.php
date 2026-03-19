@@ -11,16 +11,16 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 4022,
+        'id' => 4006,
 
         // Название в меню
-        'name' => 'Роли',
+        'name' => 'Группы',
 
         // Уникальный ключ модуля
-        'shortname' => 'roles',
+        'shortname' => 'keitaro.groups',
 
         // Родительский раздел
-        'parent_id' => 0,
+        'parent_id' => 6000,
 
         // Корневая сущность
         'is_root' => 1,
@@ -29,28 +29,28 @@ return [
         'is_api' => 2,
 
         // Уровень вложенности
-        'level' => 1,
+        'level' => 2,
 
         // Web-страница
-        'page' => '/roles',
+        'page' => '/keitaro.groups',
 
         // API endpoint
-        'api' => '/api/roles',
+        'api' => 'https://keitaro.our24.ru/api/v1/groups',
 
         // Eloquent модель
-        'model' => 'Spatie\\Permission\\Models\\Role',
+        'model' => 'App\\Models\\Group',
 
         // Иконка меню
-        'icon' => 'uil uil-shield',
+        'icon' => 'uil uil-layer-group',
 
         // ACL / permissions resource
-        'resource' => 'roles',
+        'resource' => 'groups',
 
         // Активен
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 6,
+        'nom' => 15,
 
         // Справочник
         'is_list' => 1,
@@ -67,7 +67,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Fields — бизнес-поля сущности Role
+    | Fields — бизнес-поля сущности Group
     |--------------------------------------------------------------------------
     */
     'fields' => [
@@ -83,33 +83,38 @@ return [
         ],
 
         'name' => [
-            'name' => 'Название роли',
+            'name' => 'Название',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
-            'formatter' => 'badge',
-            'formatter_options' => [
-                'admin' => 'badge-outline-danger',
-                'user'  => 'badge-outline-primary',
-            ],
+            'formatter' => null,
             'db_type' => 'string',
             'is_lookup' => false,
         ],
 
-        'guard_name' => [
-            'name' => 'Guard',
+        'type' => [
+            'name' => 'Тип группы',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
-            'formatter' => 'code',
             'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'position' => [
+            'name' => 'Позиция',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'number',
+            'formatter' => 'number',
+            'db_type' => 'integer',
             'is_lookup' => false,
         ],
 
         'created_at' => [
-            'name' => 'Создана',
+            'name' => 'Создано',
             'field_mode' => 'index,show',
-            'is_filter_need' => false,
+            'is_filter_need' => true,
             'control' => 'text',
             'formatter' => 'date',
             'db_type' => 'datetime',
@@ -117,7 +122,7 @@ return [
         ],
 
         'updated_at' => [
-            'name' => 'Обновлена',
+            'name' => 'Обновлено',
             'field_mode' => 'show',
             'is_filter_need' => false,
             'control' => 'text',
@@ -133,7 +138,8 @@ return [
     |--------------------------------------------------------------------------
     */
     'order' => [
-        'name' => 'asc',
+        'type' => 'asc',
+        'position' => 'asc',
     ],
 
 ];

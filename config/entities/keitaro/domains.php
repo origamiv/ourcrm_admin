@@ -11,16 +11,16 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 4019,
+        'id' => 4005,
 
         // Название в меню
-        'name' => 'Статусы лидов',
+        'name' => 'Домены',
 
         // Уникальный ключ модуля
-        'shortname' => 'lead_statuses',
+        'shortname' => 'keitaro.domains',
 
         // Родительский раздел
-        'parent_id' => 0,
+        'parent_id' => 6000,
 
         // Корневая сущность
         'is_root' => 1,
@@ -29,31 +29,31 @@ return [
         'is_api' => 2,
 
         // Уровень вложенности
-        'level' => 1,
+        'level' => 2,
 
         // Web-страница
-        'page' => '/lead_statuses',
+        'page' => '/keitaro.domains',
 
         // API endpoint
-        'api' => '/api/lead_statuses',
+        'api' => 'https://keitaro.our24.ru/api/v1/domains',
 
         // Eloquent модель
-        'model' => 'App\\Models\\LeadStatus',
+        'model' => 'App\\Models\\Domain',
 
         // Иконка меню
-        'icon' => 'uil uil-info-circle',
+        'icon' => 'uil uil-globe',
 
         // ACL / permissions resource
-        'resource' => 'lead_statuses',
+        'resource' => 'domains',
 
         // Активен
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 70,
+        'nom' => 14,
 
-        // Справочник
-        'is_list' => 1,
+        // Не справочник
+        'is_list' => 2,
     ],
 
     /*
@@ -67,7 +67,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Fields — бизнес-поля сущности LeadStatus
+    | Fields — бизнес-поля сущности Domain
     |--------------------------------------------------------------------------
     */
     'fields' => [
@@ -83,7 +83,7 @@ return [
         ],
 
         'name' => [
-            'name' => 'Название',
+            'name' => 'Домен',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
@@ -92,39 +92,48 @@ return [
             'is_lookup' => false,
         ],
 
-        'shortname' => [
-            'name' => 'Код',
+        'is_ssl' => [
+            'name' => 'SSL',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
-            'formatter' => 'badge',
-            'formatter_options' => [
-                'install'      => 'badge-outline-secondary',
-                'registration' => 'badge-outline-info',
-                'deposit'      => 'badge-outline-success',
-            ],
+//            'formatter' => 'badge',
+//            'formatter_options' => [
+//                false  => 'badge-outline-warning',
+//                true => 'badge-outline-success',
+//            ],
             'db_type' => 'string',
             'is_lookup' => false,
         ],
 
-        'status' => [
+        'state' => [
             'name' => 'Статус',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
             'formatter' => 'badge',
             'formatter_options' => [
-                1 => 'badge-outline-success',
-                0 => 'badge-outline-danger',
+                'active'   => 'badge-outline-success',
+                'inactive' => 'badge-outline-danger',
             ],
-            'db_type' => 'integer',
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'notes' => [
+            'name' => 'Заметки',
+            'field_mode' => 'create,edit,show',
+            'is_filter_need' => false,
+            'control' => 'textarea',
+            'formatter' => null,
+            'db_type' => 'string',
             'is_lookup' => false,
         ],
 
         'created_at' => [
             'name' => 'Создан',
             'field_mode' => 'index,show',
-            'is_filter_need' => false,
+            'is_filter_need' => true,
             'control' => 'text',
             'formatter' => 'date',
             'db_type' => 'datetime',
@@ -133,16 +142,6 @@ return [
 
         'updated_at' => [
             'name' => 'Обновлён',
-            'field_mode' => 'show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => 'date',
-            'db_type' => 'datetime',
-            'is_lookup' => false,
-        ],
-
-        'deleted_at' => [
-            'name' => 'Удалён',
             'field_mode' => 'show',
             'is_filter_need' => false,
             'control' => 'text',

@@ -11,16 +11,16 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 4001,
+        'id' => 4018,
 
         // Название в меню
-        'name' => 'Рекламодатели',
+        'name' => 'Правила',
 
         // Уникальный ключ модуля
-        'shortname' => 'advertisers',
+        'shortname' => 'keitaro.rules',
 
-        // Родительский раздел (например "Маркетинг")
-        'parent_id' => 0,
+        // Родительский раздел
+        'parent_id' => 6000,
 
         // Корневая сущность
         'is_root' => 1,
@@ -29,31 +29,31 @@ return [
         'is_api' => 2,
 
         // Уровень вложенности
-        'level' => 1,
+        'level' => 2,
 
         // Web-страница
-        'page' => '/advertisers',
+        'page' => '/keitaro.rules',
 
         // API endpoint
-        'api' => '/api/advertisers',
+        'api' => 'https://keitaro.our24.ru/api/v1/rules',
 
-        // Eloquent / Domain модель
-        'model' => 'App\\Models\\Advertiser',
+        // Eloquent модель
+        'model' => 'App\\Models\\Rule',
 
         // Иконка меню
-        'icon' => 'uil uil-megaphone',
+        'icon' => 'uil uil-sliders-v-alt',
 
         // ACL / permissions resource
-        'resource' => 'advertisers',
+        'resource' => 'rules',
 
         // Активен
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 10,
+        'nom' => 85,
 
-        // Не справочник
-        'is_list' => 2,
+        // Справочник
+        'is_list' => 1,
     ],
 
     /*
@@ -67,7 +67,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Fields — бизнес-поля сущности Advertiser
+    | Fields — бизнес-поля сущности Rule
     |--------------------------------------------------------------------------
     */
     'fields' => [
@@ -92,110 +92,64 @@ return [
             'is_lookup' => false,
         ],
 
-        'state' => [
+        'shortname' => [
+            'name' => 'Код',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'text',
+            'formatter' => 'code',
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'type_processing_id' => [
+            'name' => 'Тип обработки',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'number',
+            'formatter' => 'number',
+            'db_type' => 'integer',
+            'is_lookup' => false,
+        ],
+
+        'val' => [
+            'name' => 'Обработчик',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'text',
+            'formatter' => 'code',
+            'db_type' => 'string',
+            'is_lookup' => false,
+        ],
+
+        'status' => [
             'name' => 'Статус',
-            'field_mode' => 'index,edit,show',
+            'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
             'formatter' => 'badge',
             'formatter_options' => [
-                'active'   => 'badge-outline-success',
-                'inactive' => 'badge-outline-danger',
+                1 => 'badge-outline-success',
+                0 => 'badge-outline-danger',
             ],
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-//        'offers' => [
-//            'name' => 'Оффер',
-//            'field_mode' => 'index,create,edit,show',
-//            'is_filter_need' => false,
-//            'control' => 'lookup',
-//            'formatter' => null,
-//            'db_type' => 'integer',
-//            'is_lookup' => true,
-//            'lookup_api' => '/api/offers',
-//            'lookup_id' => 'id',
-//            'lookup_name' => 'name',
-//        ],
-
-        'postback_url' => [
-            'name' => 'Postback URL',
-            'field_mode' => 'create,edit,show',
-            'is_filter_need' => false,
-            'control' => 'textarea',
-            'formatter' => 'truncate',
-            'formatter_options' => [
-                'length' => 60,
-            ],
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'offer_param' => [
-            'name' => 'Параметр оффера',
-            'field_mode' => 'create,edit,show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'template_name' => [
-            'name' => 'Шаблон',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'ext_id' => [
-            'name' => 'Ext ID',
-            'field_mode' => 'index,edit,show',
-            'is_filter_need' => true,
-            'control' => 'number',
-            'formatter' => 'number',
             'db_type' => 'integer',
             'is_lookup' => false,
         ],
 
-        'notes' => [
-            'name' => 'Заметки',
+        'params' => [
+            'name' => 'Параметры',
             'field_mode' => 'create,edit,show',
             'is_filter_need' => false,
-            'control' => 'textarea',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'pull_api_options' => [
-            'name' => 'Pull API options',
-            'field_mode' => 'show',
-            'is_filter_need' => false,
             'control' => 'text',
-            'formatter' => null,
+            'formatter' => 'json',
             'db_type' => 'json',
             'is_lookup' => false,
         ],
 
-        'account_id' => [
-            'name' => 'Account ID',
-            'field_mode' => 'show',
-            'is_filter_need' => false,
-            'control' => 'number',
-            'formatter' => 'number',
-            'db_type' => 'integer',
-            'is_lookup' => false,
-        ],
-
         'created_at' => [
-            'name' => 'Создан',
+            'name' => 'Создано',
             'field_mode' => 'index,show',
-            'is_filter_need' => true,
+            'is_filter_need' => false,
             'control' => 'text',
             'formatter' => 'date',
             'db_type' => 'datetime',
@@ -203,7 +157,17 @@ return [
         ],
 
         'updated_at' => [
-            'name' => 'Обновлён',
+            'name' => 'Обновлено',
+            'field_mode' => 'show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => 'date',
+            'db_type' => 'datetime',
+            'is_lookup' => false,
+        ],
+
+        'deleted_at' => [
+            'name' => 'Удалено',
             'field_mode' => 'show',
             'is_filter_need' => false,
             'control' => 'text',

@@ -11,16 +11,16 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 4003,
+        'id' => 4013,
 
         // Название в меню
-        'name' => 'Офферы',
+        'name' => 'Конверсии',
 
         // Уникальный ключ модуля
-        'shortname' => 'offers',
+        'shortname' => 'keitaro.conversions',
 
         // Родительский раздел
-        'parent_id' => 0,
+        'parent_id' => 6000,
 
         // Корневая сущность
         'is_root' => 1,
@@ -29,30 +29,30 @@ return [
         'is_api' => 2,
 
         // Уровень вложенности
-        'level' => 1,
+        'level' => 2,
 
         // Web-страница
-        'page' => '/offers',
+        'page' => '/keitaro.conversions',
 
         // API endpoint
-        'api' => '/api/offers',
+        'api' => 'https://keitaro.our24.ru/api/v1/conversions',
 
         // Eloquent модель
-        'model' => 'App\\Models\\Offer',
+        'model' => 'App\\Models\\Conversion',
 
         // Иконка меню
-        'icon' => 'uil uil-gift',
+        'icon' => 'uil uil-exchange',
 
         // ACL / permissions resource
-        'resource' => 'offers',
+        'resource' => 'conversions',
 
         // Активен
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 12,
+        'nom' => 50,
 
-        // Не справочник
+        // Не справочник (лог событий)
         'is_list' => 2,
     ],
 
@@ -62,19 +62,19 @@ return [
     |--------------------------------------------------------------------------
     */
     'layout' => [
-        'filter_view' => 'title',
+        'filter_view' => 'advanced',
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | Fields — бизнес-поля сущности Offer
+    | Fields — бизнес-поля сущности Conversion
     |--------------------------------------------------------------------------
     */
     'fields' => [
 
         'id' => [
             'name' => 'ID',
-            'field_mode' => 'index,show',
+            'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'number',
             'formatter' => 'number',
@@ -82,8 +82,8 @@ return [
             'is_lookup' => false,
         ],
 
-        'name' => [
-            'name' => 'Название',
+        'conversion_ext_uuid' => [
+            'name' => 'Conversion UUID',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
@@ -92,38 +92,80 @@ return [
             'is_lookup' => false,
         ],
 
-        'ext_id' => [
-            'name' => 'Ext ID',
-            'field_mode' => 'index,create,edit,show',
+        'click_id' => [
+            'name' => 'Клик',
+            'field_mode' => 'index,show',
             'is_filter_need' => true,
-            'control' => 'number',
-            'formatter' => 'number',
+            'control' => 'lookup',
+            'formatter' => 'lookup',
             'db_type' => 'integer',
-            'is_lookup' => false,
+            'is_lookup' => true,
+            'lookup_api' => 'https://keitaro.our24.ru/api/v1/clicks',
+            'lookup_id' => 'id',
+            'lookup_name' => 'click_id',
         ],
 
-        'advertiser_id' => [
-            'name' => 'Рекламодатель',
+        'lead_id' => [
+            'name' => 'Лид',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'lookup',
-            'formatter' => null,
+            'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup_api' => '/api/advertisers',
+            'lookup_api' => 'https://keitaro.our24.ru/api/v1/leads',
             'lookup_id' => 'id',
             'lookup_name' => 'name',
         ],
+
+//        'campaign_id' => [
+//            'name' => 'Кампания',
+//            'field_mode' => 'index,create,edit,show',
+//            'is_filter_need' => true,
+//            'control' => 'lookup',
+//            'formatter' => 'lookup',
+//            'db_type' => 'integer',
+//            'is_lookup' => true,
+//            'lookup_api' => 'https://keitaro.our24.ru/api/v1/campaigns',
+//            'lookup_id' => 'id',
+//            'lookup_name' => 'name',
+//        ],
+
+//        'advertiser_id' => [
+//            'name' => 'Рекламодатель',
+//            'field_mode' => 'index,create,edit,show',
+//            'is_filter_need' => true,
+//            'control' => 'lookup',
+//            'formatter' => 'lookup',
+//            'db_type' => 'integer',
+//            'is_lookup' => true,
+//            'lookup_api' => 'https://keitaro.our24.ru/api/v1/advertisers',
+//            'lookup_id' => 'id',
+//            'lookup_name' => 'name',
+//        ],
+
+//        'offer_id' => [
+//            'name' => 'Оффер',
+//            'field_mode' => 'index,create,edit,show',
+//            'is_filter_need' => true,
+//            'control' => 'lookup',
+//            'formatter' => 'lookup',
+//            'db_type' => 'integer',
+//            'is_lookup' => true,
+//            'lookup_api' => 'https://keitaro.our24.ru/api/v1/offers',
+//            'lookup_id' => 'id',
+//            'lookup_name' => 'name',
+//        ],
 
         'partner_id' => [
             'name' => 'Партнёр',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'lookup',
-            'formatter' => null,
+            'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup_api' => '/api/partners',
+            'lookup_api' => 'https://keitaro.our24.ru/api/v1/partners',
             'lookup_id' => 'id',
             'lookup_name' => 'name',
         ],
@@ -133,10 +175,10 @@ return [
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'lookup',
-            'formatter' => null,
+            'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup_api' => '/api/products',
+            'lookup_api' => 'https://keitaro.our24.ru/api/v1/products',
             'lookup_id' => 'id',
             'lookup_name' => 'name',
         ],
@@ -146,51 +188,71 @@ return [
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'lookup',
-            'formatter' => null,
+            'formatter' => 'lookup',
             'db_type' => 'integer',
             'is_lookup' => true,
-            'lookup_api' => '/api/geo',
+            'lookup_api' => 'https://keitaro.our24.ru/api/v1/geo',
             'lookup_id' => 'id',
             'lookup_name' => 'name',
         ],
 
-        'state' => [
+        'status' => [
             'name' => 'Статус',
-            'field_mode' => 'index,create,edit,show',
+            'field_mode' => 'index,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
             'formatter' => 'badge',
             'formatter_options' => [
-                'active'   => 'badge-outline-success',
-                'paused'   => 'badge-outline-warning',
-                'disabled' => 'badge-outline-danger',
+                'install'      => 'badge-outline-secondary',
+                'registration' => 'badge-outline-info',
+                'deposit'      => 'badge-outline-success',
             ],
             'db_type' => 'string',
             'is_lookup' => false,
         ],
 
-        'payout' => [
-            'name' => 'Выплата',
+        'revenue' => [
+            'name' => 'Доход',
             'field_mode' => 'index,show',
             'is_filter_need' => true,
             'control' => 'number',
-            'formatter' => 'currency',
-            'db_type' => 'decimal',
+            'formatter' => 'money',
+            'db_type' => 'float',
             'is_lookup' => false,
         ],
 
-        'currency' => [
-            'name' => 'Валюта',
+        'cost' => [
+            'name' => 'Расход',
             'field_mode' => 'index,show',
             'is_filter_need' => true,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
+            'control' => 'number',
+            'formatter' => 'money',
+            'db_type' => 'float',
             'is_lookup' => false,
         ],
 
-        'created_at' => [
-            'name' => 'Создан',
+        'profit' => [
+            'name' => 'Профит',
+            'field_mode' => 'index,show',
+            'is_filter_need' => false,
+            'control' => 'number',
+            'formatter' => 'money',
+            'db_type' => 'float',
+            'is_lookup' => false,
+        ],
+
+        'params' => [
+            'name' => 'Параметры',
+            'field_mode' => 'show',
+            'is_filter_need' => true,
+            'control' => 'text',
+            'formatter' => 'json',
+            'db_type' => 'json',
+            'is_lookup' => false,
+        ],
+
+        'postback_datetime' => [
+            'name' => 'Postback',
             'field_mode' => 'index,show',
             'is_filter_need' => true,
             'control' => 'text',
@@ -199,8 +261,8 @@ return [
             'is_lookup' => false,
         ],
 
-        'updated_at' => [
-            'name' => 'Обновлён',
+        'created_at' => [
+            'name' => 'Создано',
             'field_mode' => 'show',
             'is_filter_need' => false,
             'control' => 'text',
@@ -216,7 +278,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'order' => [
-        'id' => 'desc',
+        'postback_datetime' => 'desc',
     ],
 
 ];

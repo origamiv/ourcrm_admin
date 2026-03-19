@@ -11,16 +11,16 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 4015,
+        'id' => 4017,
 
         // Название в меню
-        'name' => 'Капы',
+        'name' => 'Вебхуки',
 
         // Уникальный ключ модуля
-        'shortname' => 'caps',
+        'shortname' => 'keitaro.webhooks',
 
         // Родительский раздел
-        'parent_id' => 0,
+        'parent_id' => 6000,
 
         // Корневая сущность
         'is_root' => 1,
@@ -29,28 +29,28 @@ return [
         'is_api' => 2,
 
         // Уровень вложенности
-        'level' => 1,
+        'level' => 2,
 
         // Web-страница
-        'page' => '/caps',
+        'page' => '/keitaro.webhooks',
 
         // API endpoint
-        'api' => '/api/caps',
+        'api' => 'https://keitaro.our24.ru/api/v1/webhooks',
 
         // Eloquent модель
-        'model' => 'App\\Models\\Cap',
+        'model' => 'App\\Models\\Webhook',
 
         // Иконка меню
-        'icon' => 'uil uil-chart-line',
+        'icon' => 'uil uil-webhook',
 
         // ACL / permissions resource
-        'resource' => 'caps',
+        'resource' => 'webhooks',
 
         // Активен
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 60,
+        'nom' => 80,
 
         // Не справочник
         'is_list' => 2,
@@ -67,7 +67,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Fields — бизнес-поля сущности Cap
+    | Fields — бизнес-поля сущности Webhook
     |--------------------------------------------------------------------------
     */
     'fields' => [
@@ -93,7 +93,7 @@ return [
         ],
 
         'shortname' => [
-            'name' => 'Код',
+            'name' => 'Короткое имя',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
@@ -102,60 +102,18 @@ return [
             'is_lookup' => false,
         ],
 
-        'product_id' => [
-            'name' => 'Продукт',
+        'url' => [
+            'name' => 'URL идентификатор',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
-            'control' => 'lookup',
-            'formatter' => 'lookup',
-            'db_type' => 'integer',
-            'is_lookup' => true,
-            'lookup_api' => '/api/products',
-            'lookup_id' => 'id',
-            'lookup_name' => 'name',
+            'control' => 'text',
+            'formatter' => 'code',
+            'db_type' => 'string',
+            'is_lookup' => false,
         ],
 
-        'geo_id' => [
-            'name' => 'GEO',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'lookup',
-            'formatter' => 'lookup',
-            'db_type' => 'integer',
-            'is_lookup' => true,
-            'lookup_api' => '/api/geo',
-            'lookup_id' => 'id',
-            'lookup_name' => 'name',
-        ],
-
-        'user_id' => [
-            'name' => 'Пользователь',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'lookup',
-            'formatter' => 'lookup',
-            'db_type' => 'integer',
-            'is_lookup' => true,
-            'lookup_api' => '/api/users',
-            'lookup_id' => 'id',
-            'lookup_name' => 'name',
-        ],
-
-        'interval_id' => [
-            'name' => 'Интервал',
-            'field_mode' => 'index,create,edit,show',
-            'is_filter_need' => true,
-            'control' => 'lookup',
-            'formatter' => 'lookup',
-            'db_type' => 'integer',
-            'is_lookup' => true,
-            'lookup_api' => '/api/intervals',
-            'lookup_id' => 'id',
-            'lookup_name' => 'name',
-        ],
-
-        'val' => [
-            'name' => 'Лимит',
+        'service_id' => [
+            'name' => 'Сервис',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'number',
@@ -164,8 +122,28 @@ return [
             'is_lookup' => false,
         ],
 
-        'current_val' => [
-            'name' => 'Текущее значение',
+        'type_hook_id' => [
+            'name' => 'Тип хука',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'number',
+            'formatter' => 'number',
+            'db_type' => 'integer',
+            'is_lookup' => false,
+        ],
+
+        'rules_id' => [
+            'name' => 'Правила обработки',
+            'field_mode' => 'index,create,edit,show',
+            'is_filter_need' => true,
+            'control' => 'text',
+            'formatter' => 'json',
+            'db_type' => 'json',
+            'is_lookup' => false,
+        ],
+
+        'cnt' => [
+            'name' => 'Количество вызовов',
             'field_mode' => 'index,show',
             'is_filter_need' => true,
             'control' => 'number',
@@ -174,9 +152,9 @@ return [
             'is_lookup' => false,
         ],
 
-        'finish_at' => [
-            'name' => 'Дата окончания',
-            'field_mode' => 'index,create,edit,show',
+        'dat_last_run' => [
+            'name' => 'Последний вызов',
+            'field_mode' => 'index,show',
             'is_filter_need' => true,
             'control' => 'text',
             'formatter' => 'date',
@@ -198,8 +176,18 @@ return [
             'is_lookup' => false,
         ],
 
+        'params' => [
+            'name' => 'Параметры',
+            'field_mode' => 'create,edit,show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => 'json',
+            'db_type' => 'json',
+            'is_lookup' => false,
+        ],
+
         'created_at' => [
-            'name' => 'Создана',
+            'name' => 'Создан',
             'field_mode' => 'index,show',
             'is_filter_need' => false,
             'control' => 'text',
@@ -209,7 +197,17 @@ return [
         ],
 
         'updated_at' => [
-            'name' => 'Обновлена',
+            'name' => 'Обновлён',
+            'field_mode' => 'show',
+            'is_filter_need' => false,
+            'control' => 'text',
+            'formatter' => 'date',
+            'db_type' => 'datetime',
+            'is_lookup' => false,
+        ],
+
+        'deleted_at' => [
+            'name' => 'Удалён',
             'field_mode' => 'show',
             'is_filter_need' => false,
             'control' => 'text',

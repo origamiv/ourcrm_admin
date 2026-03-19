@@ -11,16 +11,16 @@ return [
     'common' => [
 
         // ID записи в menus
-        'id' => 4020,
+        'id' => 4023,
 
         // Название в меню
-        'name' => 'Трекеры',
+        'name' => 'Права доступа',
 
         // Уникальный ключ модуля
-        'shortname' => 'trackers',
+        'shortname' => 'keitaro.permissions',
 
         // Родительский раздел
-        'parent_id' => 0,
+        'parent_id' => 6000,
 
         // Корневая сущность
         'is_root' => 1,
@@ -29,28 +29,28 @@ return [
         'is_api' => 2,
 
         // Уровень вложенности
-        'level' => 1,
+        'level' => 2,
 
         // Web-страница
-        'page' => '/trackers',
+        'page' => '/keitaro.permissions',
 
         // API endpoint
-        'api' => '/api/trackers',
+        'api' => 'https://keitaro.our24.ru/api/v1/permissions',
 
         // Eloquent модель
-        'model' => 'App\\Models\\Tracker',
+        'model' => 'Spatie\\Permission\\Models\\Permission',
 
         // Иконка меню
-        'icon' => 'uil uil-server-network',
+        'icon' => 'uil uil-key-skeleton',
 
         // ACL / permissions resource
-        'resource' => 'trackers',
+        'resource' => 'permissions',
 
         // Активен
         'status' => 1,
 
         // Порядок в меню
-        'nom' => 20,
+        'nom' => 7,
 
         // Справочник
         'is_list' => 1,
@@ -67,7 +67,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Fields — бизнес-поля сущности Tracker
+    | Fields — бизнес-поля сущности Permission
     |--------------------------------------------------------------------------
     */
     'fields' => [
@@ -83,60 +83,27 @@ return [
         ],
 
         'name' => [
-            'name' => 'Название',
+            'name' => 'Permission',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
-            'formatter' => null,
+            'formatter' => 'code',
             'db_type' => 'string',
             'is_lookup' => false,
         ],
 
-        'host' => [
-            'name' => 'Хост',
+        'guard_name' => [
+            'name' => 'Guard',
             'field_mode' => 'index,create,edit,show',
             'is_filter_need' => true,
             'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'login' => [
-            'name' => 'Логин',
-            'field_mode' => 'create,edit,show',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'password' => [
-            'name' => 'Пароль',
-            'field_mode' => 'create,edit',
-            'is_filter_need' => false,
-            'control' => 'text',
-            'formatter' => null,
-            'db_type' => 'string',
-            'is_lookup' => false,
-        ],
-
-        'token' => [
-            'name' => 'API Token',
-            'field_mode' => 'create,edit,show',
-            'is_filter_need' => false,
-            'control' => 'textarea',
-            'formatter' => 'truncate',
-            'formatter_options' => [
-                'length' => 40,
-            ],
+            'formatter' => 'code',
             'db_type' => 'string',
             'is_lookup' => false,
         ],
 
         'created_at' => [
-            'name' => 'Создан',
+            'name' => 'Создано',
             'field_mode' => 'index,show',
             'is_filter_need' => false,
             'control' => 'text',
@@ -146,7 +113,7 @@ return [
         ],
 
         'updated_at' => [
-            'name' => 'Обновлён',
+            'name' => 'Обновлено',
             'field_mode' => 'show',
             'is_filter_need' => false,
             'control' => 'text',
@@ -162,7 +129,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'order' => [
-        'id' => 'asc',
+        'name' => 'asc',
     ],
 
 ];
