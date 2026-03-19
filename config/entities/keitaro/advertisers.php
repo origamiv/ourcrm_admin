@@ -114,7 +114,7 @@ return [
 //            'formatter' => null,
 //            'db_type' => 'integer',
 //            'is_lookup' => true,
-//            'lookup_api' => '/api/offers',
+//            'lookup_api' => 'https://keitaro.our24.ru/api/v1/offers',
 //            'lookup_id' => 'id',
 //            'lookup_name' => 'name',
 //        ],
