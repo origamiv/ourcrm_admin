@@ -17,7 +17,7 @@ return [
         'is_api' => 2,
         'level' => 2,
         'page' => '/keitaro.campaigns',
-        'api' => '/api/campaigns',
+        'api' => 'https://keitaro.our24.ru/api/campaigns',
         'model' => 'App\\Models\\Campaign',
         'icon' => 'uil uil-bullhorn',
         'resource' => 'campaigns',

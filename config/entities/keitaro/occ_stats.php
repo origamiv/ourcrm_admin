@@ -16,7 +16,7 @@ return [
         'is_api' => 2,
         'level' => 2,
         'page' => '/keitaro.occ_stats',
-        'api' => '/api/stat-okk',
+        'api' => 'https://keitaro.our24.ru/api/stat-okk',
         'model' => 'App\\Models\\OccStat',
         'icon' => 'uil uil-chart-bar',
         'resource' => 'occ_stats',
@@ -266,7 +266,7 @@ return [
     */
     'aggregation' => [
         'title' => 'Агрегация по офферам Tier 2',
-        'api' => '/api/stat-okk/agg',
+        'api' => 'https://keitaro.our24.ru/api/stat-okk/agg',
         'group_by' => ['offer'],
         'columns' => [
             ['title' => 'Оффер', 'field' => 'offer', 'width' => 250],

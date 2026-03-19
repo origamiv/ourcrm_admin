@@ -35,7 +35,7 @@ return [
         'page' => '/keitaro.users',
 
         // API endpoint
-        'api' => '/api/users',
+        'api' => 'https://keitaro.our24.ru/api/users',
 
         // Eloquent модель
         'model' => 'App\\Models\\User',

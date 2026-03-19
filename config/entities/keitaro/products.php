@@ -10,7 +10,7 @@ return [
         'is_api' => 2,
         'level' => 2,
         'page' => '/keitaro.products',
-        'api' => '/api/products',
+        'api' => 'https://keitaro.our24.ru/api/products',
         'model' => 'App\\Models\\Product',
         'icon' => 'uil uil-box',
         'resource' => 'products',

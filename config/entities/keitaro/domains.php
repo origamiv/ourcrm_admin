@@ -35,7 +35,7 @@ return [
         'page' => '/keitaro.domains',
 
         // API endpoint
-        'api' => '/api/domains',
+        'api' => 'https://keitaro.our24.ru/api/domains',
 
         // Eloquent модель
         'model' => 'App\\Models\\Domain',

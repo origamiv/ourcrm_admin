@@ -35,7 +35,7 @@ return [
         'page' => '/keitaro.offers',
 
         // API endpoint
-        'api' => '/api/offers',
+        'api' => 'https://keitaro.our24.ru/api/offers',
 
         // Eloquent модель
         'model' => 'App\\Models\\Offer',

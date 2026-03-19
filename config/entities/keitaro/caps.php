@@ -35,7 +35,7 @@ return [
         'page' => '/keitaro.caps',
 
         // API endpoint
-        'api' => '/api/caps',
+        'api' => 'https://keitaro.our24.ru/api/caps',
 
         // Eloquent модель
         'model' => 'App\\Models\\Cap',

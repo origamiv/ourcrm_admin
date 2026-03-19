@@ -35,7 +35,7 @@ return [
         'page' => '/keitaro.intervals',
 
         // API endpoint
-        'api' => '/api/intervals',
+        'api' => 'https://keitaro.our24.ru/api/intervals',
 
         // Eloquent модель
         'model' => 'App\\Models\\Interval',

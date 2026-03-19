@@ -35,7 +35,7 @@ return [
         'page' => '/keitaro.trackers',
 
         // API endpoint
-        'api' => '/api/trackers',
+        'api' => 'https://keitaro.our24.ru/api/trackers',
 
         // Eloquent модель
         'model' => 'App\\Models\\Tracker',

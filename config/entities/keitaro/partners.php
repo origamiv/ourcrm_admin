@@ -35,7 +35,7 @@ return [
         'page' => '/keitaro.partners',
 
         // API endpoint
-        'api' => '/api/partners',
+        'api' => 'https://keitaro.our24.ru/api/partners',
 
         // Eloquent модель
         'model' => 'App\\Models\\Partner',

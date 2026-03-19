@@ -35,7 +35,7 @@ return [
         'page' => '/keitaro.conversions',
 
         // API endpoint
-        'api' => '/api/conversions',
+        'api' => 'https://keitaro.our24.ru/api/conversions',
 
         // Eloquent модель
         'model' => 'App\\Models\\Conversion',

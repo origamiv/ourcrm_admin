@@ -35,7 +35,7 @@ return [
         'page' => '/keitaro.clicks',
 
         // API endpoint
-        'api' => '/api/clicks',
+        'api' => 'https://keitaro.our24.ru/api/clicks',
 
         // Eloquent модель
         'model' => 'App\\Models\\Click',

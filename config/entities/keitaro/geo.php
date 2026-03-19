@@ -10,7 +10,7 @@ return [
         'is_api' => 2,
         'level' => 2,
         'page' => '/keitaro.geo',
-        'api' => '/api/geo',
+        'api' => 'https://keitaro.our24.ru/api/geo',
         'model' => 'App\\Models\\Geo',
         'icon' => 'uil uil-map',
         'resource' => 'geo',

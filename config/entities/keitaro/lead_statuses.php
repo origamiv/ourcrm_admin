@@ -35,7 +35,7 @@ return [
         'page' => '/keitaro.lead_statuses',
 
         // API endpoint
-        'api' => '/api/lead_statuses',
+        'api' => 'https://keitaro.our24.ru/api/lead_statuses',
 
         // Eloquent модель
         'model' => 'App\\Models\\LeadStatus',
