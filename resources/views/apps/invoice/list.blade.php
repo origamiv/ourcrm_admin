@@ -694,9 +694,22 @@
                         .filter(([_, f]) => f.is_lookup);
 
                     for (const [key, field] of lookupFields) {
+                        const api = resolveUrl(field.lookup_api);
+
+                        // Проверяем кэш справочников
+                        const cached = window.LookupCache?.get(api);
+                        if (cached !== null && cached !== undefined) {
+                            this.lookups[key] = cached;
+                            this.lookupMaps[key] = {};
+                            cached.forEach(item => {
+                                this.lookupMaps[key][item[field.lookup_id ?? 'id']] = item[field.lookup_name];
+                            });
+                            continue;
+                        }
+
                         try {
                             const res = await axios.post(
-                                `${resolveUrl(field.lookup_api)}/list`,
+                                `${api}/list`,
                                 { page: 1, perpage: 100 },
                                 {
                                     headers: {
@@ -713,6 +726,9 @@
                             list.forEach(item => {
                                 this.lookupMaps[key][item[field.lookup_id ?? 'id']] = item[field.lookup_name];
                             });
+
+                            // Сохраняем в кэш
+                            window.LookupCache?.set(api, list);
                         } catch (e) {
                             console.warn(`loadLookups: не удалось загрузить справочник "${key}"`, e);
                             this.lookups[key] = [];
@@ -1323,6 +1339,9 @@
                             'Authorization': `Bearer ${token}`
                         }
                     });
+
+                    // Обновляем кэш: удаляем запись из справочника (если текущая сущность — справочник)
+                    window.LookupCache?.removeItem(resolveUrl(window.CONFIG.common.api), id);
 
                     const nextPage = (this.page > 1 && this.items.length === 1) ? (this.page - 1) : this.page;
 

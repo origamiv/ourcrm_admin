@@ -1,3 +1,19 @@
+@php
+    $menuData = json_decode(file_get_contents(config_path('menu.json')), true);
+    $allMenuItems = $menuData['data'] ?? [];
+    $refIds = array_column(
+        array_filter($allMenuItems, fn($item) => str_ends_with($item['shortname'] ?? '', '.references')),
+        'id'
+    );
+    $lookupItems = array_values(array_map(
+        fn($item) => ['shortname' => $item['shortname'], 'api' => $item['api']],
+        array_filter($allMenuItems, fn($item) =>
+            in_array($item['parent_id'] ?? null, $refIds) &&
+            !empty($item['api']) &&
+            ($item['status'] ?? 0)
+        )
+    ));
+@endphp
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 
@@ -187,6 +203,98 @@ window.ExcelPoller = (function () {
 })();
 
 document.addEventListener('DOMContentLoaded', function () { window.ExcelPoller.init(); });
+</script>
+
+{{-- 🗂 Кэш справочников --}}
+<script>
+window.LookupCache = (function () {
+    const CACHE_TTL = 30 * 60 * 1000; // 30 минут
+    const KEY_PREFIX = 'lookup:';
+
+    function cacheKey(api) { return KEY_PREFIX + api; }
+
+    function get(api) {
+        try {
+            const raw = localStorage.getItem(cacheKey(api));
+            if (!raw) return null;
+            const entry = JSON.parse(raw);
+            if (Date.now() - (entry.cached_at || 0) > CACHE_TTL) {
+                localStorage.removeItem(cacheKey(api));
+                return null;
+            }
+            return entry.data;
+        } catch (e) { return null; }
+    }
+
+    function set(api, data) {
+        try {
+            localStorage.setItem(cacheKey(api), JSON.stringify({
+                data: Array.isArray(data) ? data : [],
+                cached_at: Date.now()
+            }));
+        } catch (e) {
+            console.warn('LookupCache: не удалось сохранить в localStorage', e);
+        }
+    }
+
+    function addItem(api, item) {
+        const data = get(api);
+        if (data !== null) set(api, [...data, item]);
+    }
+
+    function updateItem(api, id, item) {
+        const data = get(api);
+        if (data !== null) {
+            const idx = data.findIndex(r => String(r.id) === String(id));
+            if (idx >= 0) {
+                const updated = [...data];
+                updated[idx] = Object.assign({}, updated[idx], item);
+                set(api, updated);
+            } else {
+                set(api, [...data, item]);
+            }
+        }
+    }
+
+    function removeItem(api, id) {
+        const data = get(api);
+        if (data !== null) {
+            set(api, data.filter(r => String(r.id) !== String(id)));
+        }
+    }
+
+    async function loadAll(lookups, token) {
+        for (const lookup of lookups) {
+            if (get(lookup.api) !== null) continue;
+            try {
+                const resp = await fetch(lookup.api + '/list', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ page: 1, perpage: -1 })
+                });
+                if (!resp.ok) continue;
+                const json = await resp.json();
+                set(lookup.api, Array.isArray(json.data) ? json.data : []);
+            } catch (e) {
+                console.warn('LookupCache: не удалось загрузить', lookup.api, e);
+            }
+        }
+    }
+
+    return { get, set, addItem, updateItem, removeItem, loadAll };
+})();
+
+document.addEventListener('DOMContentLoaded', function () {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+        const lookups = @json($lookupItems);
+        setTimeout(() => window.LookupCache.loadAll(lookups, token), 1500);
+    }
+});
 </script>
 </body>
 </html>
