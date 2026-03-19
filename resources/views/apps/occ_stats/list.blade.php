@@ -535,24 +535,46 @@
                         .filter(([_, f]) => f.is_lookup);
 
                     for (const [key, field] of lookupFields) {
-                        const res = await axios.post(
-                            `{{ config('app.api_url') }}${field.lookup_api}/list`,
-                            { page: 1, perpage: 100 },
-                            {
-                                headers: {
-                                    'Accept': 'application/json',
-                                    'Authorization': `Bearer ${token}`
+                        const api = '{{ config('app.api_url') }}' + field.lookup_api;
+
+                        // Проверяем кэш справочников
+                        const cached = window.LookupCache?.get(api);
+                        if (cached !== null && cached !== undefined) {
+                            this.lookups[key] = cached;
+                            this.lookupMaps[key] = {};
+                            cached.forEach(item => {
+                                this.lookupMaps[key][item[field.lookup_id]] = item[field.lookup_name];
+                            });
+                            continue;
+                        }
+
+                        try {
+                            const res = await axios.post(
+                                `${api}/list`,
+                                { page: 1, perpage: -1 },
+                                {
+                                    headers: {
+                                        'Accept': 'application/json',
+                                        'Authorization': `Bearer ${token}`
+                                    }
                                 }
-                            }
-                        );
+                            );
 
-                        const list = res.data?.data ?? [];
-                        this.lookups[key] = list;
+                            const list = res.data?.data ?? [];
+                            this.lookups[key] = list;
 
-                        this.lookupMaps[key] = {};
-                        list.forEach(item => {
-                            this.lookupMaps[key][item[field.lookup_id]] = item[field.lookup_name];
-                        });
+                            this.lookupMaps[key] = {};
+                            list.forEach(item => {
+                                this.lookupMaps[key][item[field.lookup_id]] = item[field.lookup_name];
+                            });
+
+                            // Сохраняем в кэш
+                            window.LookupCache?.set(api, list);
+                        } catch (e) {
+                            console.warn(`loadLookups: не удалось загрузить справочник "${key}"`, e);
+                            this.lookups[key] = [];
+                            this.lookupMaps[key] = {};
+                        }
                     }
                 },
 
