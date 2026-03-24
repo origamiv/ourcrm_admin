@@ -44,7 +44,7 @@ return [
         'icon' => 'uil uil-user-check',
 
         // ACL / permissions resource
-        'resource' => null,
+        'resource' => 'roleusers',
 
         // Активен
         'status' => 1,

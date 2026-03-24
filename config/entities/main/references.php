@@ -34,7 +34,7 @@ return [
         'icon' => 'uil uil-book-open',
 
         // ACL / permissions resource
-        'resource' => null,
+        'resource' => 'references',
 
         // Активен
         'status' => 1,

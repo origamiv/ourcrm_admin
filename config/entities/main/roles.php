@@ -44,7 +44,7 @@ return [
         'icon' => 'uil uil-users-alt',
 
         // ACL / permissions resource
-        'resource' => null,
+        'resource' => 'roles',
 
         // Активен
         'status' => 1,

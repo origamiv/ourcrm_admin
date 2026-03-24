@@ -144,6 +144,10 @@
                         }
 
                         localStorage.setItem('access_token', json.data.token);
+                        const profile = json.data.user ?? json.data.profile ?? null;
+                        if (profile && typeof profile === 'object') {
+                            localStorage.setItem('user', JSON.stringify(profile));
+                        }
                         window.location.href = '/';
 
                     } catch {

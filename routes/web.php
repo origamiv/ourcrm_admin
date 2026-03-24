@@ -14,6 +14,15 @@ Route::prefix('api/export')->group(function () {
 
 Route::get('/web', [CrudController::class, 'index']);
 
+Route::get('/web/main/users/{id}/roles', function (int $id) {
+    return view('apps.users.roles', [
+        'id' => $id,
+        'config' => config('entities.main.users'),
+        'rolesApi' => config('entities.main.roles.common.api'),
+        'roleUsersApi' => config('entities.main.roleusers.common.api'),
+    ]);
+});
+
 Route::prefix('web/{module}')->group(function () {
     Route::get('/{chapter}', [CrudController::class, 'index']);
     Route::get('/{chapter}/{id}/show', [CrudController::class, 'show']);

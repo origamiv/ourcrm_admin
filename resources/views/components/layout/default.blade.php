@@ -1,6 +1,31 @@
 @php
     $menuData = json_decode(file_get_contents(config_path('menu.json')), true);
     $allMenuItems = $menuData['data'] ?? [];
+    $entityConfigFiles = array_merge(
+        glob(config_path('entities/*.php')) ?: [],
+        glob(config_path('entities/*/*.php')) ?: []
+    );
+    $entityAclMap = collect($entityConfigFiles)
+        ->map(function ($file) {
+            $relative = str_replace(config_path('entities') . DIRECTORY_SEPARATOR, '', $file);
+            $relative = str_replace(DIRECTORY_SEPARATOR, '/', $relative);
+            $configKey = str_replace(['/', '.php'], ['.', ''], $relative);
+            $config = config('entities.' . $configKey, []);
+            $api = data_get($config, 'common.api');
+            $apiPath = parse_url((string) $api, PHP_URL_PATH) ?: (string) $api;
+            $apiPath = trim((string) $apiPath, '/');
+            $apiResource = $apiPath ? basename($apiPath) : null;
+            $shortname = data_get($config, 'common.shortname', $configKey);
+            $shortnameTail = $shortname ? collect(explode('.', (string) $shortname))->last() : null;
+
+            return [
+                'entity' => $configKey,
+                'page' => data_get($config, 'common.page'),
+                'shortname' => $shortname,
+                'resource' => data_get($config, 'common.resource') ?: $shortnameTail ?: $apiResource,
+            ];
+        })
+        ->values();
     $refIds = array_column(
         array_filter($allMenuItems, fn($item) => str_ends_with($item['shortname'] ?? '', '.references')),
         'id'
@@ -44,6 +69,241 @@
             if (!token) {
                 window.location.replace('/login');
             }
+        })();
+    </script>
+
+    <script>
+        window.ENTITY_ACL_MAP = @json($entityAclMap);
+
+        window.AuthACL = (() => {
+            const TOKEN_KEY = 'access_token';
+            const PROFILE_KEY = 'user';
+            const API_URL = '{{ rtrim(config('app.api_url'), '/') }}';
+            const MAIN_USER_API = '{{ rtrim(config('entities.main.users.common.api'), '/') }}';
+            const entityMap = Array.isArray(window.ENTITY_ACL_MAP) ? window.ENTITY_ACL_MAP : [];
+            let ensureProfilePromise = null;
+            let profileHydratedForPage = false;
+
+            const normalizePath = (value) => {
+                const path = String(value ?? '').trim();
+                if (!path) return '';
+
+                return path
+                    .replace(/^https?:\/\/[^/]+/i, '')
+                    .replace(/\/+$/, '')
+                    .toLowerCase();
+            };
+
+            const parseProfile = (value) => {
+                if (!value) return null;
+
+                try {
+                    const parsed = JSON.parse(value);
+                    if (!parsed || typeof parsed !== 'object') return null;
+
+                    parsed.permissions = Array.isArray(parsed.permissions) ? parsed.permissions : [];
+                    parsed.roles = Array.isArray(parsed.roles) ? parsed.roles : [];
+
+                    return parsed;
+                } catch (error) {
+                    console.warn('Failed to parse user profile from localStorage', error);
+                    return null;
+                }
+            };
+
+            const readProfile = () => parseProfile(localStorage.getItem(PROFILE_KEY));
+
+            const writeProfile = (profile) => {
+                if (!profile || typeof profile !== 'object') return null;
+
+                const normalized = {
+                    ...profile,
+                    permissions: Array.isArray(profile.permissions) ? profile.permissions : [],
+                    roles: Array.isArray(profile.roles) ? profile.roles : [],
+                };
+
+                localStorage.setItem(PROFILE_KEY, JSON.stringify(normalized));
+                window.dispatchEvent(new CustomEvent('auth-profile-updated', { detail: normalized }));
+
+                return normalized;
+            };
+
+            const normalizeProfilePayload = (payload) => {
+                const profile = payload?.data?.user
+                    ?? payload?.data?.profile
+                    ?? payload?.data
+                    ?? payload?.user
+                    ?? payload
+                    ?? null;
+
+                if (!profile || typeof profile !== 'object' || Array.isArray(profile)) {
+                    return null;
+                }
+
+                if (!Array.isArray(profile.permissions) && Array.isArray(payload?.data?.permissions)) {
+                    profile.permissions = payload.data.permissions;
+                }
+
+                if (!Array.isArray(profile.roles) && Array.isArray(payload?.data?.roles)) {
+                    profile.roles = payload.data.roles;
+                }
+
+                return writeProfile(profile);
+            };
+
+            const candidateProfileUrls = () => {
+                const urls = [
+                    `${API_URL}/api/v1/users/me`,
+                    `${API_URL}/api/user/me`,
+                    `${API_URL}/api/me`,
+                    `${MAIN_USER_API}/me`,
+                ];
+
+                return urls.filter(Boolean).filter((value, index, array) => array.indexOf(value) === index);
+            };
+
+            const fetchProfile = async () => {
+                const token = localStorage.getItem(TOKEN_KEY);
+                if (!token) return null;
+
+                for (const url of candidateProfileUrls()) {
+                    try {
+                        const response = await fetch(url, {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Authorization': `Bearer ${token}`,
+                            },
+                        });
+
+                        if (!response.ok) continue;
+
+                        const payload = await response.json();
+                        const profile = normalizeProfilePayload(payload);
+                        if (profile) return profile;
+                    } catch (error) {
+                        console.warn('Unable to fetch profile from', url, error);
+                    }
+                }
+
+                return readProfile();
+            };
+
+            const permissionName = (permission) => {
+                return String(
+                    permission?.shortname
+                    ?? permission?.slug
+                    ?? permission?.name
+                    ?? permission
+                    ?? ''
+                ).trim();
+            };
+
+            const permissionsSet = (profile = readProfile()) => {
+                return new Set(
+                    (profile?.permissions ?? [])
+                        .map(permissionName)
+                        .filter(Boolean)
+                );
+            };
+
+            const resolveResource = (target) => {
+                if (!target) return null;
+
+                if (typeof target === 'string') {
+                    return target;
+                }
+
+                if (target.resource) {
+                    return target.resource;
+                }
+
+                const normalizedPage = normalizePath(target.page);
+                const normalizedShortname = String(target.shortname ?? '').trim().toLowerCase();
+
+                const matched = entityMap.find(item => {
+                    return (
+                        (normalizedPage && normalizePath(item.page) === normalizedPage) ||
+                        (normalizedShortname && String(item.shortname ?? '').trim().toLowerCase() === normalizedShortname)
+                    );
+                });
+
+                return matched?.resource ?? null;
+            };
+
+            const hasPermission = (permission, profile = readProfile()) => {
+                if (!permission) return false;
+                return permissionsSet(profile).has(String(permission).trim());
+            };
+
+            const hasAnyPermission = (permissions, profile = readProfile()) => {
+                const list = Array.isArray(permissions) ? permissions : [];
+                if (!list.length) return false;
+
+                return list.some(permission => hasPermission(permission, profile));
+            };
+
+            const hasAllPermissions = (permissions, profile = readProfile()) => {
+                const list = Array.isArray(permissions) ? permissions : [];
+                if (!list.length) return true;
+
+                return list.every(permission => hasPermission(permission, profile));
+            };
+
+            const hasResourcePermission = (target, action, profile = readProfile()) => {
+                const resource = resolveResource(target);
+                if (!resource || !action) return false;
+
+                return hasPermission(`${resource}.${action}`, profile);
+            };
+
+            const hasAnyResourcePermission = (target, actions, profile = readProfile()) => {
+                const list = Array.isArray(actions) ? actions : [];
+                if (!list.length) return false;
+
+                return list.some(action => hasResourcePermission(target, action, profile));
+            };
+
+            const ensureProfile = async (force = false) => {
+                const existing = readProfile();
+                const shouldRefresh = force || !profileHydratedForPage;
+
+                if (!shouldRefresh && existing) {
+                    return existing;
+                }
+
+                if (!ensureProfilePromise || shouldRefresh) {
+                    ensureProfilePromise = fetchProfile()
+                        .then(profile => {
+                            profileHydratedForPage = true;
+                            return profile;
+                        })
+                        .catch(error => {
+                            console.warn('Unable to load current user profile', error);
+                            profileHydratedForPage = true;
+                            return readProfile();
+                        })
+                        .finally(() => {
+                            ensureProfilePromise = null;
+                        });
+                }
+
+                return ensureProfilePromise;
+            };
+
+            return {
+                ensureProfile,
+                readProfile,
+                writeProfile,
+                normalizeProfilePayload,
+                permissionsSet,
+                resolveResource,
+                hasPermission,
+                hasAnyPermission,
+                hasAllPermissions,
+                hasResourcePermission,
+                hasAnyResourcePermission,
+            };
         })();
     </script>
 

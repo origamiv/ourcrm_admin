@@ -44,7 +44,7 @@ return [
         'icon' => 'uil uil-user',
 
         // ACL / permissions resource
-        'resource' => null,
+        'resource' => 'users',
 
         // Активен
         'status' => 1,
@@ -63,6 +63,17 @@ return [
     */
     'layout' => [
         'filter_view' => 'advanced',
+    ],
+
+    'table_actions' => [
+        [
+            'name' => 'Назначить роли',
+            'title' => 'Назначить роли',
+            'icon' => 'uil uil-shield-check',
+            'url' => '/web/main/users/{id}/roles',
+            'permission_action' => 'update',
+            'color' => 'text-primary',
+        ],
     ],
 
     /*

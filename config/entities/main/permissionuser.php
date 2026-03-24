@@ -44,7 +44,7 @@ return [
         'icon' => 'uil uil-user-square',
 
         // ACL / permissions resource
-        'resource' => null,
+        'resource' => 'permissionusers',
 
         // Активен
         'status' => 1,

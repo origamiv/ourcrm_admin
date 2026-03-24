@@ -181,6 +181,7 @@
             open: {},
 
             async init() {
+                await window.AuthACL?.ensureProfile?.();
                 await this.loadMenus();
                 this.openActiveParents();
             },
@@ -191,8 +192,69 @@
                 let apiMenus = (json.data || [])
                     .filter(item => item.status || item.status === null);
 
-                this.menus = [...apiMenus]
+                this.menus = this.filterVisibleMenus([...apiMenus]
                     .sort((a, b) => (a.nom ?? 0) - (b.nom ?? 0));
+            },
+
+            filterVisibleMenus(allMenus) {
+                const childrenMap = new Map();
+
+                allMenus.forEach(item => {
+                    const parentId = item.parent_id ?? 0;
+                    if (!childrenMap.has(parentId)) {
+                        childrenMap.set(parentId, []);
+                    }
+                    childrenMap.get(parentId).push(item);
+                });
+
+                const visibilityCache = {};
+
+                const isVisible = (item) => {
+                    if (visibilityCache[item.id] !== undefined) {
+                        return visibilityCache[item.id];
+                    }
+
+                    const children = childrenMap.get(item.id) ?? [];
+                    const hasVisibleChildren = children.some(isVisible);
+
+                    if (hasVisibleChildren) {
+                        visibilityCache[item.id] = true;
+                        return true;
+                    }
+
+                    const allowed = this.canSeeMenuItem(item);
+                    visibilityCache[item.id] = allowed;
+                    return allowed;
+                };
+
+                return allMenus.filter(isVisible);
+            },
+
+            canSeeMenuItem(item) {
+                const acl = window.AuthACL;
+                if (!acl) return true;
+
+                const requiredPermissions = Array.isArray(item.required_permissions)
+                    ? item.required_permissions.filter(Boolean)
+                    : [];
+
+                if (requiredPermissions.length > 0) {
+                    const mode = String(item.required_permissions_mode || 'any').toLowerCase();
+                    return mode === 'all'
+                        ? acl.hasAllPermissions(requiredPermissions)
+                        : acl.hasAnyPermission(requiredPermissions);
+                }
+
+                if (!item.page) {
+                    return false;
+                }
+
+                const resource = acl.resolveResource(item);
+                if (!resource) {
+                    return true;
+                }
+
+                return acl.hasAnyResourcePermission(resource, ['index', 'list']);
             },
 
             get rootMenus() {
@@ -240,4 +302,3 @@
         }));
     });
 </script>
-

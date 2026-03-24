@@ -44,7 +44,7 @@ return [
         'icon' => 'uil uil-building',
 
         // ACL / permissions resource
-        'resource' => null,
+        'resource' => 'companies',
 
         // Активен
         'status' => 1,

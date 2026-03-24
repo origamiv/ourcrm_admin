@@ -1,4 +1,12 @@
 <x-layout.default>
+    @php
+        $createUrl = rtrim(data_get($config, 'common.page', ''), '/') . '/create';
+        $supportsCreate = collect(data_get($config, 'fields', []))->contains(function ($field) {
+            $modes = array_map('trim', explode(',', $field['field_mode'] ?? ''));
+
+            return in_array('create', $modes, true);
+        });
+    @endphp
 
     {{-- =====================================================
         SCRIPTS (подключаем сверху)
@@ -38,7 +46,8 @@
             },
             primaryKey: 'id',
             perPage: 20,
-            columns: []
+            columns: [],
+            resource: window.CONFIG.common.resource || null
         };
     </script>
 
@@ -288,9 +297,11 @@
 
         {{-- Кнопка добавления новой записи + экспорт в Excel --}}
         <div class="mb-3 flex justify-end gap-2">
-            <a :href="`/${CONFIG.common.shortname}/create`" class="btn btn-success gap-1">
-                <i class="uil uil-plus"></i>Добавить запись
-            </a>
+            @if($supportsCreate)
+                <a x-cloak x-show="canCreateRecord" href="{{ $createUrl }}" class="btn btn-success gap-1">
+                    <i class="uil uil-plus"></i>Добавить запись
+                </a>
+            @endif
             <button @click="startExport()"
                     :disabled="exportLoading"
                     title="Экспорт в Excel"
@@ -403,6 +414,13 @@
                 // filters ui state: {field: {kind, ...}}
                 filters: {},
 
+                supportsCreateAction: @json($supportsCreate),
+                resource: window.AuthACL?.resolveResource?.({
+                    page: window.CONFIG.common?.page,
+                    shortname: window.CONFIG.common?.shortname,
+                    resource: window.TABLE_CONFIG.resource,
+                }) ?? window.TABLE_CONFIG.resource,
+
                 get usePagination() { return (this.perpage ?? 0) !== -1; },
 
                 get totalPages() {
@@ -433,7 +451,40 @@
                     return Object.keys(this.filters || {}).some(f => this.hasActiveFilter(f));
                 },
 
+                get canCreateRecord() {
+                    return this.supportsCreateAction && this.can('create');
+                },
+
+                get canShowRecord() {
+                    return this.can('show');
+                },
+
+                get canUpdateRecord() {
+                    return this.can('update');
+                },
+
+                get canDeleteRecord() {
+                    return this.can('delete');
+                },
+
+                get hasActionColumn() {
+                    return this.canShowRecord
+                        || this.canUpdateRecord
+                        || this.canDeleteRecord
+                        || this.getExtraTableActions().some(action => this.canRenderAction(action));
+                },
+
+                can(action) {
+                    if (!this.resource) return true;
+
+                    const acl = window.AuthACL;
+                    if (!acl) return true;
+
+                    return acl.hasResourcePermission(this.resource, action);
+                },
+
                 async init() {
+                    await window.AuthACL?.ensureProfile?.();
                     this.buildColumnsFromConfig();
                     this.buildCardConfig();
                     this.initSortFromConfig();
@@ -621,6 +672,48 @@
                         allFields,
                         cardImageField: null,
                     };
+                },
+
+                getExtraTableActions() {
+                    return Array.isArray(window.CONFIG.table_actions) ? window.CONFIG.table_actions : [];
+                },
+
+                buildActionUrl(template, row) {
+                    return String(template ?? '').replace(/\{([^}]+)\}/g, (_, key) => {
+                        const value = row?.[key];
+                        return value === null || value === undefined ? '' : String(value);
+                    });
+                },
+
+                canRenderAction(action) {
+                    if (!action) return false;
+
+                    const permissionAction = action.permission_action ?? null;
+                    const resource = action.resource ?? this.resource ?? window.CONFIG.common?.resource ?? null;
+
+                    if (action.permission) {
+                        return window.AuthACL?.hasPermission?.(action.permission) ?? true;
+                    }
+
+                    if (permissionAction && resource && window.AuthACL?.hasResourcePermission) {
+                        return !!window.AuthACL.hasResourcePermission(resource, permissionAction);
+                    }
+
+                    return true;
+                },
+
+                renderExtraTableActions(row) {
+                    return this.getExtraTableActions()
+                        .filter(action => this.canRenderAction(action))
+                        .map(action => {
+                            const href = this.escapeAttr(this.buildActionUrl(action.url, row));
+                            const title = this.escapeAttr(action.title ?? action.name ?? '');
+                            const icon = this.escapeAttr(action.icon ?? 'uil uil-external-link-alt');
+                            const color = this.escapeAttr(action.color ?? 'text-primary');
+
+                            return `<a href="${href}" class="${color}" title="${title}"><i class="${icon}"></i></a>`;
+                        })
+                        .join('');
                 },
 
                 // Render status value as a coloured badge (used in mobile cards body)
@@ -1141,73 +1234,93 @@
                         cols = this.config.columns.map(buildColDef);
                     }
 
-                    cols.push({
-                        title: 'Действия',
-                        field: '__actions',
-                        headerSort: false,
-                        frozen: true,
-                        width: 170,
-                        minWidth: 170,
-                        maxWidth: 170,
-                        widthGrow: 0,
-                        widthShrink: 0,
-                        hozAlign: 'right',
-                        headerHozAlign: 'right',
+                    if (this.hasActionColumn) {
+                        cols.push({
+                            title: 'Действия',
+                            field: '__actions',
+                            headerSort: false,
+                            frozen: true,
+                            width: 170,
+                            minWidth: 170,
+                            maxWidth: 170,
+                            widthGrow: 0,
+                            widthShrink: 0,
+                            hozAlign: 'right',
+                            headerHozAlign: 'right',
 
-                        titleFormatter: () => {
-                            const disabled = this.hasAnyFilters ? '' : 'disabled';
-                            return `
-                                <div class="dt-col-header">
-                                    <span class="dt-col-title">Действия</span>
-                                    <span class="dt-actions-header-btns">
-                                        <button class="dt-clearfilters-btn text-danger" type="button" title="Сбросить все фильтры" ${disabled}>
-                                            <i class="uil uil-filter-slash"></i>
+                            titleFormatter: () => {
+                                const disabled = this.hasAnyFilters ? '' : 'disabled';
+                                return `
+                                    <div class="dt-col-header">
+                                        <span class="dt-col-title">Действия</span>
+                                        <span class="dt-actions-header-btns">
+                                            <button class="dt-clearfilters-btn text-danger" type="button" title="Сбросить все фильтры" ${disabled}>
+                                                <i class="uil uil-filter-slash"></i>
+                                            </button>
+                                            <button class="dt-colmenu-btn text-primary" type="button" title="Колонки">
+                                                <i class="uil uil-setting"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                `;
+                            },
+
+                            headerClick: async (e) => {
+                                const clearBtn = e.target.closest && e.target.closest('.dt-clearfilters-btn');
+                                if (clearBtn) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    if (!this.hasAnyFilters) return;
+                                    await this.resetAllFilters();
+                                    return;
+                                }
+
+                                const gearBtn = e.target.closest && e.target.closest('.dt-colmenu-btn');
+                                if (gearBtn) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+
+                                    this.filterMenu?.close?.();
+                                    this.columnsMenu?.toggleNear?.(gearBtn);
+                                    return;
+                                }
+                            },
+
+                            formatter: (cell) => {
+                                const row = cell.getRow()?.getData?.() ?? {};
+                                const id = row?.[primaryKey];
+                                const actions = [];
+
+                                if (this.canShowRecord) {
+                                    actions.push(`<a href="/${entity}/${id}/show" class="text-info"><i class="uil uil-eye"></i></a>`);
+                                }
+
+                                if (this.canUpdateRecord) {
+                                    actions.push(`<a href="/${entity}/${id}/edit" class="text-warning"><i class="uil uil-edit"></i></a>`);
+                                }
+
+                                if (this.canDeleteRecord) {
+                                    actions.push(`
+                                        <button class="text-danger"
+                                            onclick="window.dispatchEvent(new CustomEvent('datatable-delete',{detail:${id}}))">
+                                            <i class="uil uil-trash-alt"></i>
                                         </button>
-                                        <button class="dt-colmenu-btn text-primary" type="button" title="Колонки">
-                                            <i class="uil uil-setting"></i>
-                                        </button>
-                                    </span>
-                                </div>
-                            `;
-                        },
+                                    `);
+                                }
 
-                        headerClick: async (e) => {
-                            const clearBtn = e.target.closest && e.target.closest('.dt-clearfilters-btn');
-                            if (clearBtn) {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                if (!this.hasAnyFilters) return;
-                                await this.resetAllFilters();
-                                return;
+                                const extraActions = this.renderExtraTableActions(row);
+                                if (extraActions) {
+                                    actions.push(extraActions);
+                                }
+
+                                return `
+                                    <div class="dt-actions-wrap text-xl">
+                                        ${actions.join('')}
+                                    </div>
+                                `;
                             }
-
-                            const gearBtn = e.target.closest && e.target.closest('.dt-colmenu-btn');
-                            if (gearBtn) {
-                                e.preventDefault();
-                                e.stopPropagation();
-
-                                this.filterMenu?.close?.();
-                                this.columnsMenu?.toggleNear?.(gearBtn);
-                                return;
-                            }
-                        },
-
-                        formatter: (cell) => {
-                            const row = cell.getRow()?.getData?.() ?? {};
-                            const id = row?.[primaryKey];
-
-                            return `
-                                <div class="dt-actions-wrap text-xl">
-                                    <a href="/${entity}/${id}/show" class="text-info"><i class="uil uil-eye"></i></a>
-                                    <a href="/${entity}/${id}/edit" class="text-warning"><i class="uil uil-edit"></i></a>
-                                    <button class="text-danger"
-                                        onclick="window.dispatchEvent(new CustomEvent('datatable-delete',{detail:${id}}))">
-                                        <i class="uil uil-trash-alt"></i>
-                                    </button>
-                                </div>
-                            `;
-                        }
-                    });
+                        });
+                    }
 
                     const groupConfig = window.CONFIG.group ?? null;
 

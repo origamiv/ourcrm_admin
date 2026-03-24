@@ -44,7 +44,7 @@ return [
         'icon' => 'uil uil-shield',
 
         // ACL / permissions resource
-        'resource' => null,
+        'resource' => 'permissionroles',
 
         // Активен
         'status' => 1,

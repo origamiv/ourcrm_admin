@@ -44,7 +44,7 @@ return [
         'icon' => 'uil uil-image',
 
         // ACL / permissions resource
-        'resource' => null,
+        'resource' => 'files',
 
         // Активен
         'status' => 1,
